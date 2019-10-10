@@ -13,6 +13,8 @@ enum WindowGravity { TOP, BOTTOM, CENTER }
 //enum IconPosition { TRAILING_TITLE, LEADING_TITLE, LEADING_SUBTITLE, TRAILING_SUBTITLE, TRAILING, LEADING }
 enum ButtonPosition { TRAILING, LEADING, CENTER }
 
+enum FontWeight {NORMAL, BOLD, ITALIC, BOLD_ITALIC}
+
 class SystemAlertWindow {
   static const MethodChannel _channel = const MethodChannel('system_alert_window');
 

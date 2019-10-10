@@ -13,16 +13,28 @@ class WindowButton {
   int width;
   int height;
   int borderWidth;
+  String tag;
   double borderRadius;
   Color borderColor;
   Color fillColor;
 
-  WindowButton({@required this.text, this.padding, this.margin, this.width, this.height, this.borderWidth, this.borderRadius, this.borderColor, this.fillColor})
-      : assert(text != null);
+  WindowButton(
+      {@required this.text,
+      @required this.tag,
+      this.padding,
+      this.margin,
+      this.width,
+      this.height,
+      this.borderWidth,
+      this.borderRadius,
+      this.borderColor,
+      this.fillColor})
+      : assert(text != null, tag != null);
 
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{
       'text': text.getMap(),
+      'tag': tag,
       'padding': padding?.getMap(),
       'margin': margin?.getMap(),
       'width': width ?? WRAP_CONTENT,

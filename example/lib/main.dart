@@ -56,14 +56,15 @@ class _MyAppState extends State<MyApp> {
     WindowHeader header = WindowHeader(
         title: WindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
         padding: WindowPadding.setSymmetricPadding(8, 8),
-        subTitle: WindowText(text: "9491558725", fontSize: 14, textColor: Colors.black87),
-        backgroundColor: Colors.black);
+        subTitle: WindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
+        backgroundColor: Colors.grey[100]);
     WindowBody body = WindowBody(rows: [
       EachRow(columns: [EachColumn(text: WindowText(text: "Some body", fontSize: 12, textColor: Colors.black87))])
     ]);
     WindowFooter footer = WindowFooter(
         button: WindowButton(
             text: WindowText(text: "I'm a button", fontSize: 12, textColor: Colors.white),
+            tag: "footer_button",
             width: WindowButton.MATCH_PARENT,
             height: WindowButton.WRAP_CONTENT,
             fillColor: Colors.deepOrange,

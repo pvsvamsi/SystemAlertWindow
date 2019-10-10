@@ -1,6 +1,7 @@
 package in.jvapps.system_alert_window.utils;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.Gravity;
 
@@ -27,6 +28,12 @@ public class Commons {
                 TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics()));
     }
 
+    public static float getPixelsFromDp(@NonNull Context context, float dp) {
+        if (dp == -1) return -1;
+        return TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+    }
+
     public static int getGravity(@Nullable String gravityStr, int defVal) {
         int gravity = defVal;
         if (gravityStr != null) {
@@ -49,5 +56,27 @@ public class Commons {
             }
         }
         return gravity;
+    }
+
+    public static int getFontWeight(@Nullable String fontWeightStr, int defVal) {
+        int fontWeight = defVal;
+        if (fontWeightStr != null) {
+            switch (fontWeightStr) {
+                case "normal":
+                default:
+                    fontWeight = Typeface.NORMAL;
+                    break;
+                case "bold":
+                    fontWeight = Typeface.BOLD;
+                    break;
+                case "italic":
+                    fontWeight = Typeface.ITALIC;
+                    break;
+                case "bold_italic":
+                    fontWeight = Typeface.BOLD_ITALIC;
+                    break;
+            }
+        }
+        return fontWeight;
     }
 }

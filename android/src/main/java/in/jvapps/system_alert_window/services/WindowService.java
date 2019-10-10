@@ -25,10 +25,11 @@ import in.jvapps.system_alert_window.models.Margin;
 import in.jvapps.system_alert_window.utils.Commons;
 import in.jvapps.system_alert_window.utils.NumberUtils;
 import in.jvapps.system_alert_window.utils.UiBuilder;
+import in.jvapps.system_alert_window.views.BodyView;
 import in.jvapps.system_alert_window.views.FooterView;
 import in.jvapps.system_alert_window.views.HeaderView;
 
-import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
+import static in.jvapps.system_alert_window.utils.Constants.*;
 
 
 public class WindowService extends JobIntentService implements View.OnTouchListener {
@@ -88,15 +89,15 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
             Log.d(TAG, "Intent extras are not null");
             @SuppressWarnings("unchecked")
             HashMap<String, Object> paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
-            Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, "header");
-            Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, "body");
-            Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, "footer");
-            windowMargin = UiBuilder.getMargin(mContext, paramsMap.get("margin"));
-            windowGravity = (String) paramsMap.get("gravity");
-            windowWidth = NumberUtils.getInt(paramsMap.get("width"));
-            windowHeight = NumberUtils.getInt(paramsMap.get("height"));
+            Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, KEY_HEADER);
+            Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, KEY_BODY);
+            Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, KEY_FOOTER);
+            windowMargin = UiBuilder.getMargin(mContext, paramsMap.get(KEY_MARGIN));
+            windowGravity = (String) paramsMap.get(KEY_GRAVITY);
+            windowWidth = NumberUtils.getInt(paramsMap.get(KEY_WIDTH));
+            windowHeight = NumberUtils.getInt(paramsMap.get(KEY_HEIGHT));
             headerView = new HeaderView(this, headersMap).getView();
-            bodyView = new HeaderView(this, headersMap).getView();
+            bodyView = new BodyView(this, bodyMap).getView();
             footerView = new FooterView(this, footerMap).getView();
             showWindow();
         } else {

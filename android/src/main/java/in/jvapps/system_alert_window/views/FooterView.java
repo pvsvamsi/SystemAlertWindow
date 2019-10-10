@@ -12,6 +12,8 @@ import in.jvapps.system_alert_window.models.Padding;
 import in.jvapps.system_alert_window.utils.Commons;
 import in.jvapps.system_alert_window.utils.UiBuilder;
 
+import static in.jvapps.system_alert_window.utils.Constants.*;
+
 public class FooterView {
     private Map<String, Object> footerMap;
     private Context context;
@@ -26,15 +28,15 @@ public class FooterView {
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        Padding footerPadding = UiBuilder.getPadding(context, footerMap.get("padding"));
+        Padding footerPadding = UiBuilder.getPadding(context, footerMap.get(KEY_PADDING));
         linearLayout.setPadding(footerPadding.getLeft(), footerPadding.getTop(), footerPadding.getRight(), footerPadding.getBottom());
         linearLayout.setLayoutParams(params);
-        if ((boolean) footerMap.get("isShowFooter")) {
-            Map<String, Object> textMap = Commons.getMapFromObject(footerMap, "text");
-            Map<String, Object> buttonMap = Commons.getMapFromObject(footerMap, "button");
+        if ((boolean) footerMap.get(KEY_IS_SHOW_FOOTER)) {
+            Map<String, Object> textMap = Commons.getMapFromObject(footerMap, KEY_TEXT);
+            Map<String, Object> buttonMap = Commons.getMapFromObject(footerMap, KEY_BUTTON);
             TextView textView = UiBuilder.getTextView(context, textMap);
             Button buttonView = UiBuilder.getButtonView(context, buttonMap);
-            String buttonPosition = (String) footerMap.get("buttonPosition");
+            String buttonPosition = (String) footerMap.get(KEY_BUTTON_POSITION);
             if (textView != null) {
                 if (buttonView != null) {
                     if ("leading".equals(buttonPosition)) {
