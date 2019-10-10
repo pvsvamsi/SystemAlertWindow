@@ -24,12 +24,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-    checkPermissions();
+    _initPlatformState();
+    _checkPermissions();
+    _registerCallBack();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
+  Future<void> _initPlatformState() async {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -48,11 +49,21 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> checkPermissions() async {
+  Future<void> _checkPermissions() async {
     await SystemAlertWindow.checkPermissions;
   }
 
-  void showOverlayWindow() {
+  void _registerCallBack() {
+    SystemAlertWindow.registerCallBack((dynamic arguments) {
+      String type = arguments[0];
+      if (type == "onClick") {
+        String tag = arguments[1];
+        print("OnClick event of $tag");
+      }
+    });
+  }
+
+  void _showOverlayWindow() {
     WindowHeader header = WindowHeader(
         title: WindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
         padding: WindowPadding.setSymmetricPadding(8, 8),
@@ -91,7 +102,7 @@ class _MyAppState extends State<MyApp> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: MaterialButton(
-                  onPressed: showOverlayWindow,
+                  onPressed: _showOverlayWindow,
                   textColor: Colors.white,
                   child: Text("Show overlay"),
                   color: Colors.deepOrange,

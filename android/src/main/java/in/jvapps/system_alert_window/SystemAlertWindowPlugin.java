@@ -9,7 +9,9 @@ import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,7 +27,7 @@ import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_
 public class SystemAlertWindowPlugin extends Activity implements MethodCallHandler {
 
     Activity context;
-    MethodChannel methodChannel;
+    static MethodChannel methodChannel;
     public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1237;
 
     public static void registerWith(Registrar registrar) {
@@ -33,10 +35,10 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         channel.setMethodCallHandler(new SystemAlertWindowPlugin(registrar.activity(), channel));
     }
 
-    private SystemAlertWindowPlugin(Activity activity, MethodChannel methodChannel) {
+    private SystemAlertWindowPlugin(Activity activity, MethodChannel newMethodChannel) {
         this.context = activity;
-        this.methodChannel = methodChannel;
-        this.methodChannel.setMethodCallHandler(this);
+        methodChannel = newMethodChannel;
+        methodChannel.setMethodCallHandler(this);
     }
 
     @Override
@@ -71,6 +73,14 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 result.notImplemented();
         }
     }
+
+    public static void invokeCallBack(String type, Object params) {
+        List<Object> argumentsList = new ArrayList<>();
+        argumentsList.add(type);
+        argumentsList.add(params);
+        methodChannel.invokeMethod("callBack", argumentsList);
+    }
+
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override

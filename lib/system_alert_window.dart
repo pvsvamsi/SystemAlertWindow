@@ -10,10 +10,9 @@ import 'package:system_alert_window/utils/commons.dart';
 
 enum WindowGravity { TOP, BOTTOM, CENTER }
 
-//enum IconPosition { TRAILING_TITLE, LEADING_TITLE, LEADING_SUBTITLE, TRAILING_SUBTITLE, TRAILING, LEADING }
 enum ButtonPosition { TRAILING, LEADING, CENTER }
 
-enum FontWeight {NORMAL, BOLD, ITALIC, BOLD_ITALIC}
+enum FontWeight { NORMAL, BOLD, ITALIC, BOLD_ITALIC }
 
 class SystemAlertWindow {
   static const MethodChannel _channel = const MethodChannel('system_alert_window');
@@ -25,6 +24,20 @@ class SystemAlertWindow {
 
   static Future<void> get checkPermissions async {
     await _channel.invokeMethod('checkPermissions');
+  }
+
+  static registerCallBack(callBackFunction) {
+    _channel.setMethodCallHandler((MethodCall call) {
+      switch (call.method) {
+        case "callBack":
+          dynamic arguments = call.arguments;
+          if (arguments is List) {
+            return callBackFunction(arguments);
+          } else
+            return null;
+      }
+      return null;
+    });
   }
 
   static Future<bool> showSystemWindow({

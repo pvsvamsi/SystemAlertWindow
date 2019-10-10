@@ -5,14 +5,14 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
-
 import java.util.Map;
 
+import in.jvapps.system_alert_window.SystemAlertWindowPlugin;
 import in.jvapps.system_alert_window.models.Margin;
 import in.jvapps.system_alert_window.models.Padding;
 
@@ -57,7 +57,8 @@ public class UiBuilder {
         TextView buttonText = getTextView(context, Commons.getMapFromObject(buttonMap, KEY_TEXT));
         assert buttonText != null;
         button.setText(buttonText.getText());
-        button.setTag(buttonMap.get(KEY_TAG));
+        final Object tag = buttonMap.get(KEY_TAG);
+        button.setTag(tag);
         button.setTextSize(Commons.getSpFromPixels(context, buttonText.getTextSize()));
         button.setTextColor(buttonText.getTextColors());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -76,6 +77,12 @@ public class UiBuilder {
         int borderWidth = Commons.getPixelsFromDp(context, NumberUtils.getInt(buttonMap.get(KEY_BORDER_WIDTH)));
         gd.setStroke(borderWidth, NumberUtils.getInt(buttonMap.get(KEY_BORDER_COLOR)));
         button.setBackground(gd);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SystemAlertWindowPlugin.invokeCallBack("onClick", tag);
+            }
+        });
         return button;
     }
 }
