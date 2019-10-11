@@ -57,8 +57,9 @@ public class UiBuilder {
         if (decorationMap == null) {
             return null;
         }
-        return new Decoration(decorationMap.get(KEY_BACKGROUND_COLOR), decorationMap.get(KEY_BORDER_WIDTH),
-                decorationMap.get(KEY_BORDER_RADIUS), decorationMap.get(KEY_BORDER_COLOR), context);
+        return new Decoration(decorationMap.get(KEY_START_COLOR), decorationMap.get(KEY_END_COLOR),
+                decorationMap.get(KEY_BORDER_WIDTH), decorationMap.get(KEY_BORDER_RADIUS),
+                decorationMap.get(KEY_BORDER_COLOR), context);
     }
 
     public static Button getButtonView(Context context, Map<String, Object> buttonMap) {
@@ -97,7 +98,13 @@ public class UiBuilder {
 
     public static GradientDrawable getGradientDrawable(Decoration decoration) {
         GradientDrawable gd = new GradientDrawable();
-        gd.setColor(decoration.getBackgroundColor());
+        if (decoration.isGradient()) {
+            int[] colors = {decoration.getStartColor(), decoration.getEndColor()};
+            gd.setColors(colors);
+            gd.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
+        } else {
+            gd.setColor(decoration.getStartColor());
+        }
         gd.setCornerRadius(decoration.getBorderRadius());
         gd.setStroke(decoration.getBorderWidth(), decoration.getBorderColor());
         return gd;

@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
       title: WindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
       padding: WindowPadding.setSymmetricPadding(12, 12),
       subTitle: WindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
-      decoration: WindowDecoration(backgroundColor: Colors.grey[100]),
+      decoration: WindowDecoration(startColor: Colors.grey[100]),
     );
     WindowBody body = WindowBody(
       rows: [
@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> {
           EachColumn(
               text: WindowText(text: "Long data of the body", fontSize: 12, textColor: Colors.black87, fontWeight: FontWeight.BOLD),
               padding: WindowPadding.setSymmetricPadding(6, 8),
-              decoration: WindowDecoration(backgroundColor: Colors.black12, borderRadius: 25.0),
+              decoration: WindowDecoration(startColor: Colors.black12, borderRadius: 25.0),
               margin: WindowMargin(top: 4)),
         ], gravity: ContentGravity.CENTER),
         EachRow(
@@ -114,10 +114,10 @@ class _MyAppState extends State<MyApp> {
           tag: "footer_button",
           width: WindowButton.MATCH_PARENT,
           height: WindowButton.WRAP_CONTENT,
-          decoration: WindowDecoration(backgroundColor: Colors.deepOrange, borderWidth: 0, borderRadius: 30.0),
+          decoration: WindowDecoration(startColor: Color.fromRGBO(250, 139, 97, 1), endColor: Color.fromRGBO(247, 28, 88, 1), borderWidth: 0, borderRadius: 30.0),
         ),
         padding: WindowPadding(left: 16, right: 16, bottom: 12),
-        decoration: WindowDecoration(backgroundColor: Colors.white),
+        decoration: WindowDecoration(startColor: Colors.white),
         buttonPosition: ButtonPosition.CENTER);
     SystemAlertWindow.showSystemWindow(
         header: header, body: body, footer: footer, margin: WindowMargin(left: 8, right: 8, top: 100, bottom: 0), gravity: WindowGravity.TOP);

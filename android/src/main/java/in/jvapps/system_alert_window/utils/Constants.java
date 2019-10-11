@@ -19,7 +19,8 @@ public class Constants {
     public static final String KEY_BUTTON = "button";
     public static final String KEY_BUTTON_POSITION = "buttonPosition";
     public static final String KEY_DECORATION = "decoration";
-    static final String KEY_BACKGROUND_COLOR = "bgColor";
+    static final String KEY_START_COLOR = "startColor";
+    static final String KEY_END_COLOR = "endColor";
     public static final String KEY_BORDER_WIDTH = "borderWidth";
     public static final String KEY_BORDER_COLOR = "borderColor";
     public static final String KEY_BORDER_RADIUS = "borderRadius";
