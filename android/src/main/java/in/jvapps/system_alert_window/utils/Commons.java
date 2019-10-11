@@ -4,11 +4,16 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.Map;
+
+import in.jvapps.system_alert_window.models.Margin;
+
+import static in.jvapps.system_alert_window.utils.Constants.KEY_MARGIN;
 
 public class Commons {
 
@@ -78,5 +83,10 @@ public class Commons {
             }
         }
         return fontWeight;
+    }
+
+    public static void setMargin(Context context, LinearLayout.LayoutParams params, Map<String, Object> map){
+        Margin margin = UiBuilder.getMargin(context, map.get(KEY_MARGIN));
+        params.setMargins(margin.getLeft(), margin.getTop(), margin.getRight(), margin.getBottom());
     }
 }

@@ -3,6 +3,7 @@ package in.jvapps.system_alert_window.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,12 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 import in.jvapps.system_alert_window.models.Decoration;
+import in.jvapps.system_alert_window.models.Margin;
 import in.jvapps.system_alert_window.models.Padding;
 import in.jvapps.system_alert_window.utils.Commons;
 import in.jvapps.system_alert_window.utils.UiBuilder;
 
 import static in.jvapps.system_alert_window.utils.Constants.KEY_COLUMNS;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_DECORATION;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_GRAVITY;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_MARGIN;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_PADDING;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_ROWS;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_TEXT;
@@ -40,7 +44,10 @@ public class BodyView {
         }else{
             linearLayout.setBackgroundColor(Color.WHITE);
         }
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        Commons.setMargin(context, params, bodyMap);
+        linearLayout.setLayoutParams(params);
         Padding padding = UiBuilder.getPadding(context, bodyMap.get(KEY_PADDING));
         linearLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
         @SuppressWarnings("unchecked")
@@ -57,7 +64,11 @@ public class BodyView {
     private View createRow(Map<String, Object> rowMap) {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        Commons.setMargin(context, params, rowMap);
+        linearLayout.setLayoutParams(params);
+        linearLayout.setGravity(Commons.getGravity((String) rowMap.get(KEY_GRAVITY), Gravity.LEFT));
         Padding padding = UiBuilder.getPadding(context, rowMap.get(KEY_PADDING));
         linearLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
         Decoration decoration = UiBuilder.getDecoration(context, rowMap.get(KEY_DECORATION));
@@ -79,7 +90,10 @@ public class BodyView {
     private View createColumn(Map<String, Object> columnMap){
         LinearLayout columnLayout = new LinearLayout(context);
         columnLayout.setOrientation(LinearLayout.HORIZONTAL);
-        columnLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        Commons.setMargin(context, params, columnMap);
+        columnLayout.setLayoutParams(params);
         Padding padding = UiBuilder.getPadding(context, columnMap.get(KEY_PADDING));
         columnLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
         Decoration decoration = UiBuilder.getDecoration(context, columnMap.get(KEY_DECORATION));

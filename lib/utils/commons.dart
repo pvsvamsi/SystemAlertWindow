@@ -14,14 +14,14 @@ class Commons {
     }
   }
 
-  static String getRowGravity(RowGravity gravity) {
-    if (gravity == null) gravity = RowGravity.LEFT;
+  static String getContentGravity(ContentGravity gravity) {
+    if (gravity == null) gravity = ContentGravity.LEFT;
     switch (gravity) {
-      case RowGravity.CENTER:
+      case ContentGravity.CENTER:
         return "center";
-      case RowGravity.RIGHT:
+      case ContentGravity.RIGHT:
         return "right";
-      case RowGravity.LEFT:
+      case ContentGravity.LEFT:
       default:
         return "left";
     }

@@ -10,7 +10,7 @@ import 'package:system_alert_window/utils/commons.dart';
 
 enum WindowGravity { TOP, BOTTOM, CENTER }
 
-enum RowGravity { LEFT, RIGHT, CENTER }
+enum ContentGravity { LEFT, RIGHT, CENTER }
 
 enum ButtonPosition { TRAILING, LEADING, CENTER }
 
