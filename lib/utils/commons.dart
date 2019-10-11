@@ -1,7 +1,7 @@
 import 'package:system_alert_window/system_alert_window.dart';
 
 class Commons {
-  static String getGravity(WindowGravity gravity) {
+  static String getWindowGravity(WindowGravity gravity) {
     if (gravity == null) gravity = WindowGravity.TOP;
     switch (gravity) {
       case WindowGravity.CENTER:
@@ -11,6 +11,19 @@ class Commons {
       case WindowGravity.TOP:
       default:
         return "top";
+    }
+  }
+
+  static String getRowGravity(RowGravity gravity) {
+    if (gravity == null) gravity = RowGravity.LEFT;
+    switch (gravity) {
+      case RowGravity.CENTER:
+        return "center";
+      case RowGravity.RIGHT:
+        return "right";
+      case RowGravity.LEFT:
+      default:
+        return "left";
     }
   }
 

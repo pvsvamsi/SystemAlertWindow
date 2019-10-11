@@ -1,6 +1,8 @@
 package in.jvapps.system_alert_window.views;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -8,9 +10,9 @@ import android.widget.TextView;
 
 import java.util.Map;
 
+import in.jvapps.system_alert_window.models.Decoration;
 import in.jvapps.system_alert_window.models.Padding;
 import in.jvapps.system_alert_window.utils.Commons;
-import in.jvapps.system_alert_window.utils.NumberUtils;
 import in.jvapps.system_alert_window.utils.UiBuilder;
 
 import static in.jvapps.system_alert_window.utils.Constants.*;
@@ -27,11 +29,17 @@ public class HeaderView {
     public LinearLayout getView() {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.setBackgroundColor(NumberUtils.getInt(headerMap.get(KEY_BACKGROUND_COLOR)));
+        Decoration decoration = UiBuilder.getDecoration(context, headerMap.get(KEY_DECORATION));
+        if (decoration != null) {
+            GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
+            linearLayout.setBackground(gd);
+        } else {
+            linearLayout.setBackgroundColor(Color.WHITE);
+        }
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        Map<String, Object> titleMap = Commons.getMapFromObject(headerMap,KEY_TITLE);
-        Map<String, Object> subTitleMap = Commons.getMapFromObject(headerMap,KEY_SUBTITLE);
-        Map<String, Object> buttonMap = Commons.getMapFromObject(headerMap,KEY_BUTTON);
+        Map<String, Object> titleMap = Commons.getMapFromObject(headerMap, KEY_TITLE);
+        Map<String, Object> subTitleMap = Commons.getMapFromObject(headerMap, KEY_SUBTITLE);
+        Map<String, Object> buttonMap = Commons.getMapFromObject(headerMap, KEY_BUTTON);
         Padding padding = UiBuilder.getPadding(context, headerMap.get(KEY_PADDING));
         linearLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
         boolean isShowButton = (buttonMap != null);

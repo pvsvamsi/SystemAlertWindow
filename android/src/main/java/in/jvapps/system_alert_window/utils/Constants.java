@@ -18,10 +18,11 @@ public class Constants {
     public static final String KEY_TEXT_COLOR = "textColor";
     public static final String KEY_BUTTON = "button";
     public static final String KEY_BUTTON_POSITION = "buttonPosition";
+    public static final String KEY_DECORATION = "decoration";
+    static final String KEY_BACKGROUND_COLOR = "bgColor";
     public static final String KEY_BORDER_WIDTH = "borderWidth";
-    public static final String KEY_BORDER_RADIUS = "borderColor";
-    public static final String KEY_BORDER_COLOR = "borderRadius";
-    public static final String KEY_FILL_COLOR = "fillColor";
+    public static final String KEY_BORDER_COLOR = "borderColor";
+    public static final String KEY_BORDER_RADIUS = "borderRadius";
     public static final String KEY_GRAVITY = "gravity";
     public static final String KEY_PADDING = "padding";
     public static final String KEY_MARGIN = "margin";
@@ -31,7 +32,6 @@ public class Constants {
     public static final String KEY_BOTTOM = "bottom";
     public static final String KEY_WIDTH = "width";
     public static final String KEY_HEIGHT = "height";
-    public static final String KEY_BACKGROUND_COLOR = "bgColor";
     public static final String KEY_ROWS = "rows";
     public static final String KEY_COLUMNS = "columns";
 

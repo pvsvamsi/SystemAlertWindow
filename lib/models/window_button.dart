@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:system_alert_window/models/window_decoration.dart';
 import 'package:system_alert_window/models/window_margin.dart';
 import 'package:system_alert_window/models/window_padding.dart';
 import 'package:system_alert_window/models/window_text.dart';
@@ -12,23 +13,10 @@ class WindowButton {
   WindowMargin margin;
   int width;
   int height;
-  int borderWidth;
   String tag;
-  double borderRadius;
-  Color borderColor;
-  Color fillColor;
+  WindowDecoration decoration;
 
-  WindowButton(
-      {@required this.text,
-      @required this.tag,
-      this.padding,
-      this.margin,
-      this.width,
-      this.height,
-      this.borderWidth,
-      this.borderRadius,
-      this.borderColor,
-      this.fillColor})
+  WindowButton({@required this.text, @required this.tag, this.padding, this.margin, this.width, this.height, this.decoration})
       : assert(text != null, tag != null);
 
   Map<String, dynamic> getMap() {
@@ -39,10 +27,7 @@ class WindowButton {
       'margin': margin?.getMap(),
       'width': width ?? WRAP_CONTENT,
       'height': height ?? WRAP_CONTENT,
-      'borderWidth': borderWidth ?? 1,
-      'borderRadius': borderRadius ?? 30.0,
-      'borderColor': borderColor?.value ?? Colors.black.value,
-      'fillColor': fillColor?.value ?? Colors.white.value,
+      'decoration': decoration?.getMap()
     };
     return map;
   }

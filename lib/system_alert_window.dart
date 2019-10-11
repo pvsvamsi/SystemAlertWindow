@@ -10,6 +10,8 @@ import 'package:system_alert_window/utils/commons.dart';
 
 enum WindowGravity { TOP, BOTTOM, CENTER }
 
+enum RowGravity { LEFT, RIGHT, CENTER }
+
 enum ButtonPosition { TRAILING, LEADING, CENTER }
 
 enum FontWeight { NORMAL, BOLD, ITALIC, BOLD_ITALIC }
@@ -55,7 +57,7 @@ class SystemAlertWindow {
       'body': body.getMap(),
       'footer': footer.getMap(),
       'margin': margin?.getMap(),
-      'gravity': Commons.getGravity(gravity),
+      'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? 0,
       'height': height ?? 0
     };

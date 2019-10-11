@@ -7,6 +7,7 @@ import 'package:system_alert_window/models/window_body.dart';
 import 'package:system_alert_window/models/window_text.dart';
 import 'package:system_alert_window/models/window_footer.dart';
 import 'package:system_alert_window/models/window_button.dart';
+import 'package:system_alert_window/models/window_decoration.dart';
 import 'package:system_alert_window/models/window_padding.dart';
 import 'package:system_alert_window/models/window_margin.dart';
 import 'package:system_alert_window/models/window_header.dart';
@@ -65,24 +66,23 @@ class _MyAppState extends State<MyApp> {
 
   void _showOverlayWindow() {
     WindowHeader header = WindowHeader(
-        title: WindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
-        padding: WindowPadding.setSymmetricPadding(8, 8),
-        subTitle: WindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
-        backgroundColor: Colors.grey[100]);
+      title: WindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
+      padding: WindowPadding.setSymmetricPadding(8, 8),
+      subTitle: WindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
+      decoration: WindowDecoration(backgroundColor: Colors.grey[100]),
+    );
     WindowBody body = WindowBody(rows: [
       EachRow(columns: [EachColumn(text: WindowText(text: "Some body", fontSize: 12, textColor: Colors.black87))])
-    ]);
+    ], padding: WindowPadding.setSymmetricPadding(8, 8));
     WindowFooter footer = WindowFooter(
         button: WindowButton(
             text: WindowText(text: "I'm a button", fontSize: 12, textColor: Colors.white),
             tag: "footer_button",
             width: WindowButton.MATCH_PARENT,
             height: WindowButton.WRAP_CONTENT,
-            fillColor: Colors.deepOrange,
-            borderRadius: 30.0,
-            borderWidth: 0),
+            decoration: WindowDecoration(backgroundColor: Colors.deepOrange, borderWidth: 0, borderRadius: 30.0),),
         padding: WindowPadding(left: 8, right: 8, top: 8, bottom: 8),
-        backgroundColor: Colors.white,
+        decoration: WindowDecoration(backgroundColor: Colors.white),
         buttonPosition: ButtonPosition.CENTER);
     SystemAlertWindow.showSystemWindow(
         header: header, body: body, footer: footer, margin: WindowMargin(left: 8, right: 8, top: 100, bottom: 0), gravity: WindowGravity.TOP);

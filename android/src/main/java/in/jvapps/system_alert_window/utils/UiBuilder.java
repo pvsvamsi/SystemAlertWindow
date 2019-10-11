@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.Map;
 
 import in.jvapps.system_alert_window.SystemAlertWindowPlugin;
+import in.jvapps.system_alert_window.models.Decoration;
 import in.jvapps.system_alert_window.models.Margin;
 import in.jvapps.system_alert_window.models.Padding;
 
@@ -50,6 +51,15 @@ public class UiBuilder {
         return new Margin(marginMap.get(KEY_LEFT), marginMap.get(KEY_TOP), marginMap.get(KEY_RIGHT), marginMap.get(KEY_BOTTOM), context);
     }
 
+    public static Decoration getDecoration(Context context, Object object) {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> decorationMap = (Map<String, Object>) object;
+        if (decorationMap == null) {
+            return null;
+        }
+        return new Decoration(decorationMap.get(KEY_BACKGROUND_COLOR), decorationMap.get(KEY_BORDER_WIDTH),
+                decorationMap.get(KEY_BORDER_RADIUS), decorationMap.get(KEY_BORDER_COLOR), context);
+    }
 
     public static Button getButtonView(Context context, Map<String, Object> buttonMap) {
         if (buttonMap == null) return null;
@@ -71,12 +81,11 @@ public class UiBuilder {
         button.setLayoutParams(params);
         Padding padding = getPadding(context, buttonMap.get(KEY_PADDING));
         button.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
-        GradientDrawable gd = new GradientDrawable();
-        gd.setColor(NumberUtils.getInt(buttonMap.get(KEY_FILL_COLOR)));
-        gd.setCornerRadius(Commons.getPixelsFromDp(context, NumberUtils.getFloat(buttonMap.get(KEY_BORDER_RADIUS))));
-        int borderWidth = Commons.getPixelsFromDp(context, NumberUtils.getInt(buttonMap.get(KEY_BORDER_WIDTH)));
-        gd.setStroke(borderWidth, NumberUtils.getInt(buttonMap.get(KEY_BORDER_COLOR)));
-        button.setBackground(gd);
+        Decoration decoration = getDecoration(context, buttonMap.get(KEY_DECORATION));
+        if (decoration != null) {
+            GradientDrawable gd = getGradientDrawable(decoration);
+            button.setBackground(gd);
+        }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,4 +94,13 @@ public class UiBuilder {
         });
         return button;
     }
+
+    public static GradientDrawable getGradientDrawable(Decoration decoration) {
+        GradientDrawable gd = new GradientDrawable();
+        gd.setColor(decoration.getBackgroundColor());
+        gd.setCornerRadius(decoration.getBorderRadius());
+        gd.setStroke(decoration.getBorderWidth(), decoration.getBorderColor());
+        return gd;
+    }
+
 }

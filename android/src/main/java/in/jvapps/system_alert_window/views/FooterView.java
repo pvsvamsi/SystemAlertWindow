@@ -1,6 +1,7 @@
 package in.jvapps.system_alert_window.views;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.Map;
 
+import in.jvapps.system_alert_window.models.Decoration;
 import in.jvapps.system_alert_window.models.Padding;
 import in.jvapps.system_alert_window.utils.Commons;
 import in.jvapps.system_alert_window.utils.UiBuilder;
@@ -31,6 +33,11 @@ public class FooterView {
         Padding footerPadding = UiBuilder.getPadding(context, footerMap.get(KEY_PADDING));
         linearLayout.setPadding(footerPadding.getLeft(), footerPadding.getTop(), footerPadding.getRight(), footerPadding.getBottom());
         linearLayout.setLayoutParams(params);
+        Decoration decoration = UiBuilder.getDecoration(context, footerMap.get(KEY_DECORATION));
+        if(decoration != null){
+            GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
+            linearLayout.setBackground(gd);
+        }
         if ((boolean) footerMap.get(KEY_IS_SHOW_FOOTER)) {
             Map<String, Object> textMap = Commons.getMapFromObject(footerMap, KEY_TEXT);
             Map<String, Object> buttonMap = Commons.getMapFromObject(footerMap, KEY_BUTTON);

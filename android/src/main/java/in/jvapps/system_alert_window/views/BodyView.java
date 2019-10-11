@@ -1,6 +1,8 @@
 package in.jvapps.system_alert_window.views;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -8,13 +10,13 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Map;
 
+import in.jvapps.system_alert_window.models.Decoration;
 import in.jvapps.system_alert_window.models.Padding;
 import in.jvapps.system_alert_window.utils.Commons;
-import in.jvapps.system_alert_window.utils.NumberUtils;
 import in.jvapps.system_alert_window.utils.UiBuilder;
 
-import static in.jvapps.system_alert_window.utils.Constants.KEY_BACKGROUND_COLOR;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_COLUMNS;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_DECORATION;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_PADDING;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_ROWS;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_TEXT;
@@ -31,11 +33,16 @@ public class BodyView {
     public LinearLayout getView() {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setBackgroundColor(NumberUtils.getInt(bodyMap.get(KEY_BACKGROUND_COLOR)));
+        Decoration decoration = UiBuilder.getDecoration(context, bodyMap.get(KEY_DECORATION));
+        if(decoration != null){
+            GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
+            linearLayout.setBackground(gd);
+        }else{
+            linearLayout.setBackgroundColor(Color.WHITE);
+        }
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         Padding padding = UiBuilder.getPadding(context, bodyMap.get(KEY_PADDING));
         linearLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
-        linearLayout.setBackgroundColor(NumberUtils.getInt(bodyMap.get(KEY_BACKGROUND_COLOR)));
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> rowsMap = (List<Map<String, Object>>) bodyMap.get(KEY_ROWS);
         if (rowsMap != null) {
@@ -53,15 +60,35 @@ public class BodyView {
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         Padding padding = UiBuilder.getPadding(context, rowMap.get(KEY_PADDING));
         linearLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
+        Decoration decoration = UiBuilder.getDecoration(context, rowMap.get(KEY_DECORATION));
+        if(decoration != null){
+            GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
+            linearLayout.setBackground(gd);
+        }
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> columnsMap = (List<Map<String, Object>>) rowMap.get(KEY_COLUMNS);
         if (columnsMap != null) {
             for (int j = 0; j < columnsMap.size(); j++) {
                 Map<String, Object> column = columnsMap.get(j);
-                TextView textView = UiBuilder.getTextView(context, Commons.getMapFromObject(column, KEY_TEXT));
-                linearLayout.addView(textView);
+                linearLayout.addView(createColumn(column));
             }
         }
         return linearLayout;
+    }
+
+    private View createColumn(Map<String, Object> columnMap){
+        LinearLayout columnLayout = new LinearLayout(context);
+        columnLayout.setOrientation(LinearLayout.HORIZONTAL);
+        columnLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        Padding padding = UiBuilder.getPadding(context, columnMap.get(KEY_PADDING));
+        columnLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
+        Decoration decoration = UiBuilder.getDecoration(context, columnMap.get(KEY_DECORATION));
+        if(decoration != null){
+            GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
+            columnLayout.setBackground(gd);
+        }
+        TextView textView = UiBuilder.getTextView(context, Commons.getMapFromObject(columnMap, KEY_TEXT));
+        columnLayout.addView(textView);
+        return columnLayout;
     }
 }
