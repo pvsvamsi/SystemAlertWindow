@@ -11,6 +11,7 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -30,6 +31,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_HEIGHT;
 
 public class SystemAlertWindowPlugin extends Activity implements MethodCallHandler {
 
@@ -37,6 +39,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     static MethodChannel methodChannel;
     public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1237;
     private static final String CHANNEL_ID = "1237";
+    private static int BUBBLE_NOTIFICATION_ID = 1237;
 
     public static void registerWith(Registrar registrar) {
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "system_alert_window");
@@ -104,7 +107,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         // Create bubble metadata
         Notification.BubbleMetadata bubbleData =
                 new Notification.BubbleMetadata.Builder()
-                        .setDesiredHeight(600)
+                        .setDesiredHeight((int) params.get(KEY_HEIGHT))
                         .setIcon(Icon.createWithResource(context, R.drawable.ic_notification))
                         .setIntent(bubbleIntent)
                         .setAutoExpandBubble(true)
@@ -117,7 +120,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                         .setBubbleMetadata(bubbleData);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(1002, builder.build());
+        notificationManager.notify(BUBBLE_NOTIFICATION_ID, builder.build());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -128,8 +131,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
         channel.setDescription(description);
         channel.setAllowBubbles(true);
-        // Register the channel with the system; you can't change the importance
-        // or other notification behaviors after this
         NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
         assert notificationManager != null;
         notificationManager.createNotificationChannel(channel);
@@ -143,8 +144,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
 
         if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE) {
             if (!Settings.canDrawOverlays(context)) {
-                // You don't have permission
-                checkPermission();
+                Toast.makeText(context, "System Alert Window will not work without Can Draw Over Other Apps permission", Toast.LENGTH_LONG).show();
             }
         }
 

@@ -53,10 +53,10 @@ public class Commons {
                     gravity = Gravity.BOTTOM;
                     break;
                 case "leading":
-                    gravity = Gravity.LEFT;
+                    gravity = Gravity.START;
                     break;
                 case "trailing":
-                    gravity = Gravity.RIGHT;
+                    gravity = Gravity.END;
                     break;
             }
         }

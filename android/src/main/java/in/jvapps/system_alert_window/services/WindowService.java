@@ -96,9 +96,9 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
             windowGravity = (String) paramsMap.get(KEY_GRAVITY);
             windowWidth = NumberUtils.getInt(paramsMap.get(KEY_WIDTH));
             windowHeight = NumberUtils.getInt(paramsMap.get(KEY_HEIGHT));
-            headerView = new HeaderView(this, headersMap).getView();
-            bodyView = new BodyView(this, bodyMap).getView();
-            footerView = new FooterView(this, footerMap).getView();
+            headerView = new HeaderView(mContext, headersMap).getView();
+            bodyView = new BodyView(mContext, bodyMap).getView();
+            footerView = new FooterView(mContext, footerMap).getView();
             showWindow();
         } else {
             Log.w(TAG, "Intent extras are null!");
@@ -108,8 +108,8 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
     private void showWindow() {
         final WindowManager.LayoutParams params;
         params = new LayoutParams();
-        params.width = (windowWidth == 0) ? LayoutParams.MATCH_PARENT : windowWidth;
-        params.height = (windowHeight == 0) ? LayoutParams.WRAP_CONTENT : windowHeight;
+        params.width = (windowWidth == 0) ? LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(mContext, windowWidth);
+        params.height = (windowHeight == 0) ? LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(mContext, windowHeight);
         params.format = PixelFormat.TRANSLUCENT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Log.d(TAG, "Device greater than or equals to oreo");
@@ -162,12 +162,12 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
         windowView.setOnTouchListener(this);
     }
 
-    public static void closeOverlayService(){
-        try{
+    public static void closeOverlayService() {
+        try {
             if (wm != null)
                 wm.removeView(windowView);
             wm = null;
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             Log.e(TAG, "view not found");
         }
     }

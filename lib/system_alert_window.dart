@@ -7,6 +7,7 @@ import 'package:system_alert_window/models/window_footer.dart';
 import 'package:system_alert_window/models/window_header.dart';
 import 'package:system_alert_window/models/window_margin.dart';
 import 'package:system_alert_window/utils/commons.dart';
+import 'package:system_alert_window/utils/constants.dart';
 
 enum WindowGravity { TOP, BOTTOM, CENTER }
 
@@ -58,8 +59,8 @@ class SystemAlertWindow {
       'footer': footer.getMap(),
       'margin': margin?.getMap(),
       'gravity': Commons.getWindowGravity(gravity),
-      'width': width ?? 0,
-      'height': height ?? 0
+      'width': width ?? Constants.MATCH_PARENT,
+      'height': height ?? Constants.WRAP_CONTENT
     };
     return await _channel.invokeMethod('showSystemWindow', params);
   }

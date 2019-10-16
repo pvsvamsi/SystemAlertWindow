@@ -120,6 +120,7 @@ class _MyAppState extends State<MyApp> {
         decoration: WindowDecoration(startColor: Colors.white),
         buttonPosition: ButtonPosition.CENTER);
     SystemAlertWindow.showSystemWindow(
+        height: 230,
         header: header, body: body, footer: footer, margin: WindowMargin(left: 8, right: 8, top: 100, bottom: 0), gravity: WindowGravity.TOP);
   }
 

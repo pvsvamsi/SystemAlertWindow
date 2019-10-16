@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import in.jvapps.system_alert_window.models.Decoration;
-import in.jvapps.system_alert_window.models.Margin;
 import in.jvapps.system_alert_window.models.Padding;
 import in.jvapps.system_alert_window.utils.Commons;
 import in.jvapps.system_alert_window.utils.UiBuilder;
@@ -20,7 +19,6 @@ import in.jvapps.system_alert_window.utils.UiBuilder;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_COLUMNS;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_DECORATION;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_GRAVITY;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_MARGIN;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_PADDING;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_ROWS;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_TEXT;
@@ -68,7 +66,7 @@ public class BodyView {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         Commons.setMargin(context, params, rowMap);
         linearLayout.setLayoutParams(params);
-        linearLayout.setGravity(Commons.getGravity((String) rowMap.get(KEY_GRAVITY), Gravity.LEFT));
+        linearLayout.setGravity(Commons.getGravity((String) rowMap.get(KEY_GRAVITY), Gravity.START));
         Padding padding = UiBuilder.getPadding(context, rowMap.get(KEY_PADDING));
         linearLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
         Decoration decoration = UiBuilder.getDecoration(context, rowMap.get(KEY_DECORATION));
