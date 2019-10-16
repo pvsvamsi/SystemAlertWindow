@@ -1,8 +1,9 @@
 name: system_alert_window
 description: A flutter plugin to show overlay window on top of everything in Android. This plugin uses &#x27;draw on top&#x27; permission to work on Android platform. For IOS platform, it displays as a notification in the notification center.
 version: 0.0.1
-author:
-homepage:
+author: Vamsi <pvsvamsi2009@gmail.com>
+homepage: https://github.com/pvsvamsi/SystemAlertWindow
+
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
