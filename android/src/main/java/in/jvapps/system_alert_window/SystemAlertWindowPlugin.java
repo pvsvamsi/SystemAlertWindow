@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Person;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
@@ -39,7 +40,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     static MethodChannel methodChannel;
     public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1237;
     private static final String CHANNEL_ID = "1237";
-    private static int BUBBLE_NOTIFICATION_ID = 1237;
 
     public static void registerWith(Registrar registrar) {
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "system_alert_window");
@@ -114,12 +114,21 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                         .setSuppressNotification(true)
                         .build();
 
+        Person chatBot = new Person.Builder()
+                .setBot(true)
+                .setName("BubbleBot")
+                .setImportant(true)
+                .build();
+
         Notification.Builder builder =
                 new Notification.Builder(context, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
-                        .setBubbleMetadata(bubbleData);
+                        .setCategory(Notification.CATEGORY_CALL)
+                        .setBubbleMetadata(bubbleData)
+                        .addPerson(chatBot);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        int BUBBLE_NOTIFICATION_ID = 1237;
         notificationManager.notify(BUBBLE_NOTIFICATION_ID, builder.build());
     }
 
