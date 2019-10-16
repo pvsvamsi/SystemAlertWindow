@@ -1,16 +1,19 @@
 # system_alert_window_example
 
-Demonstrates how to use the system_alert_window plugin.
+A flutter plugin to show Truecaller like overlay window over all other apps with callback events.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Android
 
-A few resources to get you started if this is your first Flutter project:
+### Android 9 and below
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Uses &#x27;draw on top&#x27; permission and displays it as a overlay window
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Android 10 and above
+
+Uses Android Bubble APIs to show the overlay window.
+
+
+## IOS
+
+Displays as a notification in the notification center [Help Needed]
