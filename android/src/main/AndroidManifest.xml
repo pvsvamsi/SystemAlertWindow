@@ -1,6 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="in.jvapps.system_alert_window">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="in.jvapps.system_alert_window">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW "/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW " />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application>
+        <activity
+            android:name=".BubbleActivity"
+            android:allowEmbedded="true"
+            android:documentLaunchMode="always"
+            android:label="@string/bubbles_activity"
+            android:resizeableActivity="true"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:targetApi="n" />
+    </application>
+
 </manifest>
