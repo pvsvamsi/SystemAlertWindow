@@ -17,6 +17,7 @@ class WindowPadding {
   }
 
   static WindowPadding setSymmetricPadding(int vertical, int horizontal) {
-    return WindowPadding(left: horizontal, right: horizontal, top: vertical, bottom: vertical);
+    return WindowPadding(
+        left: horizontal, right: horizontal, top: vertical, bottom: vertical);
   }
 }

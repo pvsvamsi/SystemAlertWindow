@@ -16,7 +16,14 @@ class WindowButton {
   String tag;
   WindowDecoration decoration;
 
-  WindowButton({@required this.text, @required this.tag, this.padding, this.margin, this.width, this.height, this.decoration})
+  WindowButton(
+      {@required this.text,
+      @required this.tag,
+      this.padding,
+      this.margin,
+      this.width,
+      this.height,
+      this.decoration})
       : assert(text != null, tag != null);
 
   Map<String, dynamic> getMap() {

@@ -17,6 +17,7 @@ class WindowMargin {
   }
 
   static WindowMargin setSymmetricMargin(int vertical, int horizontal) {
-    return WindowMargin(left: horizontal, right: horizontal, top: vertical, bottom: vertical);
+    return WindowMargin(
+        left: horizontal, right: horizontal, top: vertical, bottom: vertical);
   }
 }

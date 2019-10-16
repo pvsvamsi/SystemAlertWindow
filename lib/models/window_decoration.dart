@@ -7,7 +7,12 @@ class WindowDecoration {
   double borderRadius;
   Color borderColor;
 
-  WindowDecoration({this.startColor, this.endColor, this.borderWidth, this.borderRadius, this.borderColor});
+  WindowDecoration(
+      {this.startColor,
+      this.endColor,
+      this.borderWidth,
+      this.borderRadius,
+      this.borderColor});
 
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{

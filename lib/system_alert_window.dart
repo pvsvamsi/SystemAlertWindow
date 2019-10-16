@@ -18,7 +18,8 @@ enum ButtonPosition { TRAILING, LEADING, CENTER }
 enum FontWeight { NORMAL, BOLD, ITALIC, BOLD_ITALIC }
 
 class SystemAlertWindow {
-  static const MethodChannel _channel = const MethodChannel('system_alert_window');
+  static const MethodChannel _channel =
+      const MethodChannel('system_alert_window');
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');

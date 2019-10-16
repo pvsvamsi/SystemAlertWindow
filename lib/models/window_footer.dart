@@ -12,7 +12,12 @@ class WindowFooter {
   ButtonPosition buttonPosition;
   WindowDecoration decoration;
 
-  WindowFooter({this.text, this.padding, this.button, this.buttonPosition, this.decoration});
+  WindowFooter(
+      {this.text,
+      this.padding,
+      this.button,
+      this.buttonPosition,
+      this.decoration});
 
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{

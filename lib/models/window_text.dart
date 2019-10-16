@@ -10,7 +10,13 @@ class WindowText {
   FontWeight fontWeight;
   WindowPadding padding;
 
-  WindowText({@required this.text, this.fontSize, this.fontWeight, this.textColor, this.padding}) : assert(text != null);
+  WindowText(
+      {@required this.text,
+      this.fontSize,
+      this.fontWeight,
+      this.textColor,
+      this.padding})
+      : assert(text != null);
 
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{

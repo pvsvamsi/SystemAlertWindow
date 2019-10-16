@@ -15,7 +15,13 @@ class WindowHeader {
   ButtonPosition buttonPosition;
   WindowDecoration decoration;
 
-  WindowHeader({this.title, this.subTitle, this.button, this.padding, this.buttonPosition, this.decoration});
+  WindowHeader(
+      {this.title,
+      this.subTitle,
+      this.button,
+      this.padding,
+      this.buttonPosition,
+      this.decoration});
 
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{
