@@ -23,9 +23,8 @@ import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
+import in.jvapps.system_alert_window.services.BubbleService;
 import in.jvapps.system_alert_window.services.WindowService;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -82,15 +81,13 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            WindowService.enqueueWork(mContext, i);
-                        }
-                    }, 500);
+                    WindowService.enqueueWork(mContext, i);
                 } else {
                     Log.d(TAG, "Going to show Bubble");
-                    createBubble(params);
+                    final Intent i = new Intent(mContext, BubbleService.class);
+                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
+                    //mContext.stopService(i);
+                    mContext.startForegroundService(i);
                 }
                 result.success(true);
                 break;
@@ -98,9 +95,8 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     WindowService.closeOverlayService();
                 } else {
-                    initNotificationManager();
-                    assert notificationManager != null;
-                    notificationManager.cancel(BUBBLE_NOTIFICATION_ID);
+                    final Intent i = new Intent(mContext, BubbleService.class);
+                    mContext.stopService(i);
                 }
             default:
                 result.notImplemented();
@@ -116,6 +112,11 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void createBubble(HashMap<String, Object> params) {
+        notificationManager.notify(BUBBLE_NOTIFICATION_ID, getBubbleNotification(params));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private Notification getBubbleNotification(HashMap<String, Object> params){
         createNotificationChannel();
         Intent target = new Intent(mContext, BubbleActivity.class);
         target.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
@@ -144,8 +145,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                         .setCategory(Notification.CATEGORY_CALL)
                         .setBubbleMetadata(bubbleData)
                         .addPerson(chatBot);
-
-        notificationManager.notify(BUBBLE_NOTIFICATION_ID, builder.build());
+        return builder.build();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -198,7 +198,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     mContext = mActivity.getApplicationContext();
                 }
             }
-            if(mContext == null){
+            if (mContext == null) {
                 Log.e(TAG, "Context is null. Can't show the System Alert Window");
                 return;
             }

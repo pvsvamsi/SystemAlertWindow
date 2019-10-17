@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="in.jvapps.system_alert_window">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW " />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application>
         <activity
@@ -15,6 +14,16 @@
             android:resizeableActivity="true"
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="n" />
+        <service
+            android:name=".services.BubbleService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.FOREGROUND_SERVICE"/>
+        <service
+            android:name=".services.WindowService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>
