@@ -1,16 +1,16 @@
-import 'package:system_alert_window/models/window_decoration.dart';
-import 'package:system_alert_window/models/window_margin.dart';
-import 'package:system_alert_window/models/window_padding.dart';
-import 'package:system_alert_window/models/window_text.dart';
+import 'package:system_alert_window/models/system_window_decoration.dart';
+import 'package:system_alert_window/models/system_window_margin.dart';
+import 'package:system_alert_window/models/system_window_padding.dart';
+import 'package:system_alert_window/models/system_window_text.dart';
 import 'package:system_alert_window/system_alert_window.dart';
 import 'package:system_alert_window/utils/commons.dart';
 
-class WindowBody {
+class SystemWindowBody {
   List<EachRow> rows;
-  WindowPadding padding;
-  WindowDecoration decoration;
+  SystemWindowPadding padding;
+  SystemWindowDecoration decoration;
 
-  WindowBody({this.rows, this.padding, this.decoration});
+  SystemWindowBody({this.rows, this.padding, this.decoration});
 
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{
@@ -26,10 +26,10 @@ class WindowBody {
 
 class EachRow {
   List<EachColumn> columns;
-  WindowPadding padding;
-  WindowMargin margin;
+  SystemWindowPadding padding;
+  SystemWindowMargin margin;
   ContentGravity gravity;
-  WindowDecoration decoration;
+  SystemWindowDecoration decoration;
 
   EachRow(
       {this.columns, this.padding, this.margin, this.gravity, this.decoration});
@@ -49,10 +49,10 @@ class EachRow {
 }
 
 class EachColumn {
-  WindowText text;
-  WindowPadding padding;
-  WindowMargin margin;
-  WindowDecoration decoration;
+  SystemWindowText text;
+  SystemWindowPadding padding;
+  SystemWindowMargin margin;
+  SystemWindowDecoration decoration;
 
   EachColumn({this.text, this.padding, this.margin, this.decoration});
 

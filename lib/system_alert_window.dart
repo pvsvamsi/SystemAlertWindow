@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:system_alert_window/models/window_body.dart';
-import 'package:system_alert_window/models/window_footer.dart';
-import 'package:system_alert_window/models/window_header.dart';
-import 'package:system_alert_window/models/window_margin.dart';
+import 'package:system_alert_window/models/system_window_body.dart';
+import 'package:system_alert_window/models/system_window_footer.dart';
+import 'package:system_alert_window/models/system_window_header.dart';
+import 'package:system_alert_window/models/system_window_margin.dart';
 import 'package:system_alert_window/utils/commons.dart';
 import 'package:system_alert_window/utils/constants.dart';
 
@@ -45,10 +45,10 @@ class SystemAlertWindow {
   }
 
   static Future<bool> showSystemWindow({
-    @required WindowHeader header,
-    @required WindowBody body,
-    @required WindowFooter footer,
-    WindowMargin margin,
+    @required SystemWindowHeader header,
+    @required SystemWindowBody body,
+    @required SystemWindowFooter footer,
+    SystemWindowMargin margin,
     WindowGravity gravity = WindowGravity.CENTER,
     int width,
     int height,

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:system_alert_window/models/window_button.dart';
-import 'package:system_alert_window/models/window_decoration.dart';
-import 'package:system_alert_window/models/window_padding.dart';
-import 'package:system_alert_window/models/window_text.dart';
+import 'package:system_alert_window/models/system_window_button.dart';
+import 'package:system_alert_window/models/system_window_decoration.dart';
+import 'package:system_alert_window/models/system_window_padding.dart';
+import 'package:system_alert_window/models/system_window_text.dart';
 import 'package:system_alert_window/system_alert_window.dart';
 import 'package:system_alert_window/utils/commons.dart';
 
-class WindowHeader {
+class SystemWindowHeader {
   @required
-  WindowText title;
-  WindowText subTitle;
-  WindowButton button;
-  WindowPadding padding;
+  SystemWindowText title;
+  SystemWindowText subTitle;
+  SystemWindowButton button;
+  SystemWindowPadding padding;
   ButtonPosition buttonPosition;
-  WindowDecoration decoration;
+  SystemWindowDecoration decoration;
 
-  WindowHeader(
+  SystemWindowHeader(
       {this.title,
       this.subTitle,
       this.button,

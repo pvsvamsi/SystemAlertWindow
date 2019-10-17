@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:system_alert_window/models/window_padding.dart';
+import 'package:system_alert_window/models/system_window_padding.dart';
 import 'package:system_alert_window/system_alert_window.dart';
 import 'package:system_alert_window/utils/commons.dart';
 
-class WindowText {
+class SystemWindowText {
   String text;
   double fontSize;
   Color textColor;
   FontWeight fontWeight;
-  WindowPadding padding;
+  SystemWindowPadding padding;
 
-  WindowText(
+  SystemWindowText(
       {@required this.text,
       this.fontSize,
       this.fontWeight,

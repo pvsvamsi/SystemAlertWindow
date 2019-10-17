@@ -1,18 +1,18 @@
-import 'package:system_alert_window/models/window_button.dart';
-import 'package:system_alert_window/models/window_decoration.dart';
-import 'package:system_alert_window/models/window_padding.dart';
-import 'package:system_alert_window/models/window_text.dart';
+import 'package:system_alert_window/models/system_window_button.dart';
+import 'package:system_alert_window/models/system_window_decoration.dart';
+import 'package:system_alert_window/models/system_window_padding.dart';
+import 'package:system_alert_window/models/system_window_text.dart';
 import 'package:system_alert_window/system_alert_window.dart';
 import 'package:system_alert_window/utils/commons.dart';
 
-class WindowFooter {
-  WindowText text;
-  WindowPadding padding;
-  WindowButton button;
+class SystemWindowFooter {
+  SystemWindowText text;
+  SystemWindowPadding padding;
+  SystemWindowButton button;
   ButtonPosition buttonPosition;
-  WindowDecoration decoration;
+  SystemWindowDecoration decoration;
 
-  WindowFooter(
+  SystemWindowFooter(
       {this.text,
       this.padding,
       this.button,

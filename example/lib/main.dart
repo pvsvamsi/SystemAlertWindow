@@ -3,14 +3,14 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:system_alert_window/system_alert_window.dart';
-import 'package:system_alert_window/models/window_body.dart';
-import 'package:system_alert_window/models/window_text.dart';
-import 'package:system_alert_window/models/window_footer.dart';
-import 'package:system_alert_window/models/window_button.dart';
-import 'package:system_alert_window/models/window_decoration.dart';
-import 'package:system_alert_window/models/window_padding.dart';
-import 'package:system_alert_window/models/window_margin.dart';
-import 'package:system_alert_window/models/window_header.dart';
+import 'package:system_alert_window/models/system_window_body.dart';
+import 'package:system_alert_window/models/system_window_text.dart';
+import 'package:system_alert_window/models/system_window_footer.dart';
+import 'package:system_alert_window/models/system_window_button.dart';
+import 'package:system_alert_window/models/system_window_decoration.dart';
+import 'package:system_alert_window/models/system_window_padding.dart';
+import 'package:system_alert_window/models/system_window_margin.dart';
+import 'package:system_alert_window/models/system_window_header.dart';
 
 void main() => runApp(MyApp());
 
@@ -67,67 +67,67 @@ class _MyAppState extends State<MyApp> {
 
   void _showOverlayWindow() {
     if (!_isShowingWindow) {
-      WindowHeader header = WindowHeader(
-        title: WindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
-        padding: WindowPadding.setSymmetricPadding(12, 12),
-        subTitle: WindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
-        decoration: WindowDecoration(startColor: Colors.grey[100]),
+      SystemWindowHeader header = SystemWindowHeader(
+        title: SystemWindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
+        padding: SystemWindowPadding.setSymmetricPadding(12, 12),
+        subTitle: SystemWindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
+        decoration: SystemWindowDecoration(startColor: Colors.grey[100]),
       );
-      WindowBody body = WindowBody(
+      SystemWindowBody body = SystemWindowBody(
         rows: [
           EachRow(
             columns: [
               EachColumn(
-                text: WindowText(text: "Some body", fontSize: 12, textColor: Colors.black45),
+                text: SystemWindowText(text: "Some body", fontSize: 12, textColor: Colors.black45),
               ),
             ],
             gravity: ContentGravity.CENTER,
           ),
           EachRow(columns: [
             EachColumn(
-                text: WindowText(text: "Long data of the body", fontSize: 12, textColor: Colors.black87, fontWeight: FontWeight.BOLD),
-                padding: WindowPadding.setSymmetricPadding(6, 8),
-                decoration: WindowDecoration(startColor: Colors.black12, borderRadius: 25.0),
-                margin: WindowMargin(top: 4)),
+                text: SystemWindowText(text: "Long data of the body", fontSize: 12, textColor: Colors.black87, fontWeight: FontWeight.BOLD),
+                padding: SystemWindowPadding.setSymmetricPadding(6, 8),
+                decoration: SystemWindowDecoration(startColor: Colors.black12, borderRadius: 25.0),
+                margin: SystemWindowMargin(top: 4)),
           ], gravity: ContentGravity.CENTER),
           EachRow(
             columns: [
               EachColumn(
-                text: WindowText(text: "Notes", fontSize: 10, textColor: Colors.black45),
+                text: SystemWindowText(text: "Notes", fontSize: 10, textColor: Colors.black45),
               ),
             ],
             gravity: ContentGravity.LEFT,
-            margin: WindowMargin(top: 8),
+            margin: SystemWindowMargin(top: 8),
           ),
           EachRow(
             columns: [
               EachColumn(
-                text: WindowText(text: "Some random notes.", fontSize: 13, textColor: Colors.black54, fontWeight: FontWeight.BOLD),
+                text: SystemWindowText(text: "Some random notes.", fontSize: 13, textColor: Colors.black54, fontWeight: FontWeight.BOLD),
               ),
             ],
             gravity: ContentGravity.LEFT,
           ),
         ],
-        padding: WindowPadding(left: 16, right: 16, bottom: 12, top: 12),
+        padding: SystemWindowPadding(left: 16, right: 16, bottom: 12, top: 12),
       );
-      WindowFooter footer = WindowFooter(
-          button: WindowButton(
-            text: WindowText(text: "I'm a button", fontSize: 12, textColor: Colors.white),
+      SystemWindowFooter footer = SystemWindowFooter(
+          button: SystemWindowButton(
+            text: SystemWindowText(text: "I'm a button", fontSize: 12, textColor: Colors.white),
             tag: "footer_button",
-            width: WindowButton.MATCH_PARENT,
-            height: WindowButton.WRAP_CONTENT,
-            decoration: WindowDecoration(
+            width: SystemWindowButton.MATCH_PARENT,
+            height: SystemWindowButton.WRAP_CONTENT,
+            decoration: SystemWindowDecoration(
                 startColor: Color.fromRGBO(250, 139, 97, 1), endColor: Color.fromRGBO(247, 28, 88, 1), borderWidth: 0, borderRadius: 30.0),
           ),
-          padding: WindowPadding(left: 16, right: 16, bottom: 12),
-          decoration: WindowDecoration(startColor: Colors.white),
+          padding: SystemWindowPadding(left: 16, right: 16, bottom: 12),
+          decoration: SystemWindowDecoration(startColor: Colors.white),
           buttonPosition: ButtonPosition.CENTER);
       SystemAlertWindow.showSystemWindow(
           height: 230,
           header: header,
           body: body,
           footer: footer,
-          margin: WindowMargin(left: 8, right: 8, top: 100, bottom: 0),
+          margin: SystemWindowMargin(left: 8, right: 8, top: 100, bottom: 0),
           gravity: WindowGravity.TOP);
       _isShowingWindow = true;
     }else{

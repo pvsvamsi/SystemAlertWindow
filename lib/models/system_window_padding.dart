@@ -1,10 +1,10 @@
-class WindowMargin {
+class SystemWindowPadding {
   int left;
   int right;
   int top;
   int bottom;
 
-  WindowMargin({this.left, this.right, this.top, this.bottom});
+  SystemWindowPadding({this.left, this.right, this.top, this.bottom});
 
   Map<String, int> getMap() {
     final Map<String, int> map = <String, int>{
@@ -16,8 +16,8 @@ class WindowMargin {
     return map;
   }
 
-  static WindowMargin setSymmetricMargin(int vertical, int horizontal) {
-    return WindowMargin(
+  static SystemWindowPadding setSymmetricPadding(int vertical, int horizontal) {
+    return SystemWindowPadding(
         left: horizontal, right: horizontal, top: vertical, bottom: vertical);
   }
 }
