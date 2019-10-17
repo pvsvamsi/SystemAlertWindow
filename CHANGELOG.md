@@ -1,3 +1,8 @@
+## 0.1.2
+
+* Moved bubble notification to foreground service, to allow the bubble to display in all cases
+* Fixed the launcher icons of the example
+
 ## 0.1.1+1
 
 * Added logging + Made minor changes to fix crashes with bubbles
