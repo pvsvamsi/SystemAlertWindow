@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationManagerCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +39,8 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     static MethodChannel methodChannel;
     public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1237;
     private static final String CHANNEL_ID = "1237";
+    private int BUBBLE_NOTIFICATION_ID = 1237;
+    private static NotificationManager notificationManager;
 
     public static void registerWith(Registrar registrar) {
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "system_alert_window");
@@ -63,11 +64,11 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 result.success("checking permissions");
                 break;
             case "showSystemWindow":
-                WindowService.closeOverlayService();
                 assert (call.arguments != null);
                 @SuppressWarnings("unchecked")
                 HashMap<String, Object> params = (HashMap<String, Object>) call.arguments;
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    WindowService.closeOverlayService();
                     final Intent i = new Intent(context, WindowService.class);
                     context.stopService(i);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
@@ -84,6 +85,14 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 }
                 result.success(true);
                 break;
+            case "closeSystemWindow":
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    WindowService.closeOverlayService();
+                } else {
+                    initNotificationManager();
+                    assert notificationManager != null;
+                    notificationManager.cancel(BUBBLE_NOTIFICATION_ID);
+                }
             default:
                 result.notImplemented();
         }
@@ -127,8 +136,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                         .setBubbleMetadata(bubbleData)
                         .addPerson(chatBot);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        int BUBBLE_NOTIFICATION_ID = 1237;
         notificationManager.notify(BUBBLE_NOTIFICATION_ID, builder.build());
     }
 
@@ -140,7 +147,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
         channel.setDescription(description);
         channel.setAllowBubbles(true);
-        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+        initNotificationManager();
         assert notificationManager != null;
         notificationManager.createNotificationChannel(channel);
     }
@@ -150,7 +157,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE) {
             if (!Settings.canDrawOverlays(context)) {
                 Toast.makeText(context, "System Alert Window will not work without Can Draw Over Other Apps permission", Toast.LENGTH_LONG).show();
@@ -160,12 +166,24 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     }
 
     public void checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            initNotificationManager();
+            if (!notificationManager.areBubblesAllowed()) {
+                Toast.makeText(context, "System Alert Window will not work without enabling the android bubbles", Toast.LENGTH_LONG).show();
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(context)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + context.getPackageName()));
                 context.startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
             }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initNotificationManager() {
+        if (notificationManager == null) {
+            notificationManager = context.getSystemService(NotificationManager.class);
         }
     }
 }

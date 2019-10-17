@@ -66,7 +66,7 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('showSystemWindow', params);
   }
 
-  static Future<bool> cancel() async {
-    return await _channel.invokeMethod("cancel");
+  static Future<bool> closeSystemWindow() async{
+    return await _channel.invokeMethod('closeSystemWindow');
   }
 }

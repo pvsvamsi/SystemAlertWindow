@@ -21,6 +21,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
+  bool _isShowingWindow = false;
 
   @override
   void initState() {
@@ -65,63 +66,74 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _showOverlayWindow() {
-    WindowHeader header = WindowHeader(
-      title: WindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
-      padding: WindowPadding.setSymmetricPadding(12, 12),
-      subTitle: WindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
-      decoration: WindowDecoration(startColor: Colors.grey[100]),
-    );
-    WindowBody body = WindowBody(
-      rows: [
-        EachRow(
-          columns: [
+    if (!_isShowingWindow) {
+      WindowHeader header = WindowHeader(
+        title: WindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
+        padding: WindowPadding.setSymmetricPadding(12, 12),
+        subTitle: WindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
+        decoration: WindowDecoration(startColor: Colors.grey[100]),
+      );
+      WindowBody body = WindowBody(
+        rows: [
+          EachRow(
+            columns: [
+              EachColumn(
+                text: WindowText(text: "Some body", fontSize: 12, textColor: Colors.black45),
+              ),
+            ],
+            gravity: ContentGravity.CENTER,
+          ),
+          EachRow(columns: [
             EachColumn(
-              text: WindowText(text: "Some body", fontSize: 12, textColor: Colors.black45),
-            ),
-          ],
-          gravity: ContentGravity.CENTER,
-        ),
-        EachRow(columns: [
-          EachColumn(
-              text: WindowText(text: "Long data of the body", fontSize: 12, textColor: Colors.black87, fontWeight: FontWeight.BOLD),
-              padding: WindowPadding.setSymmetricPadding(6, 8),
-              decoration: WindowDecoration(startColor: Colors.black12, borderRadius: 25.0),
-              margin: WindowMargin(top: 4)),
-        ], gravity: ContentGravity.CENTER),
-        EachRow(
-          columns: [
-            EachColumn(
-              text: WindowText(text: "Notes", fontSize: 10, textColor: Colors.black45),
-            ),
-          ],
-          gravity: ContentGravity.LEFT,
-          margin: WindowMargin(top: 8),
-        ),
-        EachRow(
-          columns: [
-            EachColumn(
-              text: WindowText(text: "Some random notes.", fontSize: 13, textColor: Colors.black54, fontWeight: FontWeight.BOLD),
-            ),
-          ],
-          gravity: ContentGravity.LEFT,
-        ),
-      ],
-      padding: WindowPadding(left: 16, right: 16, bottom: 12, top: 12),
-    );
-    WindowFooter footer = WindowFooter(
-        button: WindowButton(
-          text: WindowText(text: "I'm a button", fontSize: 12, textColor: Colors.white),
-          tag: "footer_button",
-          width: WindowButton.MATCH_PARENT,
-          height: WindowButton.WRAP_CONTENT,
-          decoration: WindowDecoration(startColor: Color.fromRGBO(250, 139, 97, 1), endColor: Color.fromRGBO(247, 28, 88, 1), borderWidth: 0, borderRadius: 30.0),
-        ),
-        padding: WindowPadding(left: 16, right: 16, bottom: 12),
-        decoration: WindowDecoration(startColor: Colors.white),
-        buttonPosition: ButtonPosition.CENTER);
-    SystemAlertWindow.showSystemWindow(
-        height: 230,
-        header: header, body: body, footer: footer, margin: WindowMargin(left: 8, right: 8, top: 100, bottom: 0), gravity: WindowGravity.TOP);
+                text: WindowText(text: "Long data of the body", fontSize: 12, textColor: Colors.black87, fontWeight: FontWeight.BOLD),
+                padding: WindowPadding.setSymmetricPadding(6, 8),
+                decoration: WindowDecoration(startColor: Colors.black12, borderRadius: 25.0),
+                margin: WindowMargin(top: 4)),
+          ], gravity: ContentGravity.CENTER),
+          EachRow(
+            columns: [
+              EachColumn(
+                text: WindowText(text: "Notes", fontSize: 10, textColor: Colors.black45),
+              ),
+            ],
+            gravity: ContentGravity.LEFT,
+            margin: WindowMargin(top: 8),
+          ),
+          EachRow(
+            columns: [
+              EachColumn(
+                text: WindowText(text: "Some random notes.", fontSize: 13, textColor: Colors.black54, fontWeight: FontWeight.BOLD),
+              ),
+            ],
+            gravity: ContentGravity.LEFT,
+          ),
+        ],
+        padding: WindowPadding(left: 16, right: 16, bottom: 12, top: 12),
+      );
+      WindowFooter footer = WindowFooter(
+          button: WindowButton(
+            text: WindowText(text: "I'm a button", fontSize: 12, textColor: Colors.white),
+            tag: "footer_button",
+            width: WindowButton.MATCH_PARENT,
+            height: WindowButton.WRAP_CONTENT,
+            decoration: WindowDecoration(
+                startColor: Color.fromRGBO(250, 139, 97, 1), endColor: Color.fromRGBO(247, 28, 88, 1), borderWidth: 0, borderRadius: 30.0),
+          ),
+          padding: WindowPadding(left: 16, right: 16, bottom: 12),
+          decoration: WindowDecoration(startColor: Colors.white),
+          buttonPosition: ButtonPosition.CENTER);
+      SystemAlertWindow.showSystemWindow(
+          height: 230,
+          header: header,
+          body: body,
+          footer: footer,
+          margin: WindowMargin(left: 8, right: 8, top: 100, bottom: 0),
+          gravity: WindowGravity.TOP);
+      _isShowingWindow = true;
+    }else{
+      SystemAlertWindow.closeSystemWindow();
+      _isShowingWindow = false;
+    }
   }
 
   @override
