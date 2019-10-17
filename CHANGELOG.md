@@ -1,3 +1,7 @@
+## 0.1.1+1
+
+* Added logging + Made minor changes to fix crashes with bubbles
+
 ## 0.1.1 - Breaking Changes
 
 * Renamed the models to avoid conflicts with the native libraries

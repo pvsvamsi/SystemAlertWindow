@@ -1,5 +1,6 @@
 package in.jvapps.system_alert_window;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
@@ -7,11 +8,13 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Person;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,20 +38,24 @@ import static in.jvapps.system_alert_window.utils.Constants.KEY_HEIGHT;
 
 public class SystemAlertWindowPlugin extends Activity implements MethodCallHandler {
 
-    Activity context;
+    private Context mContext;
+    @SuppressLint("StaticFieldLeak")
+    private static Activity mActivity;
     static MethodChannel methodChannel;
     public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1237;
     private static final String CHANNEL_ID = "1237";
     private int BUBBLE_NOTIFICATION_ID = 1237;
     private static NotificationManager notificationManager;
+    private static String TAG = "SystemAlertWindowPlugin";
 
     public static void registerWith(Registrar registrar) {
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "system_alert_window");
-        channel.setMethodCallHandler(new SystemAlertWindowPlugin(registrar.activity(), channel));
+        channel.setMethodCallHandler(new SystemAlertWindowPlugin(registrar.context(), registrar.activity(), channel));
     }
 
-    private SystemAlertWindowPlugin(Activity activity, MethodChannel newMethodChannel) {
-        this.context = activity;
+    private SystemAlertWindowPlugin(Context context, Activity activity, MethodChannel newMethodChannel) {
+        this.mContext = context;
+        mActivity = activity;
         methodChannel = newMethodChannel;
         methodChannel.setMethodCallHandler(this);
     }
@@ -68,19 +75,21 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 @SuppressWarnings("unchecked")
                 HashMap<String, Object> params = (HashMap<String, Object>) call.arguments;
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    Log.d(TAG, "Going to show System Alert Window");
                     WindowService.closeOverlayService();
-                    final Intent i = new Intent(context, WindowService.class);
-                    context.stopService(i);
+                    final Intent i = new Intent(mContext, WindowService.class);
+                    mContext.stopService(i);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     new Timer().schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            WindowService.enqueueWork(context, i);
+                            WindowService.enqueueWork(mContext, i);
                         }
                     }, 500);
                 } else {
+                    Log.d(TAG, "Going to show Bubble");
                     createBubble(params);
                 }
                 result.success(true);
@@ -108,16 +117,16 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void createBubble(HashMap<String, Object> params) {
         createNotificationChannel();
-        Intent target = new Intent(context, BubbleActivity.class);
+        Intent target = new Intent(mContext, BubbleActivity.class);
         target.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
         PendingIntent bubbleIntent =
-                PendingIntent.getActivity(context, 0, target, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getActivity(mContext, 0, target, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Create bubble metadata
         Notification.BubbleMetadata bubbleData =
                 new Notification.BubbleMetadata.Builder()
                         .setDesiredHeight((int) params.get(KEY_HEIGHT))
-                        .setIcon(Icon.createWithResource(context, R.drawable.ic_notification))
+                        .setIcon(Icon.createWithResource(mContext, R.drawable.ic_notification))
                         .setIntent(bubbleIntent)
                         .setAutoExpandBubble(true)
                         .setSuppressNotification(true)
@@ -130,7 +139,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 .build();
 
         Notification.Builder builder =
-                new Notification.Builder(context, CHANNEL_ID)
+                new Notification.Builder(mContext, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setCategory(Notification.CATEGORY_CALL)
                         .setBubbleMetadata(bubbleData)
@@ -141,8 +150,8 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void createNotificationChannel() {
-        CharSequence name = context.getString(R.string.channel_name);
-        String description = context.getString(R.string.channel_description);
+        CharSequence name = mContext.getString(R.string.channel_name);
+        String description = mContext.getString(R.string.channel_description);
         int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
         channel.setDescription(description);
@@ -158,8 +167,9 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE) {
-            if (!Settings.canDrawOverlays(context)) {
-                Toast.makeText(context, "System Alert Window will not work without Can Draw Over Other Apps permission", Toast.LENGTH_LONG).show();
+            if (!Settings.canDrawOverlays(mContext)) {
+                Log.e(TAG, "System Alert Window will not work without 'Can Draw Over Other Apps' permission");
+                Toast.makeText(mContext, "System Alert Window will not work without 'Can Draw Over Other Apps' permission", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -169,13 +179,13 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             initNotificationManager();
             if (!notificationManager.areBubblesAllowed()) {
-                Toast.makeText(context, "System Alert Window will not work without enabling the android bubbles", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "System Alert Window will not work without enabling the android bubbles", Toast.LENGTH_LONG).show();
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(context)) {
+            if (!Settings.canDrawOverlays(mContext)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + context.getPackageName()));
-                context.startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
+                        Uri.parse("package:" + mContext.getPackageName()));
+                mActivity.startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
             }
         }
     }
@@ -183,7 +193,16 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initNotificationManager() {
         if (notificationManager == null) {
-            notificationManager = context.getSystemService(NotificationManager.class);
+            if (mContext == null) {
+                if (mActivity != null) {
+                    mContext = mActivity.getApplicationContext();
+                }
+            }
+            if(mContext == null){
+                Log.e(TAG, "Context is null. Can't show the System Alert Window");
+                return;
+            }
+            notificationManager = mContext.getSystemService(NotificationManager.class);
         }
     }
 }
