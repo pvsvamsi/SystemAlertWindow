@@ -128,7 +128,7 @@ class _MyAppState extends State<MyApp> {
           body: body,
           footer: footer,
           margin: SystemWindowMargin(left: 8, right: 8, top: 100, bottom: 0),
-          gravity: WindowGravity.TOP);
+          gravity: SystemWindowGravity.TOP);
       _isShowingWindow = true;
     }else{
       SystemAlertWindow.closeSystemWindow();

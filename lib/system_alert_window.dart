@@ -9,7 +9,7 @@ import 'package:system_alert_window/models/system_window_margin.dart';
 import 'package:system_alert_window/utils/commons.dart';
 import 'package:system_alert_window/utils/constants.dart';
 
-enum WindowGravity { TOP, BOTTOM, CENTER }
+enum SystemWindowGravity { TOP, BOTTOM, CENTER }
 
 enum ContentGravity { LEFT, RIGHT, CENTER }
 
@@ -49,7 +49,7 @@ class SystemAlertWindow {
     @required SystemWindowBody body,
     @required SystemWindowFooter footer,
     SystemWindowMargin margin,
-    WindowGravity gravity = WindowGravity.CENTER,
+    SystemWindowGravity gravity = SystemWindowGravity.CENTER,
     int width,
     int height,
   }) async {
