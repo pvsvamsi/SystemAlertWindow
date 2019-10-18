@@ -53,6 +53,8 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
 
     @Override
     public void onMethodCall(MethodCall call, @NonNull Result result) {
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> params = (HashMap<String, Object>) call.arguments;
         switch (call.method) {
             case "getPlatformVersion":
                 result.success("Android " + android.os.Build.VERSION.RELEASE);
@@ -66,8 +68,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 break;
             case "showSystemWindow":
                 assert (call.arguments != null);
-                @SuppressWarnings("unchecked")
-                HashMap<String, Object> params = (HashMap<String, Object>) call.arguments;
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     Log.d(TAG, "Going to show System Alert Window");
                     WindowService.closeOverlayService();
@@ -77,6 +77,24 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     WindowService.enqueueWork(mContext, i);
+                } else {
+                    Log.d(TAG, "Going to show Bubble");
+                    final Intent i = new Intent(mContext, BubbleService.class);
+                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
+                    //mContext.stopService(i);
+                    mContext.startForegroundService(i);
+                }
+                result.success(true);
+                break;
+            case "updateSystemWindow":
+                assert (call.arguments != null);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    Log.d(TAG, "Going to show System Alert Window");
+                    final Intent i = new Intent(mContext, WindowService.class);
+                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    WindowService.updateWindow(mContext, i);
                 } else {
                     Log.d(TAG, "Going to show Bubble");
                     final Intent i = new Intent(mContext, BubbleService.class);
@@ -127,13 +145,19 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 Log.e(TAG, "System Alert Window will not work without enabling the android bubbles");
                 Toast.makeText(mContext, "System Alert Window will not work without enabling the android bubbles", Toast.LENGTH_LONG).show();
             } else {
-                int devOptions = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
-                if (devOptions == 1) {
+                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                    int devOptions = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+                    if (devOptions == 1) {
+                        Log.d(TAG, "Android bubbles are enabled");
+                        return true;
+                    } else {
+                        Log.e(TAG, "System Alert Window will not work without enabling the android bubbles");
+                        Toast.makeText(mContext, "Enable android bubbles in the developer options, for System Alert Window to work", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    //TODO to check for higher android versions, post their release
                     Log.d(TAG, "Android bubbles are enabled");
                     return true;
-                } else {
-                    Log.e(TAG, "System Alert Window will not work without enabling the android bubbles");
-                    Toast.makeText(mContext, "Enable android bubbles in the developer options, for System Alert Window to work", Toast.LENGTH_LONG).show();
                 }
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

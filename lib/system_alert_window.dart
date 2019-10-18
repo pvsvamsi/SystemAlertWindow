@@ -66,6 +66,28 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('showSystemWindow', params);
   }
 
+  static Future<bool> updateSystemWindow({
+    @required SystemWindowHeader header,
+    @required SystemWindowBody body,
+    @required SystemWindowFooter footer,
+    SystemWindowMargin margin,
+    SystemWindowGravity gravity = SystemWindowGravity.CENTER,
+    int width,
+    int height,
+  }) async {
+    assert(header != null && body != null && footer != null);
+    final Map<String, dynamic> params = <String, dynamic>{
+      'header': header.getMap(),
+      'body': body.getMap(),
+      'footer': footer.getMap(),
+      'margin': margin?.getMap(),
+      'gravity': Commons.getWindowGravity(gravity),
+      'width': width ?? Constants.MATCH_PARENT,
+      'height': height ?? Constants.WRAP_CONTENT
+    };
+    return await _channel.invokeMethod('updateSystemWindow', params);
+  }
+
   static Future<bool> closeSystemWindow() async{
     return await _channel.invokeMethod('closeSystemWindow');
   }

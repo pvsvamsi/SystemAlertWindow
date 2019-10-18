@@ -77,6 +77,12 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
         enqueueWork(context, WindowService.class, JOB_ID, intent);
     }
 
+    public static void updateWindow(Context context, Intent intent){
+        Log.d(TAG, "Updating Window");
+        enqueueWork(context, WindowService.class, JOB_ID, intent);
+
+    }
+
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         Log.d(TAG, "Starting the service process");
@@ -143,7 +149,7 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
             @Override
             public void run() {
                 //WindowService.this.buildWindowView();
-                wm.addView(windowView, params);
+                wm.updateViewLayout(windowView, params);
             }
         });
     }
