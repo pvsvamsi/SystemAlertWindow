@@ -131,7 +131,7 @@ class _MyAppState extends State<MyApp> {
           gravity: SystemWindowGravity.TOP);
       _isShowingWindow = true;
     }else{
-      SystemWindowHeader header = SystemWindowHeader(
+      /*SystemWindowHeader header = SystemWindowHeader(
         title: SystemWindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
         padding: SystemWindowPadding.setSymmetricPadding(12, 12),
         subTitle: SystemWindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
@@ -192,7 +192,8 @@ class _MyAppState extends State<MyApp> {
           body: body,
           footer: footer,
           margin: SystemWindowMargin(left: 8, right: 8, top: 200, bottom: 0),
-          gravity: SystemWindowGravity.TOP);
+          gravity: SystemWindowGravity.TOP);*/
+      SystemAlertWindow.closeSystemWindow();
       _isShowingWindow = false;
     }
   }

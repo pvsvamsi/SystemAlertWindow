@@ -36,9 +36,11 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
 
     private static final String TAG = "WindowService";
     public static final int JOB_ID = 1;
-    private static final String INTENT_EXTRA_IS_WINDOW_UPDATE = "IsWindowUpdate";
+    private static final String INTENT_EXTRA_IS_UPDATE_WINDOW = "IsUpdateWindow";
+    private static final String INTENT_EXTRA_IS_CLOSE_WINDOW = "IsCloseWindow";
 
     private static WindowManager wm;
+    @SuppressLint("StaticFieldLeak")
     private static LinearLayout windowView;
     private Handler oServiceHandler;
 
@@ -74,16 +76,22 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
     }
 
     public static void enqueueWork(Context context, Intent intent) {
-        Log.d(TAG, "Received a work");
-        intent.putExtra(INTENT_EXTRA_IS_WINDOW_UPDATE, false);
+        Log.d(TAG, "Received - Start work");
+        intent.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
         enqueueWork(context, WindowService.class, JOB_ID, intent);
     }
 
-    public static void updateWindow(Context context, Intent intent){
-        Log.d(TAG, "Updating Window");
-        intent.putExtra(INTENT_EXTRA_IS_WINDOW_UPDATE, true);
+    public static void updateWindow(Context context, Intent intent) {
+        Log.d(TAG, "Received - Update window");
+        intent.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
         enqueueWork(context, WindowService.class, JOB_ID, intent);
 
+    }
+
+    public static void dequeueWork(Context context, Intent intent) {
+        Log.d(TAG, "Received - Stop work");
+        intent.putExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, true);
+        enqueueWork(context, WindowService.class, JOB_ID, intent);
     }
 
     @Override
@@ -95,27 +103,41 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
     private void startTheServiceProcess(Intent intent) {
         mContext = this;
         if (null != intent && intent.getExtras() != null) {
-            Log.d(TAG, "Intent extras are not null");
-            @SuppressWarnings("unchecked")
-            HashMap<String, Object> paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
-            Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, KEY_HEADER);
-            Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, KEY_BODY);
-            Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, KEY_FOOTER);
-            windowMargin = UiBuilder.getMargin(mContext, paramsMap.get(KEY_MARGIN));
-            windowGravity = (String) paramsMap.get(KEY_GRAVITY);
-            windowWidth = NumberUtils.getInt(paramsMap.get(KEY_WIDTH));
-            windowHeight = NumberUtils.getInt(paramsMap.get(KEY_HEIGHT));
-            headerView = new HeaderView(mContext, headersMap).getView();
-            bodyView = new BodyView(mContext, bodyMap).getView();
-            footerView = new FooterView(mContext, footerMap).getView();
-            boolean isWindowUpdate = intent.getBooleanExtra(INTENT_EXTRA_IS_WINDOW_UPDATE, false);
-            showWindow(isWindowUpdate);
+            Log.i(TAG, "Intent extras are not null");
+            boolean isCloseWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, false);
+            if (!isCloseWindow) {
+                boolean isUpdateWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
+                if (!isUpdateWindow) {
+                    closeOverlayService();
+                }
+                @SuppressWarnings("unchecked")
+                HashMap<String, Object> paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
+                assert paramsMap != null;
+                Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, KEY_HEADER);
+                Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, KEY_BODY);
+                Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, KEY_FOOTER);
+                windowMargin = UiBuilder.getMargin(mContext, paramsMap.get(KEY_MARGIN));
+                windowGravity = (String) paramsMap.get(KEY_GRAVITY);
+                windowWidth = NumberUtils.getInt(paramsMap.get(KEY_WIDTH));
+                windowHeight = NumberUtils.getInt(paramsMap.get(KEY_HEIGHT));
+                headerView = new HeaderView(mContext, headersMap).getView();
+                bodyView = new BodyView(mContext, bodyMap).getView();
+                footerView = new FooterView(mContext, footerMap).getView();
+                showWindow(isUpdateWindow);
+            } else {
+                closeOverlayService();
+            }
         } else {
-            Log.w(TAG, "Intent extras are null!");
+            Log.e(TAG, "Intent extras are null!");
         }
     }
 
-    private void showWindow(final boolean isWindowUpdate) {
+    private void showWindow(final boolean isUpdateWindow) {
+        if (isUpdateWindow) {
+            Log.d(TAG, "Updating the window");
+        } else {
+            Log.d(TAG, "Creating the window");
+        }
         final WindowManager.LayoutParams params;
         params = new LayoutParams();
         params.width = (windowWidth == 0) ? LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(mContext, windowWidth);
@@ -172,7 +194,8 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
         windowView.setOnTouchListener(this);
     }
 
-    public static void closeOverlayService() {
+    private void closeOverlayService() {
+        Log.d(TAG, "Ending the service process");
         try {
             if (wm != null)
                 wm.removeView(windowView);

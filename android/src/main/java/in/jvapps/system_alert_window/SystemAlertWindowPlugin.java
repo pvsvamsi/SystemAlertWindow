@@ -70,9 +70,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 assert (call.arguments != null);
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     Log.d(TAG, "Going to show System Alert Window");
-                    WindowService.closeOverlayService();
                     final Intent i = new Intent(mContext, WindowService.class);
-                    mContext.stopService(i);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -81,7 +79,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     Log.d(TAG, "Going to show Bubble");
                     final Intent i = new Intent(mContext, BubbleService.class);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
-                    //mContext.stopService(i);
                     mContext.startForegroundService(i);
                 }
                 result.success(true);
@@ -100,14 +97,14 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     final Intent i = new Intent(mContext, BubbleService.class);
                     mContext.stopService(i);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
-                    //mContext.stopService(i);
                     mContext.startForegroundService(i);
                 }
                 result.success(true);
                 break;
             case "closeSystemWindow":
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    WindowService.closeOverlayService();
+                    final Intent i = new Intent(mContext, WindowService.class);
+                    WindowService.dequeueWork(mContext, i);
                 } else {
                     final Intent i = new Intent(mContext, BubbleService.class);
                     mContext.stopService(i);

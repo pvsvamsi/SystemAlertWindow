@@ -4,6 +4,8 @@
     package="in.jvapps.system_alert_window">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application>
         <activity
@@ -12,6 +14,7 @@
             android:documentLaunchMode="always"
             android:label="@string/bubbles_activity"
             android:resizeableActivity="true"
+            android:showOnLockScreen="true"
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="n" />
         <service
