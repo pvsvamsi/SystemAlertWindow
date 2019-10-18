@@ -8,6 +8,7 @@ A flutter plugin to show Truecaller like overlay window, over all other apps alo
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE " />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 #### Android 9 and below
 

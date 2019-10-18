@@ -1,3 +1,7 @@
+## 0.1.4
+
+* Fixed overlay window issue with older Android versions
+
 ## 0.1.3+1
 
 * Fixed a crash with updateSystemWindow method for android 9 and below
