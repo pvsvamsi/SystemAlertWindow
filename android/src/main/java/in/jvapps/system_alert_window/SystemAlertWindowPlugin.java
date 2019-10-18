@@ -61,7 +61,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 if (checkPermission()) {
                     result.success("Permissions are granted");
                 } else {
-                    result.error("Permissions are not granted", null, null);
+                    result.success("Permissions are not granted");
                 }
                 break;
             case "showSystemWindow":
@@ -133,7 +133,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     return true;
                 } else {
                     Log.e(TAG, "System Alert Window will not work without enabling the android bubbles");
-                    Toast.makeText(mContext, "System Alert Window will not work without enabling the android bubbles in the developer options", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Enable android bubbles in the developer options, for System Alert Window to work", Toast.LENGTH_LONG).show();
                 }
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
