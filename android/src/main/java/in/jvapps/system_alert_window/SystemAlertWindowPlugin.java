@@ -89,15 +89,16 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
             case "updateSystemWindow":
                 assert (call.arguments != null);
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    Log.d(TAG, "Going to show System Alert Window");
+                    Log.d(TAG, "Going to update System Alert Window");
                     final Intent i = new Intent(mContext, WindowService.class);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     WindowService.updateWindow(mContext, i);
                 } else {
-                    Log.d(TAG, "Going to show Bubble");
+                    Log.d(TAG, "Going to update Bubble");
                     final Intent i = new Intent(mContext, BubbleService.class);
+                    mContext.stopService(i);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
                     //mContext.stopService(i);
                     mContext.startForegroundService(i);
