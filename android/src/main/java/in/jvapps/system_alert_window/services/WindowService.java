@@ -153,11 +153,7 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
             @Override
             public void run() {
                 //WindowService.this.buildWindowView();
-                if(isWindowUpdate) {
-                    wm.updateViewLayout(windowView, params);
-                }else{
-                    wm.addView(windowView, params);
-                }
+                wm.addView(windowView, params);
             }
         });
     }
