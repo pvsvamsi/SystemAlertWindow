@@ -118,7 +118,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private Notification getBubbleNotification(HashMap<String, Object> params){
+    private Notification getBubbleNotification(HashMap<String, Object> params) {
         createNotificationChannel();
         Intent target = new Intent(mContext, BubbleActivity.class);
         target.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
@@ -187,7 +187,18 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
             if (!Settings.canDrawOverlays(mContext)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + mContext.getPackageName()));
-                mActivity.startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
+                if (mActivity == null) {
+                    if (mContext != null) {
+                        mContext.startActivity(intent);
+                        Toast.makeText(mContext, "Please grant, Can Draw Over Other Apps permission.", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Can't detect the permission change, as the mActivity is null");
+                    } else {
+                        Log.e(TAG, "'Can Draw Over Other Apps' permission is not granted");
+                        Toast.makeText(mContext, "Can Draw Over Other Apps permission is required. Please grant it from the app settings", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    mActivity.startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
+                }
             }
         }
     }
