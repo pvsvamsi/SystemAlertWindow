@@ -98,6 +98,8 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     final Intent i = new Intent(mContext, BubbleService.class);
                     mContext.stopService(i);
                 }
+                result.success(true);
+                break;
             default:
                 result.notImplemented();
         }
