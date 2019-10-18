@@ -3,14 +3,9 @@ package in.jvapps.system_alert_window;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Person;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -33,7 +28,6 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_HEIGHT;
 
 public class SystemAlertWindowPlugin extends Activity implements MethodCallHandler {
 
@@ -42,8 +36,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     private static Activity mActivity;
     static MethodChannel methodChannel;
     public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1237;
-    private static final String CHANNEL_ID = "1237";
-    private int BUBBLE_NOTIFICATION_ID = 1237;
     private static NotificationManager notificationManager;
     private static String TAG = "SystemAlertWindowPlugin";
 
@@ -111,58 +103,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         argumentsList.add(params);
         methodChannel.invokeMethod("callBack", argumentsList);
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    private void createBubble(HashMap<String, Object> params) {
-        notificationManager.notify(BUBBLE_NOTIFICATION_ID, getBubbleNotification(params));
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    private Notification getBubbleNotification(HashMap<String, Object> params) {
-        createNotificationChannel();
-        Intent target = new Intent(mContext, BubbleActivity.class);
-        target.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
-        PendingIntent bubbleIntent =
-                PendingIntent.getActivity(mContext, 0, target, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Create bubble metadata
-        Notification.BubbleMetadata bubbleData =
-                new Notification.BubbleMetadata.Builder()
-                        .setDesiredHeight((int) params.get(KEY_HEIGHT))
-                        .setIcon(Icon.createWithResource(mContext, R.drawable.ic_notification))
-                        .setIntent(bubbleIntent)
-                        .setAutoExpandBubble(true)
-                        .setSuppressNotification(true)
-                        .build();
-
-        Person chatBot = new Person.Builder()
-                .setBot(true)
-                .setName("BubbleBot")
-                .setImportant(true)
-                .build();
-
-        Notification.Builder builder =
-                new Notification.Builder(mContext, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_notification)
-                        .setCategory(Notification.CATEGORY_CALL)
-                        .setBubbleMetadata(bubbleData)
-                        .addPerson(chatBot);
-        return builder.build();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    private void createNotificationChannel() {
-        CharSequence name = mContext.getString(R.string.channel_name);
-        String description = mContext.getString(R.string.channel_description);
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-        channel.setDescription(description);
-        channel.setAllowBubbles(true);
-        initNotificationManager();
-        assert notificationManager != null;
-        notificationManager.createNotificationChannel(channel);
-    }
-
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
