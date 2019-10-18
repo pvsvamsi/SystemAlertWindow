@@ -1,6 +1,6 @@
 # system_alert_window
 
-A flutter plugin to show Truecaller like overlay window over all other apps with callback events.
+A flutter plugin to show Truecaller like overlay window, over all other apps along with callback events.
 
 ## Android
 

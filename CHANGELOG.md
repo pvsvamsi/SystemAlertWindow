@@ -1,3 +1,9 @@
+##0.1.3
+
+* Fixed a bug in closeSystemWindow method
+* Improved permissions checking logic
+* Added support for updating the system alert window
+
 ## 0.1.2
 
 * Moved bubble notification to foreground service, to allow the bubble to display in all cases
