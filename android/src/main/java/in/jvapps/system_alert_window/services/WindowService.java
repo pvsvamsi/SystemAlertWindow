@@ -36,6 +36,7 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
 
     private static final String TAG = "WindowService";
     public static final int JOB_ID = 1;
+    private static final String INTENT_EXTRA_IS_WINDOW_UPDATE = "IsWindowUpdate";
 
     private static WindowManager wm;
     private static LinearLayout windowView;
@@ -74,11 +75,13 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
 
     public static void enqueueWork(Context context, Intent intent) {
         Log.d(TAG, "Received a work");
+        intent.putExtra(INTENT_EXTRA_IS_WINDOW_UPDATE, false);
         enqueueWork(context, WindowService.class, JOB_ID, intent);
     }
 
     public static void updateWindow(Context context, Intent intent){
         Log.d(TAG, "Updating Window");
+        intent.putExtra(INTENT_EXTRA_IS_WINDOW_UPDATE, true);
         enqueueWork(context, WindowService.class, JOB_ID, intent);
 
     }
@@ -105,13 +108,14 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
             headerView = new HeaderView(mContext, headersMap).getView();
             bodyView = new BodyView(mContext, bodyMap).getView();
             footerView = new FooterView(mContext, footerMap).getView();
-            showWindow();
+            boolean isWindowUpdate = intent.getBooleanExtra(INTENT_EXTRA_IS_WINDOW_UPDATE, false);
+            showWindow(isWindowUpdate);
         } else {
             Log.w(TAG, "Intent extras are null!");
         }
     }
 
-    private void showWindow() {
+    private void showWindow(final boolean isWindowUpdate) {
         final WindowManager.LayoutParams params;
         params = new LayoutParams();
         params.width = (windowWidth == 0) ? LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(mContext, windowWidth);
@@ -149,7 +153,11 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
             @Override
             public void run() {
                 //WindowService.this.buildWindowView();
-                wm.updateViewLayout(windowView, params);
+                if(isWindowUpdate) {
+                    wm.updateViewLayout(windowView, params);
+                }else{
+                    wm.addView(windowView, params);
+                }
             }
         });
     }
