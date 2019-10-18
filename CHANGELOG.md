@@ -1,4 +1,4 @@
-##0.1.3
+## 0.1.3
 
 * Fixed a bug in closeSystemWindow method
 * Improved permissions checking logic
