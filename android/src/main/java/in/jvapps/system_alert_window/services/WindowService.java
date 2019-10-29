@@ -107,10 +107,12 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
             boolean isCloseWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, false);
             if (!isCloseWindow) {
                 boolean isUpdateWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
-                /*if (!isUpdateWindow) {
+                if (!isUpdateWindow) {
                     closeOverlayService();
-                }*/
-                closeOverlayService();
+                    wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+                }else{
+                    wm.removeView(windowView);
+                }
                 @SuppressWarnings("unchecked")
                 HashMap<String, Object> paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
                 assert paramsMap != null;
@@ -124,7 +126,11 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
                 headerView = new HeaderView(mContext, headersMap).getView();
                 bodyView = new BodyView(mContext, bodyMap).getView();
                 footerView = new FooterView(mContext, footerMap).getView();
-                showWindow(isUpdateWindow);
+                if(wm != null) {
+                    showWindow(isUpdateWindow);
+                }else {
+                    Log.e(TAG, "Unable to show the overlay window as the window manager is null");
+                }
             } else {
                 closeOverlayService();
             }
