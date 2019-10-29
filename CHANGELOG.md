@@ -1,3 +1,7 @@
+## 0.1.4+2
+
+* Fixed an issue where overlay window is crashing during update overlay window call
+
 ## 0.1.4+1
 
 * Fixed an issue where multiple overlay windows are creating during update overlay window call
