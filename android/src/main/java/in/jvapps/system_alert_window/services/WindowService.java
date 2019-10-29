@@ -107,9 +107,10 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
             boolean isCloseWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, false);
             if (!isCloseWindow) {
                 boolean isUpdateWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
-                if (!isUpdateWindow) {
+                /*if (!isUpdateWindow) {
                     closeOverlayService();
-                }
+                }*/
+                closeOverlayService();
                 @SuppressWarnings("unchecked")
                 HashMap<String, Object> paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
                 assert paramsMap != null;
