@@ -1,3 +1,7 @@
+## 0.1.4+1
+
+* Fixed an issue where multiple overlay windows are creating during update overlay window call
+
 ## 0.1.4
 
 * Fixed overlay window issue with older Android versions
