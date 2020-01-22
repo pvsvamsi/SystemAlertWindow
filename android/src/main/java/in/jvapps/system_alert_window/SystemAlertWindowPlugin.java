@@ -137,7 +137,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     }
 
     public boolean checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
             initNotificationManager();
             if (!notificationManager.areBubblesAllowed()) {
                 Log.e(TAG, "System Alert Window will not work without enabling the android bubbles");
