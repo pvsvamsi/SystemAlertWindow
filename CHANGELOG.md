@@ -1,3 +1,7 @@
+## 0.1.4+3
+
+* Fixed minimum required API version for bubbles + Optimized the exports of systemAlertWindow models
+
 ## 0.1.4+2
 
 * Fixed an issue where overlay window is crashing during update overlay window call
