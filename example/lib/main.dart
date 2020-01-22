@@ -3,14 +3,6 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:system_alert_window/system_alert_window.dart';
-import 'package:system_alert_window/models/system_window_body.dart';
-import 'package:system_alert_window/models/system_window_text.dart';
-import 'package:system_alert_window/models/system_window_footer.dart';
-import 'package:system_alert_window/models/system_window_button.dart';
-import 'package:system_alert_window/models/system_window_decoration.dart';
-import 'package:system_alert_window/models/system_window_padding.dart';
-import 'package:system_alert_window/models/system_window_margin.dart';
-import 'package:system_alert_window/models/system_window_header.dart';
 
 void main() => runApp(MyApp());
 
