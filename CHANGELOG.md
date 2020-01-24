@@ -1,5 +1,9 @@
 ## 0.1.4+3
 
+* Fixed issue with bubble configuration on Android Q
+
+## 0.1.4+3
+
 * Fixed minimum required API version for bubbles + Optimized the exports of systemAlertWindow models
 
 ## 0.1.4+2
