@@ -15,7 +15,7 @@ public class SwiftSystemAlertWindowPlugin: NSObject, FlutterPlugin {
            else if (call.method == "showSystemWindow") {
                DispatchQueue.main.async {
                    let alert = UIAlertController(title: "Alert", message: "Hi, My name is flutter", preferredStyle: .alert);
-                   alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                   alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
                    UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil);
                }
            }

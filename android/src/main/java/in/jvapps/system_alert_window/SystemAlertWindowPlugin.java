@@ -68,7 +68,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 break;
             case "showSystemWindow":
                 assert (call.arguments != null);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
                     Log.d(TAG, "Going to show System Alert Window");
                     final Intent i = new Intent(mContext, WindowService.class);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
@@ -85,7 +85,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 break;
             case "updateSystemWindow":
                 assert (call.arguments != null);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
                     Log.d(TAG, "Going to update System Alert Window");
                     final Intent i = new Intent(mContext, WindowService.class);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
@@ -102,7 +102,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 result.success(true);
                 break;
             case "closeSystemWindow":
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
                     final Intent i = new Intent(mContext, WindowService.class);
                     WindowService.dequeueWork(mContext, i);
                 } else {
