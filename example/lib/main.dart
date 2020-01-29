@@ -60,11 +60,12 @@ class _MyAppState extends State<MyApp> {
   void _showOverlayWindow() {
     if (!_isShowingWindow) {
       SystemWindowHeader header = SystemWindowHeader(
-        title: SystemWindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
-        padding: SystemWindowPadding.setSymmetricPadding(12, 12),
-        subTitle: SystemWindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
-        decoration: SystemWindowDecoration(startColor: Colors.grey[100]),
-      );
+          title: SystemWindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
+          padding: SystemWindowPadding.setSymmetricPadding(12, 12),
+          subTitle: SystemWindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
+          decoration: SystemWindowDecoration(startColor: Colors.grey[100]),
+          button: SystemWindowButton(text: SystemWindowText(text: "Personal", fontSize: 10, textColor: Colors.black45), tag: "personal_btn"),
+          buttonPosition: ButtonPosition.TRAILING);
       SystemWindowBody body = SystemWindowBody(
         rows: [
           EachRow(
@@ -122,7 +123,7 @@ class _MyAppState extends State<MyApp> {
           margin: SystemWindowMargin(left: 8, right: 8, top: 200, bottom: 0),
           gravity: SystemWindowGravity.TOP);
       _isShowingWindow = true;
-    }else{
+    } else {
       /*SystemWindowHeader header = SystemWindowHeader(
         title: SystemWindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
         padding: SystemWindowPadding.setSymmetricPadding(12, 12),
