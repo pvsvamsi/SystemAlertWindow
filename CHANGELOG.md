@@ -1,4 +1,8 @@
-## 0.1.4+3
+## 0.1.4+5
+
+* Fixed issue with ButtonPosition.TRAILING alignment
+
+## 0.1.4+4
 
 * Fixed issue with bubble configuration on Android Q
 
