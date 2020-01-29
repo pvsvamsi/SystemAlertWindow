@@ -3,6 +3,7 @@ package in.jvapps.system_alert_window.views;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,7 +35,7 @@ public class FooterView {
         linearLayout.setPadding(footerPadding.getLeft(), footerPadding.getTop(), footerPadding.getRight(), footerPadding.getBottom());
         linearLayout.setLayoutParams(params);
         Decoration decoration = UiBuilder.getDecoration(context, footerMap.get(KEY_DECORATION));
-        if(decoration != null){
+        if (decoration != null) {
             GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
             linearLayout.setBackground(gd);
         }
@@ -50,6 +51,12 @@ public class FooterView {
                         linearLayout.addView(buttonView);
                         linearLayout.addView(textView);
                     } else {
+                        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                1.0f
+                        );
+                        textView.setLayoutParams(param);
                         linearLayout.addView(textView);
                         linearLayout.addView(buttonView);
                     }
