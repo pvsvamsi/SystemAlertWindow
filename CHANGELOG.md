@@ -1,3 +1,7 @@
+## 0.1.4+6
+
+* Now body and footer are optional
+
 ## 0.1.4+5
 
 * Fixed issue with ButtonPosition.TRAILING alignment
