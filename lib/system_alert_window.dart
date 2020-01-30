@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 export 'models/system_window_body.dart';
 export 'models/system_window_button.dart';
@@ -26,9 +27,10 @@ enum ButtonPosition { TRAILING, LEADING, CENTER }
 
 enum FontWeight { NORMAL, BOLD, ITALIC, BOLD_ITALIC }
 
+typedef void OnClickListener(String tag);
+
 class SystemAlertWindow {
-  static const MethodChannel _channel =
-      const MethodChannel('system_alert_window');
+  static const MethodChannel _channel = const MethodChannel(Constants.CHANNEL);
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -39,18 +41,22 @@ class SystemAlertWindow {
     await _channel.invokeMethod('checkPermissions');
   }
 
-  static registerCallBack(callBackFunction) {
+  static Future<bool> registerCallBack(OnClickListener callBackFunction) async {
     _channel.setMethodCallHandler((MethodCall call) {
       switch (call.method) {
         case "callBack":
           dynamic arguments = call.arguments;
           if (arguments is List) {
-            return callBackFunction(arguments);
-          } else
-            return null;
+            final type = arguments[0].cast<String>();
+            if (type == "onClick") {
+              final tag = arguments[1].cast<String>();
+              callBackFunction(tag);
+            }
+          }
       }
       return null;
     });
+    return true;
   }
 
   static Future<bool> showSystemWindow({
@@ -97,7 +103,7 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('updateSystemWindow', params);
   }
 
-  static Future<bool> closeSystemWindow() async{
+  static Future<bool> closeSystemWindow() async {
     return await _channel.invokeMethod('closeSystemWindow');
   }
 }
