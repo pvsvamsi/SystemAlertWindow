@@ -1,3 +1,7 @@
+## 0.1.5 - Breaking Changes
+
+* Refactored the code and replaced registerCallBack with registerOnClickListener. Please refer to the updated example.
+
 ## 0.1.4+6
 
 * Now body and footer are optional
