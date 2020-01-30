@@ -8,13 +8,13 @@ A flutter plugin to show Truecaller like overlay window, over all other apps alo
 
       <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
       <uses-permission android:name="android.permission.FOREGROUND_SERVICE " />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+      <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-#### Android 9 and below
+#### Android 10 and below
 
 Uses &#x27;draw on top&#x27; permission and displays it as a overlay window
 
-#### Android 10 and above
+#### Android 11 and above
 
 Uses Android Bubble APIs to show the overlay window.
 
@@ -70,15 +70,11 @@ Displays as a notification in the notification center [Help Needed]
           margin: SystemWindowMargin(left: 8, right: 8, top: 100, bottom: 0),
           gravity: SystemWindowGravity.TOP);
           
-### Register callback events (like button click)
+### Register for onClick events (like button click)
 
-      SystemAlertWindow.registerCallBack((dynamic arguments) {
-            String type = arguments[0];
-            if (type == "onClick") {
-              String tag = arguments[1];
-              print("OnClick event of $tag");
-            }
-          });
+      SystemAlertWindow.registerOnClickListener((String tag){
+        print("OnClick event of $tag");
+      });
           
 ### Close the overlay
 
