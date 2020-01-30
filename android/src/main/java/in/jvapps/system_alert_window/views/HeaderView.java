@@ -82,22 +82,26 @@ public class HeaderView {
         Padding padding = UiBuilder.getPadding(context, headerMap.get(KEY_PADDING));
         linearLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
         boolean isShowButton = (buttonMap != null);
-        assert titleMap != null;
+        //assert titleMap != null;
         View textColumn = createTextColumn(titleMap, subTitleMap);
         if (isShowButton) {
             String buttonPosition = (String) headerMap.get(KEY_BUTTON_POSITION);
             Button button = UiBuilder.getButtonView(context, buttonMap);
             if ("leading".equals(buttonPosition)) {
                 linearLayout.addView(button);
-                linearLayout.addView(textColumn);
+                if (textColumn != null) {
+                    linearLayout.addView(textColumn);
+                }
             } else {
-                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        1.0f
-                );
-                textColumn.setLayoutParams(param);
-                linearLayout.addView(textColumn);
+                if (textColumn != null) {
+                    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            1.0f
+                    );
+                    textColumn.setLayoutParams(param);
+                    linearLayout.addView(textColumn);
+                }
                 linearLayout.addView(button);
             }
         } else {
