@@ -41,7 +41,7 @@ class SystemAlertWindow {
     await _channel.invokeMethod('checkPermissions');
   }
 
-  static Future<bool> registerCallBack(OnClickListener callBackFunction) async {
+  static Future<bool> registerOnClickListener(OnClickListener callBackFunction) async {
     _channel.setMethodCallHandler((MethodCall call) {
       switch (call.method) {
         case "callBack":
