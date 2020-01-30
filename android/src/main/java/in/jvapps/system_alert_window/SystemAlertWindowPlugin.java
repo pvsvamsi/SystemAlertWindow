@@ -143,20 +143,9 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 Log.e(TAG, "System Alert Window will not work without enabling the android bubbles");
                 Toast.makeText(mContext, "System Alert Window will not work without enabling the android bubbles", Toast.LENGTH_LONG).show();
             } else {
-                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                    int devOptions = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
-                    if (devOptions == 1) {
-                        Log.d(TAG, "Android bubbles are enabled");
-                        return true;
-                    } else {
-                        Log.e(TAG, "System Alert Window will not work without enabling the android bubbles");
-                        Toast.makeText(mContext, "Enable android bubbles in the developer options, for System Alert Window to work", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    //TODO to check for higher android versions, post their release
-                    Log.d(TAG, "Android bubbles are enabled");
-                    return true;
-                }
+                //TODO to check for higher android versions, post their release
+                Log.d(TAG, "Android bubbles are enabled");
+                return true;
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(mContext)) {
@@ -179,6 +168,20 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
             }
         }
         return false;
+    }
+
+    @SuppressWarnings("unused")
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private boolean handleBubblesPermissionForAndroidQ() {
+        int devOptions = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+        if (devOptions == 1) {
+            Log.d(TAG, "Android bubbles are enabled");
+            return true;
+        } else {
+            Log.e(TAG, "System Alert Window will not work without enabling the android bubbles");
+            Toast.makeText(mContext, "Enable android bubbles in the developer options, for System Alert Window to work", Toast.LENGTH_LONG).show();
+            return false;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
