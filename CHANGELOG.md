@@ -1,3 +1,7 @@
+## 0.1.5+1
+
+* Fixed the casting issue in onClick callback.
+
 ## 0.1.5 - Breaking Changes
 
 * Refactored the code and replaced registerCallBack with registerOnClickListener. Please refer to the updated example.
