@@ -110,7 +110,7 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
                 if (!isUpdateWindow) {
                     closeOverlayService();
                     wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-                }else{
+                } else {
                     wm.removeView(windowView);
                 }
                 @SuppressWarnings("unchecked")
@@ -124,11 +124,13 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
                 windowWidth = NumberUtils.getInt(paramsMap.get(KEY_WIDTH));
                 windowHeight = NumberUtils.getInt(paramsMap.get(KEY_HEIGHT));
                 headerView = new HeaderView(mContext, headersMap).getView();
-                bodyView = new BodyView(mContext, bodyMap).getView();
-                footerView = new FooterView(mContext, footerMap).getView();
-                if(wm != null) {
+                if (bodyMap != null)
+                    bodyView = new BodyView(mContext, bodyMap).getView();
+                if (footerMap != null)
+                    footerView = new FooterView(mContext, footerMap).getView();
+                if (wm != null) {
                     showWindow(isUpdateWindow);
-                }else {
+                } else {
                     Log.e(TAG, "Unable to show the overlay window as the window manager is null");
                 }
             } else {
@@ -151,11 +153,9 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
         params.height = (windowHeight == 0) ? LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(mContext, windowHeight);
         params.format = PixelFormat.TRANSLUCENT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.d(TAG, "Device greater than or equals to oreo");
             params.type = LayoutParams.TYPE_APPLICATION_OVERLAY;
             params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_SHOW_WHEN_LOCKED;
         } else {
-            Log.d(TAG, "Device is less than oreo");
             params.type = LayoutParams.TYPE_SYSTEM_ALERT | LayoutParams.TYPE_SYSTEM_OVERLAY;
             params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL;
         }
@@ -171,12 +171,10 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
         params.verticalMargin = (params.gravity == Gravity.TOP) ? marginTop :
                 (params.gravity == Gravity.BOTTOM) ? marginBottom : Math.max(marginTop, marginBottom);*/
         //windowView.setOnTouchListener(this);
-        oServiceHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                WindowService.this.buildWindowView();
-                //wm.addView(windowView, params);
-            }
+        oServiceHandler.post(() -> {
+            LinearLayout.LayoutParams contentParams = new LinearLayout.LayoutParams(params.width, params.height);
+            WindowService.this.buildWindowView(contentParams, params.width == LayoutParams.MATCH_PARENT);
+            //wm.addView(windowView, params);
         });
         oServiceHandler.post(new Runnable() {
             @Override
@@ -188,17 +186,18 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void buildWindowView() {
+    private void buildWindowView(LinearLayout.LayoutParams params, boolean enableDraggable) {
         windowView = new LinearLayout(mContext);
         windowView.setOrientation(LinearLayout.VERTICAL);
         windowView.setBackgroundColor(Color.WHITE);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
         windowView.setLayoutParams(params);
         windowView.addView(headerView);
-        windowView.addView(bodyView);
-        windowView.addView(footerView);
-        windowView.setOnTouchListener(this);
+        if (bodyView != null)
+            windowView.addView(bodyView);
+        if (footerView != null)
+            windowView.addView(footerView);
+        if (enableDraggable)
+            windowView.setOnTouchListener(this);
     }
 
     private void closeOverlayService() {

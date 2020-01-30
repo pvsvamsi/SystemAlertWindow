@@ -55,18 +55,18 @@ class SystemAlertWindow {
 
   static Future<bool> showSystemWindow({
     @required SystemWindowHeader header,
-    @required SystemWindowBody body,
-    @required SystemWindowFooter footer,
+    SystemWindowBody body,
+    SystemWindowFooter footer,
     SystemWindowMargin margin,
     SystemWindowGravity gravity = SystemWindowGravity.CENTER,
     int width,
     int height,
   }) async {
-    assert(header != null && body != null && footer != null);
+    assert(header != null);
     final Map<String, dynamic> params = <String, dynamic>{
       'header': header.getMap(),
-      'body': body.getMap(),
-      'footer': footer.getMap(),
+      'body': body?.getMap(),
+      'footer': footer?.getMap(),
       'margin': margin?.getMap(),
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
@@ -77,18 +77,18 @@ class SystemAlertWindow {
 
   static Future<bool> updateSystemWindow({
     @required SystemWindowHeader header,
-    @required SystemWindowBody body,
-    @required SystemWindowFooter footer,
+    SystemWindowBody body,
+    SystemWindowFooter footer,
     SystemWindowMargin margin,
     SystemWindowGravity gravity = SystemWindowGravity.CENTER,
     int width,
     int height,
   }) async {
-    assert(header != null && body != null && footer != null);
+    assert(header != null);
     final Map<String, dynamic> params = <String, dynamic>{
       'header': header.getMap(),
-      'body': body.getMap(),
-      'footer': footer.getMap(),
+      'body': body?.getMap(),
+      'footer': footer?.getMap(),
       'margin': margin?.getMap(),
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
