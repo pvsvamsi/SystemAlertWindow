@@ -27,6 +27,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
+import static in.jvapps.system_alert_window.utils.Constants.CHANNEL;
 import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
 
 public class SystemAlertWindowPlugin extends Activity implements MethodCallHandler {
@@ -39,8 +40,9 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     private static NotificationManager notificationManager;
     private static String TAG = "SystemAlertWindowPlugin";
 
+    @SuppressWarnings("unused")
     public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "system_alert_window");
+        final MethodChannel channel = new MethodChannel(registrar.messenger(), CHANNEL);
         channel.setMethodCallHandler(new SystemAlertWindowPlugin(registrar.context(), registrar.activity(), channel));
     }
 

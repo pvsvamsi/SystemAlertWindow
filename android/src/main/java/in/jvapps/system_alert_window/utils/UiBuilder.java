@@ -5,7 +5,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,7 +16,26 @@ import in.jvapps.system_alert_window.models.Decoration;
 import in.jvapps.system_alert_window.models.Margin;
 import in.jvapps.system_alert_window.models.Padding;
 
-import static in.jvapps.system_alert_window.utils.Constants.*;
+import static in.jvapps.system_alert_window.utils.Constants.CALLBACK_TYPE_ONCLICK;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_BORDER_COLOR;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_BORDER_RADIUS;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_BORDER_WIDTH;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_BOTTOM;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_DECORATION;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_END_COLOR;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_FONT_SIZE;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_FONT_WEIGHT;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_HEIGHT;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_LEFT;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_MARGIN;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_PADDING;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_RIGHT;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_START_COLOR;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_TAG;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_TEXT;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_TEXT_COLOR;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_TOP;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_WIDTH;
 
 public class UiBuilder {
 
@@ -87,12 +105,7 @@ public class UiBuilder {
             GradientDrawable gd = getGradientDrawable(decoration);
             button.setBackground(gd);
         }
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SystemAlertWindowPlugin.invokeCallBack("onClick", tag);
-            }
-        });
+        button.setOnClickListener(v -> SystemAlertWindowPlugin.invokeCallBack(CALLBACK_TYPE_ONCLICK, tag));
         return button;
     }
 
