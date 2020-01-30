@@ -47,9 +47,9 @@ class SystemAlertWindow {
         case "callBack":
           dynamic arguments = call.arguments;
           if (arguments is List) {
-            final type = arguments[0].cast<String>();
+            final type = arguments[0];
             if (type == "onClick") {
-              final tag = arguments[1].cast<String>();
+              final tag = arguments[1];
               callBackFunction(tag);
             }
           }
