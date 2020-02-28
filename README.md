@@ -4,11 +4,37 @@ A flutter plugin to show Truecaller like overlay window, over all other apps alo
 
 ## Android
 
-### Permissions
+### Application Class
 
+      public class Application extends FlutterApplication implements PluginRegistry.PluginRegistrantCallback {
+
+          @Override
+          public void onCreate() {
+              super.onCreate();
+              //This is required as we are using background channel for dispatching click events
+              SystemAlertWindowPlugin.setPluginRegistrant(this);
+          }
+
+          @Override
+          public void registerWith(PluginRegistry pluginRegistry) {
+              GeneratedPluginRegistrant.registerWith(pluginRegistry);
+          }
+
+      }
+
+### Manifest
+
+      //Permissions
       <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
       <uses-permission android:name="android.permission.FOREGROUND_SERVICE " />
       <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+
+          <application
+              //Linking the previously added application class
+              android:name=".Application"
+              android:label="system_alert_window_example"
+              android:icon="@mipmap/ic_launcher">
 
 #### Android 10 and below
 
@@ -82,11 +108,14 @@ Displays as a notification in the notification center [Help Needed]
           margin: SystemWindowMargin(left: 8, right: 8, top: 100, bottom: 0),
           gravity: SystemWindowGravity.TOP);
           
-### Register for onClick events (like button click)
+### Register for onClick events (button click)
 
-      SystemAlertWindow.registerOnClickListener((String tag){
+      SystemAlertWindow.registerOnClickListener(callBackFunction);
+
+      //As this callback function is called from background, it should be declared on the parent level (Refer example)
+      void callBackFunction (String tag){
         print("OnClick event of $tag");
-      });
+      }
           
 ### Close the overlay
 
