@@ -21,7 +21,9 @@ public class Constants {
     static final String KEY_FONT_WEIGHT = "fontWeight";
     static final String KEY_TEXT_COLOR = "textColor";
     public static final String KEY_BUTTON = "button";
+    public static final String KEY_BUTTONS_LIST = "buttons";
     public static final String KEY_BUTTON_POSITION = "buttonPosition";
+    public static final String KEY_BUTTONS_LIST_POSITION = "buttonsPosition";
     public static final String KEY_DECORATION = "decoration";
     static final String KEY_START_COLOR = "startColor";
     static final String KEY_END_COLOR = "endColor";

@@ -94,7 +94,8 @@ public class UiBuilder {
             button.setElevation(10);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 Commons.getPixelsFromDp(context, (int) buttonMap.get(KEY_WIDTH)),
-                Commons.getPixelsFromDp(context, (int) buttonMap.get(KEY_HEIGHT)));
+                Commons.getPixelsFromDp(context, (int) buttonMap.get(KEY_HEIGHT)),
+                1.0f);
         Margin buttonMargin = getMargin(context, buttonMap.get(KEY_MARGIN));
         params.setMargins(buttonMargin.getLeft(), buttonMargin.getTop(), buttonMargin.getRight(), Math.min(buttonMargin.getBottom(), 4));
         button.setLayoutParams(params);

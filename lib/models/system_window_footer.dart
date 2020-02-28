@@ -8,23 +8,18 @@ import 'package:system_alert_window/utils/commons.dart';
 class SystemWindowFooter {
   SystemWindowText text;
   SystemWindowPadding padding;
-  SystemWindowButton button;
-  ButtonPosition buttonPosition;
+  List<SystemWindowButton> buttons;
+  ButtonPosition buttonsPosition;
   SystemWindowDecoration decoration;
 
-  SystemWindowFooter(
-      {this.text,
-      this.padding,
-      this.button,
-      this.buttonPosition,
-      this.decoration});
+  SystemWindowFooter({this.text, this.padding, this.buttons, this.buttonsPosition, this.decoration});
 
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{
-      'isShowFooter': (text != null || button != null),
+      'isShowFooter': (text != null || (buttons != null && buttons.length > 0)),
       'text': text?.getMap(),
-      'button': button?.getMap(),
-      'buttonPosition': Commons.getPosition(buttonPosition),
+      'buttons': (buttons == null) ? null : List<Map<String, dynamic>>.from(buttons.map((button) => button.getMap())),
+      'buttonsPosition': Commons.getPosition(buttonsPosition),
       'padding': padding?.getMap(),
       'decoration': decoration?.getMap()
     };

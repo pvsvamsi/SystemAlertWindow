@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import in.jvapps.system_alert_window.models.Decoration;
@@ -41,14 +43,19 @@ public class FooterView {
         }
         if ((boolean) footerMap.get(KEY_IS_SHOW_FOOTER)) {
             Map<String, Object> textMap = Commons.getMapFromObject(footerMap, KEY_TEXT);
-            Map<String, Object> buttonMap = Commons.getMapFromObject(footerMap, KEY_BUTTON);
+            List<Map<String, Object>> buttonsMap = Commons.getMapListFromObject(footerMap, KEY_BUTTONS_LIST);
             TextView textView = UiBuilder.getTextView(context, textMap);
-            Button buttonView = UiBuilder.getButtonView(context, buttonMap);
-            String buttonPosition = (String) footerMap.get(KEY_BUTTON_POSITION);
+            List<Button> buttonsView = new ArrayList<>();
+            for (Map<String, Object> buttonMap : buttonsMap) {
+                buttonsView.add(UiBuilder.getButtonView(context, buttonMap));
+            }
+            String buttonsPosition = (String) footerMap.get(KEY_BUTTONS_LIST_POSITION);
             if (textView != null) {
-                if (buttonView != null) {
-                    if ("leading".equals(buttonPosition)) {
-                        linearLayout.addView(buttonView);
+                if (buttonsView.size() > 0) {
+                    if ("leading".equals(buttonsPosition)) {
+                        for (Button buttonView : buttonsView) {
+                            linearLayout.addView(buttonView);
+                        }
                         linearLayout.addView(textView);
                     } else {
                         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
@@ -58,14 +65,18 @@ public class FooterView {
                         );
                         textView.setLayoutParams(param);
                         linearLayout.addView(textView);
-                        linearLayout.addView(buttonView);
+                        for (Button buttonView : buttonsView) {
+                            linearLayout.addView(buttonView);
+                        }
                     }
                 } else {
                     linearLayout.addView(textView);
                 }
             } else {
-                linearLayout.addView(buttonView);
-                linearLayout.setGravity(Commons.getGravity(buttonPosition, Gravity.CENTER));
+                for (Button buttonView : buttonsView) {
+                    linearLayout.addView(buttonView);
+                }
+                linearLayout.setGravity(Commons.getGravity(buttonsPosition, Gravity.FILL));
             }
         }
         return linearLayout;

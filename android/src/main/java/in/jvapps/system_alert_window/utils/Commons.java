@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.List;
 import java.util.Map;
 
 import in.jvapps.system_alert_window.models.Margin;
@@ -20,6 +21,11 @@ public class Commons {
     @SuppressWarnings("unchecked")
     public static Map<String, Object> getMapFromObject(@NonNull Map<String, Object> map, String key) {
         return (Map<String, Object>) map.get(key);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Map<String, Object>> getMapListFromObject(@NonNull Map<String, Object> map, String key) {
+        return (List<Map<String, Object>>) map.get(key);
     }
 
     public static float getSpFromPixels(@NonNull Context context, float px) {
