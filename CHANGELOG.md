@@ -1,3 +1,7 @@
+## 0.2.0 - Breaking Changes
+
+* Added support for multiple buttons in the footer. Please refer to the updated example
+
 ## 0.1.5+1
 
 * Fixed the casting issue in onClick callback.
