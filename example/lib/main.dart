@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
     await SystemAlertWindow.checkPermissions;
   }
 
-  void _callBack(String tag){
+  void _callBack(String tag) {
     print("OnClick event of $tag");
   }
 
@@ -98,17 +98,29 @@ class _MyAppState extends State<MyApp> {
         padding: SystemWindowPadding(left: 16, right: 16, bottom: 12, top: 12),
       );
       SystemWindowFooter footer = SystemWindowFooter(
-          button: SystemWindowButton(
-            text: SystemWindowText(text: "I'm a button", fontSize: 12, textColor: Colors.white),
-            tag: "footer_button",
-            width: SystemWindowButton.MATCH_PARENT,
-            height: SystemWindowButton.WRAP_CONTENT,
-            decoration: SystemWindowDecoration(
-                startColor: Color.fromRGBO(250, 139, 97, 1), endColor: Color.fromRGBO(247, 28, 88, 1), borderWidth: 0, borderRadius: 30.0),
-          ),
+          buttons: [
+            SystemWindowButton(
+              text: SystemWindowText(text: "Simple button", fontSize: 12, textColor: Color.fromRGBO(250, 139, 97, 1)),
+              tag: "simple_button",
+              padding: SystemWindowPadding(left: 10, right: 10, bottom: 10, top: 10),
+              width: 0,
+              height: SystemWindowButton.WRAP_CONTENT,
+              decoration: SystemWindowDecoration(
+                  startColor: Colors.white, endColor: Colors.white, borderWidth: 0, borderRadius: 0.0),
+            ),
+            SystemWindowButton(
+              text: SystemWindowText(text: "Focus button", fontSize: 12, textColor: Colors.white),
+              tag: "focus_button",
+              width: 0,
+              padding: SystemWindowPadding(left: 10, right: 10, bottom: 10, top: 10),
+              height: SystemWindowButton.WRAP_CONTENT,
+              decoration: SystemWindowDecoration(
+                  startColor: Color.fromRGBO(250, 139, 97, 1), endColor: Color.fromRGBO(247, 28, 88, 1), borderWidth: 0, borderRadius: 30.0),
+            )
+          ],
           padding: SystemWindowPadding(left: 16, right: 16, bottom: 12),
           decoration: SystemWindowDecoration(startColor: Colors.white),
-          buttonPosition: ButtonPosition.CENTER);
+          buttonsPosition: ButtonPosition.CENTER);
       SystemAlertWindow.showSystemWindow(
           height: 230,
           header: header,
