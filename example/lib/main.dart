@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _initPlatformState();
     _checkPermissions();
-    SystemAlertWindow.registerOnClickListener(_callBack);
+    SystemAlertWindow.registerOnClickListener(callBack);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -45,10 +45,6 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _checkPermissions() async {
     await SystemAlertWindow.checkPermissions;
-  }
-
-  void _callBack(String tag) {
-    print("OnClick event of $tag");
   }
 
   void _showOverlayWindow() {
@@ -162,4 +158,8 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+}
+
+void callBack(String tag) {
+  print("OnClick event of $tag");
 }
