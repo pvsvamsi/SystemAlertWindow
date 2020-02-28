@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -18,14 +19,22 @@ import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import in.jvapps.system_alert_window.services.BubbleService;
 import in.jvapps.system_alert_window.services.WindowService;
+import in.jvapps.system_alert_window.utils.Constants;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+import io.flutter.view.FlutterCallbackInformation;
+import io.flutter.view.FlutterMain;
+import io.flutter.view.FlutterNativeView;
+import io.flutter.view.FlutterRunArguments;
 
 import static in.jvapps.system_alert_window.utils.Constants.CHANNEL;
 import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
@@ -35,7 +44,13 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     private Context mContext;
     @SuppressLint("StaticFieldLeak")
     private static Activity mActivity;
+    @SuppressLint("StaticFieldLeak")
+    private static FlutterNativeView sBackgroundFlutterView;
+    private static PluginRegistry.PluginRegistrantCallback sPluginRegistrantCallback;
+    private static AtomicBoolean sIsIsolateRunning = new AtomicBoolean(false);
+
     static MethodChannel methodChannel;
+    static MethodChannel backgroundChannel;
     public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1237;
     private static NotificationManager notificationManager;
     private static String TAG = "SystemAlertWindowPlugin";
@@ -55,8 +70,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
 
     @Override
     public void onMethodCall(MethodCall call, @NonNull Result result) {
-        @SuppressWarnings("unchecked")
-        HashMap<String, Object> params = (HashMap<String, Object>) call.arguments;
         switch (call.method) {
             case "getPlatformVersion":
                 result.success("Android " + android.os.Build.VERSION.RELEASE);
@@ -70,6 +83,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 break;
             case "showSystemWindow":
                 assert (call.arguments != null);
+                HashMap<String, Object> params = (HashMap<String, Object>) call.arguments;
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
                     Log.d(TAG, "Going to show System Alert Window");
                     final Intent i = new Intent(mContext, WindowService.class);
@@ -87,10 +101,11 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 break;
             case "updateSystemWindow":
                 assert (call.arguments != null);
+                HashMap<String, Object> updateParams = (HashMap<String, Object>) call.arguments;
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
                     Log.d(TAG, "Going to update System Alert Window");
                     final Intent i = new Intent(mContext, WindowService.class);
-                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
+                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     WindowService.updateWindow(mContext, i);
@@ -98,7 +113,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     Log.d(TAG, "Going to update Bubble");
                     final Intent i = new Intent(mContext, BubbleService.class);
                     mContext.stopService(i);
-                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
+                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
                     mContext.startForegroundService(i);
                 }
                 result.success(true);
@@ -113,16 +128,100 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 }
                 result.success(true);
                 break;
+            case "registerCallBackHandler":
+                try {
+                    List arguments = (List) call.arguments;
+                    if (arguments != null) {
+                        long callbackHandle = Long.parseLong(String.valueOf(arguments.get(0)));
+                        long onClickHandle = Long.parseLong(String.valueOf(arguments.get(1)));
+                        SharedPreferences preferences = mContext.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
+                        preferences.edit().putLong(Constants.CALLBACK_HANDLE_KEY, callbackHandle)
+                                .putLong(Constants.CODE_CALLBACK_HANDLE_KEY, onClickHandle).apply();
+                        startCallBackHandler();
+                        result.success(true);
+                    } else {
+                        Log.e(TAG, "Unable to register on click handler. Arguments are null");
+                        result.success(false);
+                    }
+                } catch (Exception ex) {
+                    Log.e(TAG, "Exception in registerOnClickHandler " + ex.toString());
+                    result.success(false);
+                }
+                break;
             default:
                 result.notImplemented();
         }
     }
 
-    public static void invokeCallBack(String type, Object params) {
+    public static void setPluginRegistrant(PluginRegistry.PluginRegistrantCallback callback) {
+        sPluginRegistrantCallback = callback;
+    }
+
+    private void startCallBackHandler() {
+        SharedPreferences preferences = mContext.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
+        long callBackHandle = preferences.getLong(Constants.CALLBACK_HANDLE_KEY, -1);
+        Log.d(TAG, "onClickCallBackHandle " + callBackHandle);
+        if (callBackHandle != -1) {
+            FlutterMain.ensureInitializationComplete(mContext, null);
+            String mAppBundlePath = FlutterMain.findAppBundlePath();
+            FlutterCallbackInformation flutterCallback = FlutterCallbackInformation.lookupCallbackInformation(callBackHandle);
+            if (sBackgroundFlutterView == null) {
+                sBackgroundFlutterView = new FlutterNativeView(mContext, true);
+                if(mAppBundlePath != null && !sIsIsolateRunning.get()){
+                    if (sPluginRegistrantCallback == null) {
+                        Log.i(TAG, "Unable to start callBackHandle... as plugin is not registered");
+                        return;
+                    }
+                    Log.i(TAG, "Starting callBackHandle...");
+                    FlutterRunArguments args = new FlutterRunArguments();
+                    args.bundlePath = mAppBundlePath;
+                    args.entrypoint = flutterCallback.callbackName;
+                    args.libraryPath = flutterCallback.callbackLibraryPath;
+                    sBackgroundFlutterView.runFromBundle(args);
+                    sPluginRegistrantCallback.registerWith(sBackgroundFlutterView.getPluginRegistry());
+                    backgroundChannel = new MethodChannel(sBackgroundFlutterView, Constants.BACKGROUND_CHANNEL);
+                    sIsIsolateRunning.set(true);
+                }
+            }else {
+                sIsIsolateRunning.set(true);
+            }
+        }
+    }
+
+    public static void invokeCallBack(Context context, String type, Object params) {
         List<Object> argumentsList = new ArrayList<>();
-        argumentsList.add(type);
-        argumentsList.add(params);
-        methodChannel.invokeMethod("callBack", argumentsList);
+        /*try {
+            argumentsList.add(type);
+            argumentsList.add(params);
+            Log.v(TAG, "invoking callback for tag "+params);
+            methodChannel.invokeMethod("callBack", argumentsList);
+        } catch (Exception ex) {
+            Log.e(TAG, "invokeCallBack Exception : " + ex.toString());
+            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
+            long codeCallBackHandle = preferences.getLong(Constants.CODE_CALLBACK_HANDLE_KEY, -1);
+            Log.i(TAG, "codeCallBackHandle " + codeCallBackHandle);
+            if (codeCallBackHandle == -1) {
+                Log.e(TAG, "invokeCallBack failed, as codeCallBackHandle is null");
+            } else {
+                argumentsList.clear();
+                argumentsList.add(codeCallBackHandle);
+                argumentsList.add(type);
+                argumentsList.add(params);
+                backgroundChannel.invokeMethod("callBack", argumentsList);
+            }
+        }*/
+        SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
+        long codeCallBackHandle = preferences.getLong(Constants.CODE_CALLBACK_HANDLE_KEY, -1);
+        //Log.i(TAG, "codeCallBackHandle " + codeCallBackHandle);
+        if (codeCallBackHandle == -1) {
+            Log.e(TAG, "invokeCallBack failed, as codeCallBackHandle is null");
+        } else {
+            argumentsList.clear();
+            argumentsList.add(codeCallBackHandle);
+            argumentsList.add(type);
+            argumentsList.add(params);
+            backgroundChannel.invokeMethod("callBack", argumentsList);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)

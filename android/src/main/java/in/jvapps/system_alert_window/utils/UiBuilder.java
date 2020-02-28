@@ -106,7 +106,7 @@ public class UiBuilder {
             GradientDrawable gd = getGradientDrawable(decoration);
             button.setBackground(gd);
         }
-        button.setOnClickListener(v -> SystemAlertWindowPlugin.invokeCallBack(CALLBACK_TYPE_ONCLICK, tag));
+        button.setOnClickListener(v -> SystemAlertWindowPlugin.invokeCallBack(context, CALLBACK_TYPE_ONCLICK, tag));
         return button;
     }
 

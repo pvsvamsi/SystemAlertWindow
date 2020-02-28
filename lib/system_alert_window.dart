@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 export 'models/system_window_body.dart';
 export 'models/system_window_button.dart';
@@ -40,9 +41,11 @@ class SystemAlertWindow {
     await _channel.invokeMethod('checkPermissions');
   }
 
-  static Future<bool> registerOnClickListener(
-      OnClickListener callBackFunction) async {
+  static Future<bool> registerOnClickListener(OnClickListener callBackFunction) async {
+    final callBackDispatcher = PluginUtilities.getCallbackHandle(callbackDispatcher);
+    final callBack = PluginUtilities.getCallbackHandle(callBackFunction);
     _channel.setMethodCallHandler((MethodCall call) {
+      print("Got callback");
       switch (call.method) {
         case "callBack":
           dynamic arguments = call.arguments;
@@ -56,6 +59,7 @@ class SystemAlertWindow {
       }
       return null;
     });
+    await _channel.invokeMethod("registerCallBackHandler", <dynamic>[callBackDispatcher.toRawHandle(), callBack.toRawHandle()]);
     return true;
   }
 
@@ -106,4 +110,25 @@ class SystemAlertWindow {
   static Future<bool> closeSystemWindow() async {
     return await _channel.invokeMethod('closeSystemWindow');
   }
+}
+
+void callbackDispatcher() {
+  // 1. Initialize MethodChannel used to communicate with the platform portion of the plugin
+  const MethodChannel _backgroundChannel = const MethodChannel(Constants.BACKGROUND_CHANNEL);
+  // 2. Setup internal state needed for MethodChannels.
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 3. Listen for background events from the platform portion of the plugin.
+  _backgroundChannel.setMethodCallHandler((MethodCall call) async {
+    final args = call.arguments;
+    // 3.1. Retrieve callback instance for handle.
+    final Function callback = PluginUtilities.getCallbackFromHandle(CallbackHandle.fromRawHandle(args[0]));
+    assert(callback != null);
+    final type = args[1];
+    if (type == "onClick") {
+      final tag = args[2];
+      // 3.2. Invoke callback.
+      callback(tag);
+    }
+  });
 }
