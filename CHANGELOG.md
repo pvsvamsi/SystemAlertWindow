@@ -1,3 +1,7 @@
+## 0.2.1
+
+* Added support for background dispatch of click events. So that the click events are not missed, in case the app is destroyed while displaying the overlay window.
+
 ## 0.2.0 - Breaking Changes
 
 * Added support for multiple buttons in the footer. Please refer to the updated example
