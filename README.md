@@ -55,10 +55,12 @@ Displays as a notification in the notification center [Help Needed]
 ### Show the overlay
           
       SystemWindowHeader header = SystemWindowHeader(
-              title: SystemWindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
-              padding: SystemWindowPadding.setSymmetricPadding(12, 12),
-              subTitle: SystemWindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
-              decoration: SystemWindowDecoration(startColor: Colors.grey[100]),
+          title: SystemWindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
+          padding: SystemWindowPadding.setSymmetricPadding(12, 12),
+          subTitle: SystemWindowText(text: "9898989899", fontSize: 14, fontWeight: FontWeight.BOLD, textColor: Colors.black87),
+          decoration: SystemWindowDecoration(startColor: Colors.grey[100]),
+          button: SystemWindowButton(text: SystemWindowText(text: "Personal", fontSize: 10, textColor: Colors.black45), tag: "personal_btn"),
+          buttonPosition: ButtonPosition.TRAILING);
             );
             
       SystemWindowFooter footer = SystemWindowFooter(
@@ -112,9 +114,25 @@ Displays as a notification in the notification center [Help Needed]
 
       SystemAlertWindow.registerOnClickListener(callBackFunction);
 
-      //As this callback function is called from background, it should be declared on the parent level (Refer example)
-      void callBackFunction (String tag){
-        print("OnClick event of $tag");
+      ///
+      /// As this callback function is called from background, it should be declared on the parent level
+      /// Whenever a button is clicked, this method will be invoked with a tag (As tag is unique for every button, it helps in identifying the button).
+      /// You can check for the tag value and perform the relevant action for the button click
+      ///
+      void callBack(String tag) {
+        switch(tag){
+          case "simple_button":
+            print("Simple button has been clicked");
+            break;
+          case "focus_button":
+            print("Focus button has been clicked");
+            break;
+          case "personal_btn":
+            print("Personal button has been clicked");
+            break;
+          default:
+            print("OnClick event of $tag");
+        }
       }
           
 ### Close the overlay
