@@ -119,7 +119,7 @@ Displays as a notification in the notification center [Help Needed]
       /// Whenever a button is clicked, this method will be invoked with a tag (As tag is unique for every button, it helps in identifying the button).
       /// You can check for the tag value and perform the relevant action for the button click
       ///
-      void callBack(String tag) {
+      void callBackFunction(String tag) {
         switch(tag){
           case "simple_button":
             print("Simple button has been clicked");
