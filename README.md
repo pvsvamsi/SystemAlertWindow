@@ -36,7 +36,7 @@ Displays as a notification in the notification center [Help Needed]
             );
             
       SystemWindowFooter footer = SystemWindowFooter(
-          button: [
+          buttons: [
             SystemWindowButton(
               text: SystemWindowText(text: "Simple button", fontSize: 12, textColor: Color.fromRGBO(250, 139, 97, 1)),
               tag: "simple_button", //useful to identify button click event
@@ -58,7 +58,7 @@ Displays as a notification in the notification center [Help Needed]
           ],
           padding: SystemWindowPadding(left: 16, right: 16, bottom: 12),
           decoration: SystemWindowDecoration(startColor: Colors.white),
-          buttonPosition: ButtonPosition.CENTER);
+          buttonsPosition: ButtonPosition.CENTER);
           
       SystemWindowBody body = SystemWindowBody(
               rows: [
