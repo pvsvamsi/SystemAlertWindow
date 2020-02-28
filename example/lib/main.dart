@@ -160,6 +160,19 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+///
+/// Whenever a button is clicked, this method will be invoked with a tag (As tag is unique for every button, it helps in identifying the button).
+/// You can check for the tag value and perform the relevant action for the button click
+///
 void callBack(String tag) {
-  print("OnClick event of $tag");
+  switch(tag){
+    case "simple_button":
+      SystemAlertWindow.closeSystemWindow();
+      break;
+    case "focus_button":
+      print("Focus button has been called");
+      break;
+    default:
+      print("OnClick event of $tag");
+  }
 }
