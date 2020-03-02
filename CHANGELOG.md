@@ -1,3 +1,7 @@
+## 0.2.1+2
+
+* Added logs to debug click call back events.
+
 ## 0.2.1+1
 
 * Updated readme. Added debug logs to identify the crash while invoking callback.

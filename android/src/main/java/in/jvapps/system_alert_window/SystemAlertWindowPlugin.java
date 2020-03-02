@@ -193,6 +193,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
 
     public static void invokeCallBack(Context context, String type, Object params) {
         List<Object> argumentsList = new ArrayList<>();
+        Log.v(TAG, "invoking callback for tag "+params);
         /*try {
             argumentsList.add(type);
             argumentsList.add(params);
@@ -225,12 +226,14 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
             argumentsList.add(params);
             if(sIsIsolateRunning.get()) {
                 if(backgroundChannel == null){
+                    Log.v(TAG, "Recreating the background channel as it is null");
                     backgroundChannel = new MethodChannel(sBackgroundFlutterView, Constants.BACKGROUND_CHANNEL);
                 }
                 try {
+                    Log.v(TAG, "Invoking on method channel");
                     backgroundChannel.invokeMethod("callBack", argumentsList);
                 }catch(Exception ex){
-                    Log.e(TAG, "Exception in invoking caallback "+ex.toString());
+                    Log.e(TAG, "Exception in invoking callback "+ex.toString());
                 }
             }else{
                 Log.e(TAG, "invokeCallBack failed, as isolate is not running");
