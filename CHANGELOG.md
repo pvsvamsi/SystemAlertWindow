@@ -1,3 +1,7 @@
+## 0.2.1+1
+
+* Updated readme. Added debug logs to identify the crash while invoking callback.
+
 ## 0.2.1
 
 * Added support for background dispatch of click events. So that the click events are not missed, in case the app is destroyed while displaying the overlay window.
