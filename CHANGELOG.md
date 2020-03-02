@@ -1,3 +1,7 @@
+## 0.2.1+3
+
+* Fixed a crash, while closing system alert window
+
 ## 0.2.1+2
 
 * Added logs to debug click call back events.

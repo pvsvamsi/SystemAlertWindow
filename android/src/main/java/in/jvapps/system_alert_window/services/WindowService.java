@@ -111,6 +111,7 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
                     closeOverlayService();
                     wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
                 } else {
+                    if(wm != null)
                     wm.removeView(windowView);
                 }
                 @SuppressWarnings("unchecked")
