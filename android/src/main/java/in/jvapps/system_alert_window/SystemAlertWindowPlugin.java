@@ -183,6 +183,9 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     sIsIsolateRunning.set(true);
                 }
             }else {
+                if(backgroundChannel == null){
+                    backgroundChannel = new MethodChannel(sBackgroundFlutterView, Constants.BACKGROUND_CHANNEL);
+                }
                 sIsIsolateRunning.set(true);
             }
         }
@@ -220,7 +223,18 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
             argumentsList.add(codeCallBackHandle);
             argumentsList.add(type);
             argumentsList.add(params);
-            backgroundChannel.invokeMethod("callBack", argumentsList);
+            if(sIsIsolateRunning.get()) {
+                if(backgroundChannel == null){
+                    backgroundChannel = new MethodChannel(sBackgroundFlutterView, Constants.BACKGROUND_CHANNEL);
+                }
+                try {
+                    backgroundChannel.invokeMethod("callBack", argumentsList);
+                }catch(Exception ex){
+                    Log.e(TAG, "Exception in invoking caallback "+ex.toString());
+                }
+            }else{
+                Log.e(TAG, "invokeCallBack failed, as isolate is not running");
+            }
         }
     }
 
