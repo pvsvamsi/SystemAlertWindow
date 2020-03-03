@@ -1,3 +1,7 @@
+## 0.2.1+4
+
+* Fixed a rare crash, while opening system alert window
+
 ## 0.2.1+3
 
 * Fixed a crash, while closing system alert window
