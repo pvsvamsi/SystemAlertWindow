@@ -111,8 +111,11 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
                     closeOverlayService();
                     wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
                 } else {
-                    if(wm != null)
-                    wm.removeView(windowView);
+                    try {
+                        wm.removeView(windowView);
+                    }catch (Exception ex){
+                        Log.e(TAG, "Caught exception "+ex.toString());
+                    }
                 }
                 @SuppressWarnings("unchecked")
                 HashMap<String, Object> paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
