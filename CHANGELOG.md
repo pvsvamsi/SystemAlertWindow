@@ -1,3 +1,7 @@
+## 0.2.2
+
+* Fixed a rare issue, callback of button click are not working
+
 ## 0.2.1+4
 
 * Fixed a rare crash, while opening system alert window
