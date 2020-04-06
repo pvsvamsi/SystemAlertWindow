@@ -47,7 +47,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     @SuppressLint("StaticFieldLeak")
     private static FlutterNativeView sBackgroundFlutterView;
     private static PluginRegistry.PluginRegistrantCallback sPluginRegistrantCallback;
-    private static AtomicBoolean sIsIsolateRunning = new AtomicBoolean(false);
+    public static AtomicBoolean sIsIsolateRunning = new AtomicBoolean(false);
 
     static MethodChannel methodChannel;
     static MethodChannel backgroundChannel;
@@ -137,7 +137,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                         SharedPreferences preferences = mContext.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
                         preferences.edit().putLong(Constants.CALLBACK_HANDLE_KEY, callbackHandle)
                                 .putLong(Constants.CODE_CALLBACK_HANDLE_KEY, onClickHandle).apply();
-                        startCallBackHandler();
+                        startCallBackHandler(mContext);
                         result.success(true);
                     } else {
                         Log.e(TAG, "Unable to register on click handler. Arguments are null");
@@ -157,16 +157,16 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         sPluginRegistrantCallback = callback;
     }
 
-    private void startCallBackHandler() {
-        SharedPreferences preferences = mContext.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
+    public static void startCallBackHandler(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
         long callBackHandle = preferences.getLong(Constants.CALLBACK_HANDLE_KEY, -1);
         Log.d(TAG, "onClickCallBackHandle " + callBackHandle);
         if (callBackHandle != -1) {
-            FlutterMain.ensureInitializationComplete(mContext, null);
+            FlutterMain.ensureInitializationComplete(context, null);
             String mAppBundlePath = FlutterMain.findAppBundlePath();
             FlutterCallbackInformation flutterCallback = FlutterCallbackInformation.lookupCallbackInformation(callBackHandle);
             if (sBackgroundFlutterView == null) {
-                sBackgroundFlutterView = new FlutterNativeView(mContext, true);
+                sBackgroundFlutterView = new FlutterNativeView(context, true);
                 if(mAppBundlePath != null && !sIsIsolateRunning.get()){
                     if (sPluginRegistrantCallback == null) {
                         Log.i(TAG, "Unable to start callBackHandle... as plugin is not registered");
