@@ -9,6 +9,7 @@
     <application
         android:name=".Application"
         android:label="system_alert_window_example"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
