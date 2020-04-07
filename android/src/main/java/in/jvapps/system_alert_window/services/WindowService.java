@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
+import androidx.core.view.ViewCompat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,6 +65,7 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "Creating Window Service");
         wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         oServiceHandler = new Handler();
     }
@@ -71,8 +73,15 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //startTheServiceProcess(intent);
+        Log.d(TAG, "onStartCommand");
         oServiceHandler = new Handler();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public boolean onStopCurrentWork() {
+        closeOverlayService();
+        return super.onStopCurrentWork();
     }
 
     public static void enqueueWork(Context context, Intent intent) {
@@ -107,6 +116,9 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
             boolean isCloseWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, false);
             if (!isCloseWindow) {
                 boolean isUpdateWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
+                if (windowView == null || !ViewCompat.isAttachedToWindow(windowView)) {
+                    isUpdateWindow = false;
+                }
                 if (!isUpdateWindow) {
                     closeOverlayService();
                     wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -139,6 +151,13 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
                 }
             } else {
                 closeOverlayService();
+                try {
+                    Log.d(TAG, "Calling stopSelf");
+                    stopSelf();
+                    Log.d(TAG, "Stopped self");
+                }catch (Exception ex){
+                    Log.d(TAG, "Exception in stopping self");
+                }
             }
         } else {
             Log.e(TAG, "Intent extras are null!");
