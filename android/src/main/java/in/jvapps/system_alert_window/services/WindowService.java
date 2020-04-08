@@ -177,10 +177,10 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
         params.format = PixelFormat.TRANSLUCENT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             params.type = LayoutParams.TYPE_APPLICATION_OVERLAY;
-            params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_SHOW_WHEN_LOCKED;
+            params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_SHOW_WHEN_LOCKED | LayoutParams.FLAG_NOT_FOCUSABLE;
         } else {
             params.type = LayoutParams.TYPE_SYSTEM_ALERT | LayoutParams.TYPE_SYSTEM_OVERLAY;
-            params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL;
+            params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_NOT_FOCUSABLE;
         }
         params.gravity = Commons.getGravity(windowGravity, Gravity.TOP);
         int marginTop = windowMargin.getTop();
