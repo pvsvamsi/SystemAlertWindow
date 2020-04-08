@@ -1,3 +1,7 @@
+## 0.2.2+1
+
+* Fixed a rare issue, window is not updating
+
 ## 0.2.2
 
 * Fixed a rare issue, callback of button click are not working
