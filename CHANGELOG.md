@@ -1,6 +1,6 @@
 ## 0.2.2+1
 
-* Fixed a rare issue, window is not updating
+* Fixed a rare issue, window is not updating, Removed focus to the window, to allow keyboard interactions behind it
 
 ## 0.2.2
 
