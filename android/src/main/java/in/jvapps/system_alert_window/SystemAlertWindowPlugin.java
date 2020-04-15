@@ -231,7 +231,9 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 }
                 try {
                     Log.v(TAG, "Invoking on method channel");
-                    backgroundChannel.invokeMethod("callBack", argumentsList);
+                    int[] retries = {2};
+                    invokeCallBackToFlutter(backgroundChannel, "callBack", argumentsList, retries);
+                    //backgroundChannel.invokeMethod("callBack", argumentsList);
                 }catch(Exception ex){
                     Log.e(TAG, "Exception in invoking callback "+ex.toString());
                 }
@@ -239,6 +241,32 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 Log.e(TAG, "invokeCallBack failed, as isolate is not running");
             }
         }
+    }
+
+    private static void invokeCallBackToFlutter(final MethodChannel channel, final String method, final List<Object> arguments, final int[] retries) {
+        channel.invokeMethod(method, arguments, new MethodChannel.Result() {
+            @Override
+            public void success(Object o) {
+                Log.i(TAG, "Invoke call back success");
+            }
+
+            @Override
+            public void error(String s, String s1, Object o) {
+                Log.e(TAG, "Error " + s+s1);
+            }
+
+            @Override
+            public void notImplemented() {
+                //To fix the dart initialization delay.
+                if (retries[0] > 0) {
+                    Log.d(TAG, "Not Implemented method "+ method+". Trying again to check if it works");
+                    invokeCallBackToFlutter(channel, method, arguments, retries);
+                } else {
+                    Log.e(TAG, "Not Implemented method "+ method);
+                }
+                retries[0]--;
+            }
+        });
     }
 
     @TargetApi(Build.VERSION_CODES.M)
