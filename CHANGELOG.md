@@ -1,3 +1,7 @@
+## 0.2.2+2
+
+* Added retries for callback events + added logs to identify errors (if any)
+
 ## 0.2.2+1
 
 * Fixed a rare issue, window is not updating, Removed focus to the window, to allow keyboard interactions behind it
