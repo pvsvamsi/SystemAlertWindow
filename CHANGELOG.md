@@ -1,3 +1,7 @@
+## 0.2.2+3
+
+* Fixed a rare crash, while updating system alert window
+
 ## 0.2.2+2
 
 * Added retries for callback events + added logs to identify errors (if any)
