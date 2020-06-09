@@ -125,8 +125,8 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
                 } else {
                     try {
                         wm.removeView(windowView);
-                    }catch (Exception ex){
-                        Log.e(TAG, "Caught exception "+ex.toString());
+                    } catch (Exception ex) {
+                        Log.e(TAG, "Caught exception " + ex.toString());
                     }
                 }
                 @SuppressWarnings("unchecked")
@@ -155,7 +155,7 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
                     Log.d(TAG, "Calling stopSelf");
                     stopSelf();
                     Log.d(TAG, "Stopped self");
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     Log.d(TAG, "Exception in stopping self");
                 }
             }
@@ -211,6 +211,7 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
         windowView.setOrientation(LinearLayout.VERTICAL);
         windowView.setBackgroundColor(Color.WHITE);
         windowView.setLayoutParams(params);
+        windowView.removeAllViews();
         windowView.addView(headerView);
         if (bodyView != null)
             windowView.addView(bodyView);
@@ -223,8 +224,11 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
     private void closeOverlayService() {
         Log.d(TAG, "Ending the service process");
         try {
-            if (wm != null)
-                wm.removeView(windowView);
+            if (wm != null) {
+                if(windowView != null) {
+                    wm.removeView(windowView);
+                }
+            }
             wm = null;
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "view not found");
