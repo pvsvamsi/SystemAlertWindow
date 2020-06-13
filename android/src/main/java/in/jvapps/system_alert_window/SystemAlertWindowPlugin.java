@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import in.jvapps.system_alert_window.services.BubbleService;
-import in.jvapps.system_alert_window.services.WindowService;
 import in.jvapps.system_alert_window.services.WindowServiceNew;
 import in.jvapps.system_alert_window.utils.Constants;
 import io.flutter.plugin.common.MethodCall;
@@ -76,10 +75,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         switch (call.method) {
             case "getPlatformVersion":
                 result.success("Android " + android.os.Build.VERSION.RELEASE);
-                break;
-            case "initializeSystemWindow":
-                checkPermission();
-                result.success("Initialization successful");
                 break;
             case "checkPermissions":
                 if (checkPermission()) {
