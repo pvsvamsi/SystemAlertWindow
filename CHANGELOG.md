@@ -1,3 +1,7 @@
+## 0.3.0
+
+* Migrated Overlay window to a new service and added notification to prevent it from getting unresponsive over long runtime
+
 ## 0.2.2+3
 
 * Fixed a rare crash, while updating system alert window
