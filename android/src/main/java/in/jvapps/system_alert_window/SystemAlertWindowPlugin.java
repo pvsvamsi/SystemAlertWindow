@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import in.jvapps.system_alert_window.services.BubbleService;
 import in.jvapps.system_alert_window.services.WindowService;
+import in.jvapps.system_alert_window.services.WindowServiceNew;
 import in.jvapps.system_alert_window.utils.Constants;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -36,6 +37,8 @@ import io.flutter.view.FlutterMain;
 import io.flutter.view.FlutterNativeView;
 import io.flutter.view.FlutterRunArguments;
 
+import static in.jvapps.system_alert_window.services.WindowServiceNew.INTENT_EXTRA_IS_CLOSE_WINDOW;
+import static in.jvapps.system_alert_window.services.WindowServiceNew.INTENT_EXTRA_IS_UPDATE_WINDOW;
 import static in.jvapps.system_alert_window.utils.Constants.CHANNEL;
 import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
 
@@ -74,6 +77,10 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
             case "getPlatformVersion":
                 result.success("Android " + android.os.Build.VERSION.RELEASE);
                 break;
+            case "initializeSystemWindow":
+                checkPermission();
+                result.success("Initialization successful");
+                break;
             case "checkPermissions":
                 if (checkPermission()) {
                     result.success("Permissions are granted");
@@ -86,11 +93,13 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 HashMap<String, Object> params = (HashMap<String, Object>) call.arguments;
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
                     Log.d(TAG, "Going to show System Alert Window");
-                    final Intent i = new Intent(mContext, WindowService.class);
+                    final Intent i = new Intent(mContext, WindowServiceNew.class);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    WindowService.enqueueWork(mContext, i);
+                    i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
+                    //WindowService.enqueueWork(mContext, i);
+                    mContext.startService(i);
                 } else {
                     Log.d(TAG, "Going to show Bubble");
                     final Intent i = new Intent(mContext, BubbleService.class);
@@ -104,11 +113,13 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 HashMap<String, Object> updateParams = (HashMap<String, Object>) call.arguments;
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
                     Log.d(TAG, "Going to update System Alert Window");
-                    final Intent i = new Intent(mContext, WindowService.class);
+                    final Intent i = new Intent(mContext, WindowServiceNew.class);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    WindowService.updateWindow(mContext, i);
+                    i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
+                    //WindowService.enqueueWork(mContext, i);
+                    mContext.startService(i);
                 } else {
                     Log.d(TAG, "Going to update Bubble");
                     final Intent i = new Intent(mContext, BubbleService.class);
@@ -120,8 +131,10 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 break;
             case "closeSystemWindow":
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-                    final Intent i = new Intent(mContext, WindowService.class);
-                    WindowService.dequeueWork(mContext, i);
+                    final Intent i = new Intent(mContext, WindowServiceNew.class);
+                    i.putExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, true);
+                    //WindowService.dequeueWork(mContext, i);
+                    mContext.startService(i);
                 } else {
                     final Intent i = new Intent(mContext, BubbleService.class);
                     mContext.stopService(i);
