@@ -6,7 +6,13 @@ A flutter plugin to show Truecaller like overlay window, over all other apps alo
 
 ### Application Class
 
-#### JAVA
+#### JAVA (Application.java)
+
+      import android.os.Bundle;
+      import in.jvapps.system_alert_window.SystemAlertWindowPlugin;
+      import io.flutter.app.FlutterApplication;
+      import io.flutter.plugin.common.PluginRegistry;
+      import io.flutter.plugins.GeneratedPluginRegistrant;
 
       public class Application extends FlutterApplication implements PluginRegistry.PluginRegistrantCallback {
 
@@ -24,7 +30,7 @@ A flutter plugin to show Truecaller like overlay window, over all other apps alo
 
       }
 
-#### KOTLIN
+#### KOTLIN (Application.kt)
 
       import `in`.jvapps.system_alert_window.SystemAlertWindowPlugin
       import io.flutter.app.FlutterApplication
