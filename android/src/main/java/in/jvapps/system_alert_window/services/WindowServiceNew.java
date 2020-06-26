@@ -198,6 +198,8 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private void updateWindow(HashMap<String, Object> paramsMap) {
         setWindowLayoutFromMap(paramsMap);
         WindowManager.LayoutParams params = (WindowManager.LayoutParams) windowView.getLayoutParams();
+        params.width = (windowWidth == 0) ? android.view.WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(mContext, windowWidth);
+        params.height = (windowHeight == 0) ? android.view.WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(mContext, windowHeight);
         setWindowView(params, false);
         wm.updateViewLayout(windowView, params);
     }
