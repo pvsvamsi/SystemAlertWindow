@@ -1,6 +1,6 @@
 ## 0.3.1
 
-* Fixed a rare crash, while updating system alert window. Now, update window method will consider the passed width and height
+* Fixed a rare crash, while updating system alert window. Now, update window method will consider the given width and height
 
 ## 0.3.0
 
