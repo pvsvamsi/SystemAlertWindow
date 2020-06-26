@@ -97,7 +97,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             boolean isCloseWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, false);
             if (!isCloseWindow) {
                 boolean isUpdateWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
-                if (isUpdateWindow) {
+                if (isUpdateWindow && windowView != null) {
                     updateWindow(paramsMap);
                 } else {
                     createWindow(paramsMap);
@@ -208,6 +208,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             if (wm != null) {
                 if (windowView != null) {
                     wm.removeView(windowView);
+                    windowView = null;
                 }
             }
             wm = null;
