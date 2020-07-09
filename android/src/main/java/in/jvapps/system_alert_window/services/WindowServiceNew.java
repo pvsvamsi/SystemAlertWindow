@@ -169,7 +169,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setWindowView(WindowManager.LayoutParams params, boolean isCreate) {
-        boolean isEnableDraggable = params.width == WindowManager.LayoutParams.MATCH_PARENT;
+        boolean isEnableDraggable = true;//params.width == WindowManager.LayoutParams.MATCH_PARENT;
         if (isCreate) {
             windowView = new LinearLayout(mContext);
         }
