@@ -7,7 +7,7 @@ A flutter plugin to show Truecaller like overlay window, over all other apps alo
 
 ### Demo
 ###### 1. Clip of example app and 2. Working of button click in the background
-<img src="https://github.com/pvsvamsi/SystemAlertWindow/blob/master/assets/images/example%20demo.gif" width="300" height="570">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/pvsvamsi/SystemAlertWindow/blob/master/assets/images/background%20button%20click.gif" width="300" height="570">
+<img src="https://github.com/pvsvamsi/SystemAlertWindow/raw/master/assets/images/example%20demo.gif" width="300" height="570">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/pvsvamsi/SystemAlertWindow/raw/master/assets/images/background%20button%20click.gif" width="300" height="570">
 
 ### Application Class
 
