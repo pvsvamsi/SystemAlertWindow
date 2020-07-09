@@ -1,3 +1,7 @@
+## 0.3.2+1
+
+* Updated the readme file, as gifs are not displaying on pub packages
+
 ## 0.3.2
 
 * Updated the readme file. Now system alert window is draggable irrespective of it's width
