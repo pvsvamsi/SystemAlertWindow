@@ -164,3 +164,61 @@ Displays as a notification in the notification center [Help Needed]
 ### Close the overlay
 
       SystemAlertWindow.closeSystemWindow();
+      
+### Isolate communication
+##### Use this snippet, if you want the callbacks on your main thread, instead of handling them in an isolate (mentioned above)
+
+###### Create an isolate_manager.dart
+```
+import 'dart:isolate';
+
+import 'dart:ui';
+
+class IsolateManager{
+
+  static const FOREGROUND_PORT_NAME = "foreground_port";
+
+  static SendPort lookupPortByName() {
+    return IsolateNameServer.lookupPortByName(FOREGROUND_PORT_NAME);
+  }
+
+  static bool registerPortWithName(SendPort port) {
+    assert(port != null, "'port' cannot be null.");
+    removePortNameMapping(FOREGROUND_PORT_NAME);
+    return IsolateNameServer.registerPortWithName(port, FOREGROUND_PORT_NAME);
+  }
+
+  static bool removePortNameMapping(String name) {
+    assert(name != null, "'name' cannot be null.");
+    return IsolateNameServer.removePortNameMapping(name);
+  }
+
+}
+
+```
+
+###### While initializing system alert window in your code
+```
+await SystemAlertWindow.checkPermissions;
+    ReceivePort _port = ReceivePort();
+    IsolateManager.registerPortWithName(_port.sendPort);
+    _port.listen((dynamic callBackData) {
+      String tag= callBackData[0];
+      switch (tag) {
+        case button_app_to_foreground:
+          print("Do what ever you want here. This is inside your application scope");
+          break;
+      }
+    });
+    SystemAlertWindow.registerOnClickListener(callBackFunction);
+```
+
+###### Now the callBackFunction should looks like 
+```
+bool callBackFunction(String tag) {
+  print("Got tag " + tag);
+  SendPort port = IsolateManager.lookupPortByName();
+  port.send([tag]);
+  return true;
+}
+```
