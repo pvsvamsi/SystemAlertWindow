@@ -1,4 +1,5 @@
 # system_alert_window
+[![Pub](https://img.shields.io/pub/v/system_alert_window.svg)](https://pub.dartlang.org/packages/system_alert_window)
 
 A flutter plugin to show Truecaller like overlay window, over all other apps along with callback events.
 
