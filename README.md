@@ -166,7 +166,7 @@ Displays as a notification in the notification center [Help Needed]
       SystemAlertWindow.closeSystemWindow();
       
 ### Isolate communication
-##### Use this snippet, if you want the callbacks on your main thread, instead of handling them in an isolate (mentioned above)
+##### Use this snippet, if you want the callbacks on your main thread, instead of handling them in an isolate (like mentioned above)
 
 ###### Create an isolate_manager.dart
 ```
@@ -194,19 +194,24 @@ class IsolateManager{
   }
 
 }
-
 ```
 
 ###### While initializing system alert window in your code
 ```
-await SystemAlertWindow.checkPermissions;
+    await SystemAlertWindow.checkPermissions;
     ReceivePort _port = ReceivePort();
     IsolateManager.registerPortWithName(_port.sendPort);
     _port.listen((dynamic callBackData) {
       String tag= callBackData[0];
       switch (tag) {
-        case button_app_to_foreground:
-          print("Do what ever you want here. This is inside your application scope");
+        case "personal_btn":
+          print("Personal button click : Do what ever you want here. This is inside your application scope");
+          break;
+        case "simple_button":
+          print("Simple button click : Do what ever you want here. This is inside your application scope");
+          break;
+        case "focus_button":
+          print("Focus button click : Do what ever you want here. This is inside your application scope");
           break;
       }
     });
