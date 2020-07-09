@@ -1,3 +1,7 @@
+## 0.3.2
+
+* Updated the readme file. Now system alert window is draggable irrespective of it's width
+
 ## 0.3.1
 
 * Fixed a rare crash, while updating system alert window. Now, update window method will consider the given width and height
