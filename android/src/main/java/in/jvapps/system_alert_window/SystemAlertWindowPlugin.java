@@ -307,6 +307,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                         Uri.parse("package:" + mContext.getPackageName()));
                 if (mActivity == null) {
                     if (mContext != null) {
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         mContext.startActivity(intent);
                         Toast.makeText(mContext, "Please grant, Can Draw Over Other Apps permission.", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Can't detect the permission change, as the mActivity is null");
