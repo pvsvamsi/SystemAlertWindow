@@ -1,3 +1,7 @@
+## 0.3.2+2
+
+* Fixed a crash while checking app permissions
+
 ## 0.3.2+1
 
 * Updated the readme file, as gifs are not displaying on pub packages
