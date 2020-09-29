@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import in.jvapps.system_alert_window.services.BubbleService;
 import in.jvapps.system_alert_window.services.WindowServiceNew;
+import in.jvapps.system_alert_window.utils.Commons;
 import in.jvapps.system_alert_window.utils.Constants;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -74,7 +75,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     public void onMethodCall(MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case "getPlatformVersion":
-                result.success("Android " + android.os.Build.VERSION.RELEASE);
+                result.success("Android " + Build.VERSION.RELEASE);
                 break;
             case "checkPermissions":
                 if (checkPermission()) {
@@ -86,7 +87,14 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
             case "showSystemWindow":
                 assert (call.arguments != null);
                 HashMap<String, Object> params = (HashMap<String, Object>) call.arguments;
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+                if(Commons.isForceAndroidBubble(mContext) || Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+                    Log.d(TAG, "Going to show Bubble");
+                    final Intent i = new Intent(mContext, BubbleService.class);
+                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        mContext.startForegroundService(i);
+                    }
+                }else{
                     Log.d(TAG, "Going to show System Alert Window");
                     final Intent i = new Intent(mContext, WindowServiceNew.class);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
@@ -95,18 +103,21 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
                     //WindowService.enqueueWork(mContext, i);
                     mContext.startService(i);
-                } else {
-                    Log.d(TAG, "Going to show Bubble");
-                    final Intent i = new Intent(mContext, BubbleService.class);
-                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
-                    mContext.startForegroundService(i);
                 }
                 result.success(true);
                 break;
             case "updateSystemWindow":
                 assert (call.arguments != null);
                 HashMap<String, Object> updateParams = (HashMap<String, Object>) call.arguments;
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+                if(Commons.isForceAndroidBubble(mContext) || Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+                    Log.d(TAG, "Going to update Bubble");
+                    final Intent i = new Intent(mContext, BubbleService.class);
+                    mContext.stopService(i);
+                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        mContext.startForegroundService(i);
+                    }
+                }else{
                     Log.d(TAG, "Going to update System Alert Window");
                     final Intent i = new Intent(mContext, WindowServiceNew.class);
                     i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
@@ -115,24 +126,18 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
                     //WindowService.enqueueWork(mContext, i);
                     mContext.startService(i);
-                } else {
-                    Log.d(TAG, "Going to update Bubble");
-                    final Intent i = new Intent(mContext, BubbleService.class);
-                    mContext.stopService(i);
-                    i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
-                    mContext.startForegroundService(i);
                 }
                 result.success(true);
                 break;
             case "closeSystemWindow":
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+                if(Commons.isForceAndroidBubble(mContext) || Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+                    final Intent i = new Intent(mContext, BubbleService.class);
+                    mContext.stopService(i);
+                }else{
                     final Intent i = new Intent(mContext, WindowServiceNew.class);
                     i.putExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, true);
                     //WindowService.dequeueWork(mContext, i);
                     mContext.startService(i);
-                } else {
-                    final Intent i = new Intent(mContext, BubbleService.class);
-                    mContext.stopService(i);
                 }
                 result.success(true);
                 break;
@@ -291,15 +296,21 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     }
 
     public boolean checkPermission() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            initNotificationManager();
-            if (!notificationManager.areBubblesAllowed()) {
-                Log.e(TAG, "System Alert Window will not work without enabling the android bubbles");
-                Toast.makeText(mContext, "System Alert Window will not work without enabling the android bubbles", Toast.LENGTH_LONG).show();
-            } else {
-                //TODO to check for higher android versions, post their release
-                Log.d(TAG, "Android bubbles are enabled");
-                return true;
+        if (Commons.isForceAndroidBubble(mContext) ||  Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            if(Build.VERSION.SDK_INT == Build.VERSION_CODES.Q){
+                Log.i(TAG, "Forcing using Android bubble");
+                return handleBubblesPermissionForAndroidQ();
+            }
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                initNotificationManager();
+                if (!notificationManager.areBubblesAllowed()) {
+                    Log.e(TAG, "System Alert Window will not work without enabling the android bubbles");
+                    Toast.makeText(mContext, "System Alert Window will not work without enabling the android bubbles", Toast.LENGTH_LONG).show();
+                } else {
+                    //TODO to check for higher android versions, post their release
+                    Log.d(TAG, "Android bubbles are enabled");
+                    return true;
+                }
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(mContext)) {
@@ -325,8 +336,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         return false;
     }
 
-    @SuppressWarnings("unused")
-    @RequiresApi(api = Build.VERSION_CODES.Q)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private boolean handleBubblesPermissionForAndroidQ() {
         int devOptions = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
         if (devOptions == 1) {
