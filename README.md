@@ -67,11 +67,11 @@ A flutter plugin to show Truecaller like overlay window, over all other apps alo
               android:label="system_alert_window_example"
               android:icon="@mipmap/ic_launcher">
 
-#### Android 10 and below
+#### Android 10 & below
 
 Uses &#x27;draw on top&#x27; permission and displays it as a overlay window
 
-#### Android 11 and above
+#### Android 11 & above
 
 Uses Android Bubble APIs to show the overlay window.
 
