@@ -10,18 +10,12 @@
     <application>
         <activity
             android:name=".BubbleActivity"
-            android:allowEmbedded="true"
             android:documentLaunchMode="always"
             android:label="@string/bubbles_activity"
+            android:allowEmbedded="true"
             android:resizeableActivity="true"
             android:showOnLockScreen="true"
-            android:theme="@style/AppTheme.NoActionBar"
-            tools:targetApi="n" />
-        <service
-            android:name=".services.BubbleService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.FOREGROUND_SERVICE"/>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <service
             android:name=".services.WindowService"
             android:enabled="true"

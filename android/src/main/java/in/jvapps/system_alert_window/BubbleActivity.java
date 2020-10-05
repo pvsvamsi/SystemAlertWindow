@@ -1,7 +1,9 @@
 package in.jvapps.system_alert_window;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -35,8 +37,9 @@ public class BubbleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bubble);
         mContext = this;
         bubbleLayout = findViewById(R.id.bubbleLayout);
-        if (getIntent() != null && getIntent().getExtras() != null) {
-            paramsMap = (HashMap<String, Object>) getIntent().getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
+        Intent intent = getIntent();
+        if (intent != null && intent.getExtras() != null) {
+            paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
             configureUI();
         }
     }

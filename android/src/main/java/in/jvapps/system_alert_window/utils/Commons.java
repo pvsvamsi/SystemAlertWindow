@@ -3,6 +3,7 @@ package in.jvapps.system_alert_window.utils;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
@@ -107,8 +108,9 @@ public class Commons {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ActivityManager activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
             if (activityManager != null) {
-                return ActivityManagerCompat.isLowRamDevice(activityManager);
-            }else{
+                PackageManager pm = context.getPackageManager();
+                return !pm.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) || pm.hasSystemFeature(PackageManager.FEATURE_RAM_LOW) || activityManager.isLowRamDevice();
+            } else {
                 Log.i("Commons", "Marking force android bubble as false");
             }
         }
