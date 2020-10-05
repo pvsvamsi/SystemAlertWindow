@@ -1,3 +1,7 @@
+## 0.4.0
+
+* Added bubble support for Android 11 and Android Go versions
+
 ## 0.3.2+2
 
 * Fixed a crash while checking app permissions

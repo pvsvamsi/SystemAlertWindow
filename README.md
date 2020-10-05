@@ -139,7 +139,9 @@ Displays as a notification in the notification center [Help Needed]
           body: body,
           footer: footer,
           margin: SystemWindowMargin(left: 8, right: 8, top: 100, bottom: 0),
-          gravity: SystemWindowGravity.TOP);
+          gravity: SystemWindowGravity.TOP,
+          notificationTitle: "Incoming Call",
+          notificationBody: "+1 646 980 4741");
           
 ### Register for onClick events (button click)
 
