@@ -123,7 +123,9 @@ class _MyAppState extends State<MyApp> {
           body: body,
           footer: footer,
           margin: SystemWindowMargin(left: 8, right: 8, top: 200, bottom: 0),
-          gravity: SystemWindowGravity.TOP);
+          gravity: SystemWindowGravity.TOP,
+          notificationTitle: "Incoming Call",
+          notificationBody: "+1 646 980 4741");
       setState(() {
         _isShowingWindow = true;
       });
@@ -201,7 +203,9 @@ class _MyAppState extends State<MyApp> {
           body: body,
           footer: footer,
           margin: SystemWindowMargin(left: 8, right: 8, top: 200, bottom: 0),
-          gravity: SystemWindowGravity.TOP);
+          gravity: SystemWindowGravity.TOP,
+          notificationTitle: "Outgoing Call",
+          notificationBody: "+1 646 980 4741");
       setState(() {
         _isUpdatedWindow = true;
       });
