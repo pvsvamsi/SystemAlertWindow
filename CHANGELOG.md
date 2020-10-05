@@ -1,3 +1,7 @@
+## 0.4.0+1
+
+* Updated the readme + Fixed issues in pubspec file
+
 ## 0.4.0
 
 * Added bubble support for Android 11 and Android Go versions
