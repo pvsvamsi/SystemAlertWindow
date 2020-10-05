@@ -1,7 +1,7 @@
 # system_alert_window
 [![Pub](https://img.shields.io/pub/v/system_alert_window.svg)](https://pub.dartlang.org/packages/system_alert_window)
 
-A flutter plugin to show Truecaller like overlay window, over all other apps along with callback events.
+A flutter plugin to show Truecaller like overlay window, over all other apps along with callback events. Android Go or Android 11 & above, this plugin shows notification bubble, in other android versions, it shows an overlay window.
 
 ## Android
 
@@ -67,13 +67,17 @@ A flutter plugin to show Truecaller like overlay window, over all other apps alo
               android:label="system_alert_window_example"
               android:icon="@mipmap/ic_launcher">
 
-#### Android 10 & below
+#### Android 10 & below, Android GO (API 27)
 
 Uses &#x27;draw on top&#x27; permission and displays it as a overlay window
 
 #### Android 11 & above
 
-Uses Android Bubble APIs to show the overlay window.
+User has to allow 'All conversations can bubble' in the notification settings of the app. Uses Android Bubble APIs to show the overlay window inside a notification bubble.
+
+#### Android GO (API 29)
+
+User has to manually enable bubbles from the developer options. Uses Android Bubble APIs to show the overlay window inside a notification bubble.
 
 
 ## IOS
