@@ -1,3 +1,7 @@
+## 0.4.1
+
+* Fixed a crash in system alert window if permission is not given
+
 ## 0.4.0+1
 
 * Updated the readme + Fixed issues in pubspec file
