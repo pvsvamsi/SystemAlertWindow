@@ -1,6 +1,6 @@
 name: system_alert_window
 description: A flutter plugin to show Truecaller like overlay window, over all other apps along with callback events. Android Go or Android 11 & above, this plugin shows notification bubble, in other android versions, it shows an overlay window.
-version: 0.4.0+1
+version: 0.4.1
 homepage: https://github.com/pvsvamsi/SystemAlertWindow
 
 
