@@ -1,3 +1,7 @@
+## 0.4.1+1
+
+* Fixed a crash in system alert window while closing the window
+
 ## 0.4.1
 
 * Fixed a crash in system alert window if permission is not given
