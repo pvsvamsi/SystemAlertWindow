@@ -92,10 +92,10 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         if (null != intent && intent.getExtras() != null) {
             @SuppressWarnings("unchecked")
             HashMap<String, Object> paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
-            assert paramsMap != null;
             mContext = this;
             boolean isCloseWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, false);
             if (!isCloseWindow) {
+                assert paramsMap != null;
                 boolean isUpdateWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
                 if (isUpdateWindow && windowView != null) {
                     updateWindow(paramsMap);
