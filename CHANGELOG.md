@@ -1,3 +1,7 @@
+## 0.4.2 - Breaking Changes
+
+* Separated request permissions and check permissions
+
 ## 0.4.1+1
 
 * Fixed a crash in system alert window while closing the window

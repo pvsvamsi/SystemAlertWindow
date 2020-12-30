@@ -87,6 +87,9 @@ Displays as a notification in the notification center [Help Needed]
 
 ## Example
 
+### Request overlay permission
+      await SystemAlertWindow.requestPermissions;
+
 ### Show the overlay
           
       SystemWindowHeader header = SystemWindowHeader(
