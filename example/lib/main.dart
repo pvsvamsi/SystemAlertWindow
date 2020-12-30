@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _initPlatformState();
-    _checkPermissions();
+    _requestPermissions();
     SystemAlertWindow.registerOnClickListener(callBack);
   }
 
@@ -44,8 +44,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> _checkPermissions() async {
-    await SystemAlertWindow.checkPermissions;
+  Future<void> _requestPermissions() async {
+    await SystemAlertWindow.requestPermissions;
   }
 
   void _showOverlayWindow() {
