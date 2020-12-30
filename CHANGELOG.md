@@ -1,3 +1,7 @@
+## 0.4.2+2
+
+* Fixed the return types of request/check permission methods
+
 ## 0.4.2+1
 
 * Fixed the return types of request/check permission methods

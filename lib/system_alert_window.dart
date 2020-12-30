@@ -38,11 +38,11 @@ class SystemAlertWindow {
   }
 
   static Future<bool> get checkPermissions async {
-    await _channel.invokeMethod('checkPermissions');
+    return await _channel.invokeMethod('checkPermissions');
   }
 
   static Future<bool> get requestPermissions async {
-    await _channel.invokeMethod('requestPermissions');
+    return await _channel.invokeMethod('requestPermissions');
   }
 
   static Future<bool> registerOnClickListener(OnClickListener callBackFunction) async {
