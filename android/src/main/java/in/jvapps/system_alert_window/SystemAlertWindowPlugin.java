@@ -80,8 +80,15 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
             case "getPlatformVersion":
                 result.success("Android " + Build.VERSION.RELEASE);
                 break;
-            case "checkPermissions":
+            case "requestPermissions":
                 if (askPermission()) {
+                    result.success("Permissions are granted");
+                } else {
+                    result.success("Permissions are not granted");
+                }
+                break;
+            case "checkPermissions":
+                if (checkPermission()) {
                     result.success("Permissions are granted");
                 } else {
                     result.success("Permissions are not granted");

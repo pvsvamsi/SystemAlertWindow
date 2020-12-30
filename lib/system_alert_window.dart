@@ -41,6 +41,10 @@ class SystemAlertWindow {
     await _channel.invokeMethod('checkPermissions');
   }
 
+  static Future<void> get requestPermissions async {
+    await _channel.invokeMethod('requestPermissions');
+  }
+
   static Future<bool> registerOnClickListener(OnClickListener callBackFunction) async {
     final callBackDispatcher = PluginUtilities.getCallbackHandle(callbackDispatcher);
     final callBack = PluginUtilities.getCallbackHandle(callBackFunction);
