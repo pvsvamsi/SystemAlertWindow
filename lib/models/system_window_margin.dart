@@ -1,8 +1,8 @@
 class SystemWindowMargin {
-  int left;
-  int right;
-  int top;
-  int bottom;
+  int? left;
+  int? right;
+  int? top;
+  int? bottom;
 
   SystemWindowMargin({this.left, this.right, this.top, this.bottom});
 

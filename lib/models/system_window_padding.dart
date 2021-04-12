@@ -1,8 +1,8 @@
 class SystemWindowPadding {
-  int left;
-  int right;
-  int top;
-  int bottom;
+  int? left;
+  int? right;
+  int? top;
+  int? bottom;
 
   SystemWindowPadding({this.left, this.right, this.top, this.bottom});
 

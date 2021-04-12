@@ -8,12 +8,12 @@ import 'package:system_alert_window/utils/commons.dart';
 
 class SystemWindowHeader {
   @required
-  SystemWindowText title;
-  SystemWindowText subTitle;
-  SystemWindowButton button;
-  SystemWindowPadding padding;
-  ButtonPosition buttonPosition;
-  SystemWindowDecoration decoration;
+  SystemWindowText? title;
+  SystemWindowText? subTitle;
+  SystemWindowButton? button;
+  SystemWindowPadding? padding;
+  ButtonPosition? buttonPosition;
+  SystemWindowDecoration? decoration;
 
   SystemWindowHeader(
       {this.title,
