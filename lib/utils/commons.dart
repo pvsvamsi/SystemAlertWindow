@@ -54,4 +54,17 @@ class Commons {
         return "normal";
     }
   }
+
+  static String getSystemWindowPrefMode(SystemWindowPrefMode prefMode) {
+    if (prefMode == null) prefMode = SystemWindowPrefMode.DEFAULT;
+    switch (prefMode) {
+      case SystemWindowPrefMode.OVERLAY:
+        return "overlay";
+      case SystemWindowPrefMode.BUBBLE:
+        return "bubble";
+      case SystemWindowPrefMode.DEFAULT:
+      default:
+        return "default";
+    }
+  }
 }

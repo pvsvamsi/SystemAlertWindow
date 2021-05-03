@@ -101,14 +101,16 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     String title = (String) arguments.get(0);
                     String body = (String) arguments.get(1);
                     HashMap<String, Object> params = (HashMap<String, Object>) arguments.get(2);
-                    boolean isPreferOverlay = (boolean) arguments.get(3);
+                    String prefMode = (String) arguments.get(3);
+                    if(prefMode == null){
+                        prefMode = "default";
+                    }
+                    boolean isPreferOverlay = "overlay".equalsIgnoreCase(prefMode);
                     boolean isPreferBubble = Commons.isForceAndroidBubble(mContext) ||
-                            (!isPreferOverlay && ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (boolean) arguments.get(4)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R));
+                            (!isPreferOverlay && ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && "bubble".equalsIgnoreCase(prefMode)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R));
                     if (isPreferBubble) {
                         Log.d(TAG, "Going to show Bubble");
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            showBubble(title, body, params);
-                        }
+                        showBubble(title, body, params);
                     } else {
                         Log.d(TAG, "Going to show System Alert Window");
                         final Intent i = new Intent(mContext, WindowServiceNew.class);
@@ -132,14 +134,16 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     String updateTitle = (String) updateArguments.get(0);
                     String updateBody = (String) updateArguments.get(1);
                     HashMap<String, Object> updateParams = (HashMap<String, Object>) updateArguments.get(2);
-                    boolean isPreferOverlay = (boolean) arguments.get(3);
+                    String prefMode = (String) arguments.get(3);
+                    if(prefMode == null){
+                        prefMode = "default";
+                    }
+                    boolean isPreferOverlay = "overlay".equalsIgnoreCase(prefMode);
                     boolean isPreferBubble = Commons.isForceAndroidBubble(mContext) ||
-                            (!isPreferOverlay && ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (boolean) arguments.get(4)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R));
+                            (!isPreferOverlay && ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && "bubble".equalsIgnoreCase(prefMode)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R));
                     if (isPreferBubble) {
                         Log.d(TAG, "Going to update Bubble");
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            showBubble(updateTitle, updateBody, updateParams);
-                        }
+                        showBubble(updateTitle, updateBody, updateParams);
                     } else {
                         Log.d(TAG, "Going to update System Alert Window");
                         final Intent i = new Intent(mContext, WindowServiceNew.class);
@@ -365,7 +369,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
+    //@RequiresApi(api = Build.VERSION_CODES.Q)
     private void showBubble(String title, String body, HashMap<String, Object> params) {
         Icon icon = Icon.createWithResource(mContext, R.drawable.ic_notification);
         NotificationHelper notificationHelper = NotificationHelper.getInstance(mContext);
