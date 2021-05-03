@@ -102,7 +102,8 @@ class SystemAlertWindow {
       int width,
       int height,
       String notificationTitle = "Title",
-      String notificationBody = "Body"}) async {
+      String notificationBody = "Body",
+      SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
     assert(header != null);
     final Map<String, dynamic> params = <String, dynamic>{
       'header': header.getMap(),
@@ -113,7 +114,7 @@ class SystemAlertWindow {
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT
     };
-    return await _channel.invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params]);
+    return await _channel.invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
   static Future<bool> closeSystemWindow() async {
