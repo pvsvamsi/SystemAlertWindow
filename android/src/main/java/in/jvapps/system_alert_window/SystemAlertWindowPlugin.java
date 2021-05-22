@@ -134,7 +134,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                     String updateTitle = (String) updateArguments.get(0);
                     String updateBody = (String) updateArguments.get(1);
                     HashMap<String, Object> updateParams = (HashMap<String, Object>) updateArguments.get(2);
-                    String prefMode = (String) arguments.get(3);
+                    String prefMode = (String) updateArguments.get(3);
                     if(prefMode == null){
                         prefMode = "default";
                     }
