@@ -34,22 +34,22 @@ typedef void OnClickListener(String tag);
 class SystemAlertWindow {
   static const MethodChannel _channel = const MethodChannel(Constants.CHANNEL);
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
+  static Future<String?> get platformVersion async {
+    final String? version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
 
-  static Future<bool> get checkPermissions async {
+  static Future<bool?> get checkPermissions async {
     return await _channel.invokeMethod('checkPermissions');
   }
 
-  static Future<bool> get requestPermissions async {
+  static Future<bool?> get requestPermissions async {
     return await _channel.invokeMethod('requestPermissions');
   }
 
   static Future<bool> registerOnClickListener(OnClickListener callBackFunction) async {
-    final callBackDispatcher = PluginUtilities.getCallbackHandle(callbackDispatcher);
-    final callBack = PluginUtilities.getCallbackHandle(callBackFunction);
+    final callBackDispatcher = PluginUtilities.getCallbackHandle(callbackDispatcher)!;
+    final callBack = PluginUtilities.getCallbackHandle(callBackFunction)!;
     _channel.setMethodCallHandler((MethodCall call) {
       print("Got callback");
       switch (call.method) {
@@ -64,19 +64,19 @@ class SystemAlertWindow {
           }
       }
       return null;
-    });
+    } as Future<dynamic> Function(MethodCall)?);
     await _channel.invokeMethod("registerCallBackHandler", <dynamic>[callBackDispatcher.toRawHandle(), callBack.toRawHandle()]);
     return true;
   }
 
-  static Future<bool> showSystemWindow(
-      {@required SystemWindowHeader header,
-      SystemWindowBody body,
-      SystemWindowFooter footer,
-      SystemWindowMargin margin,
+  static Future<bool?> showSystemWindow(
+      {required SystemWindowHeader header,
+      SystemWindowBody? body,
+      SystemWindowFooter? footer,
+      SystemWindowMargin? margin,
       SystemWindowGravity gravity = SystemWindowGravity.CENTER,
-      int width,
-      int height,
+      int? width,
+      int? height,
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
@@ -93,14 +93,14 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('showSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
-  static Future<bool> updateSystemWindow(
-      {@required SystemWindowHeader header,
-      SystemWindowBody body,
-      SystemWindowFooter footer,
-      SystemWindowMargin margin,
+  static Future<bool?> updateSystemWindow(
+      {required SystemWindowHeader header,
+      SystemWindowBody? body,
+      SystemWindowFooter? footer,
+      SystemWindowMargin? margin,
       SystemWindowGravity gravity = SystemWindowGravity.CENTER,
-      int width,
-      int height,
+      int? width,
+      int? height,
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
@@ -117,7 +117,7 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
-  static Future<bool> closeSystemWindow() async {
+  static Future<bool?> closeSystemWindow() async {
     return await _channel.invokeMethod('closeSystemWindow');
   }
 }
@@ -132,7 +132,7 @@ void callbackDispatcher() {
   _backgroundChannel.setMethodCallHandler((MethodCall call) async {
     final args = call.arguments;
     // 3.1. Retrieve callback instance for handle.
-    final Function callback = PluginUtilities.getCallbackFromHandle(CallbackHandle.fromRawHandle(args[0]));
+    final Function callback = PluginUtilities.getCallbackFromHandle(CallbackHandle.fromRawHandle(args[0]))!;
     assert(callback != null);
     final type = args[1];
     if (type == "onClick") {

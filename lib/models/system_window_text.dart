@@ -5,13 +5,13 @@ import 'package:system_alert_window/utils/commons.dart';
 
 class SystemWindowText {
   String text;
-  double fontSize;
-  Color textColor;
-  FontWeight fontWeight;
-  SystemWindowPadding padding;
+  double? fontSize;
+  Color? textColor;
+  FontWeight? fontWeight;
+  SystemWindowPadding? padding;
 
   SystemWindowText(
-      {@required this.text,
+      {required this.text,
       this.fontSize,
       this.fontWeight,
       this.textColor,

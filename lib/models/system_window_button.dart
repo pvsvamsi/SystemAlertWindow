@@ -9,16 +9,16 @@ class SystemWindowButton {
   static const int WRAP_CONTENT = -2;
 
   SystemWindowText text;
-  SystemWindowPadding padding;
-  SystemWindowMargin margin;
-  int width;
-  int height;
+  SystemWindowPadding? padding;
+  SystemWindowMargin? margin;
+  int? width;
+  int? height;
   String tag;
-  SystemWindowDecoration decoration;
+  SystemWindowDecoration? decoration;
 
   SystemWindowButton(
-      {@required this.text,
-      @required this.tag,
+      {required this.text,
+      required this.tag,
       this.padding,
       this.margin,
       this.width,
