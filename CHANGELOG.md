@@ -1,8 +1,12 @@
+## 0.5.0+1
+
+* Fixed issues in prefMode not being honored by the permissions and close layout calls
+
 ## 0.5.0
 
 * Migrated to Null safety + Updated the readme
 
-## 0.4.4
+## 0.4.4 (Latest Non null safety version)
 
 * Fixed issues in prefMode not being honored by the permissions and close layout calls
 
