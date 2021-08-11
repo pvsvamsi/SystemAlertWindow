@@ -76,42 +76,57 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onMethodCall(MethodCall call, @NonNull Result result) {
+        String prefMode;
+        List arguments;
         switch (call.method) {
             case "getPlatformVersion":
                 result.success("Android " + Build.VERSION.RELEASE);
                 break;
             case "requestPermissions":
-                if (askPermission()) {
+                assert (call.arguments != null);
+                arguments = (List) call.arguments;
+                prefMode = (String) arguments.get(0);
+                if (prefMode == null) {
+                    prefMode = "default";
+                }
+                if (askPermission(!isBubbleMode(prefMode))) {
                     result.success(true);
                 } else {
                     result.success(false);
                 }
                 break;
             case "checkPermissions":
-                if (checkPermission()) {
+                arguments = (List) call.arguments;
+                prefMode = (String) arguments.get(0);
+                if (prefMode == null) {
+                    prefMode = "default";
+                }
+                if (checkPermission(!isBubbleMode(prefMode))) {
                     result.success(true);
                 } else {
                     result.success(false);
                 }
                 break;
             case "showSystemWindow":
-                if (checkPermission()) {
-                    assert (call.arguments != null);
-                    List arguments = (List) call.arguments;
-                    String title = (String) arguments.get(0);
-                    String body = (String) arguments.get(1);
-                    HashMap<String, Object> params = (HashMap<String, Object>) arguments.get(2);
-                    String prefMode = (String) arguments.get(3);
-                    if(prefMode == null){
-                        prefMode = "default";
-                    }
-                    boolean isPreferOverlay = "overlay".equalsIgnoreCase(prefMode);
-                    boolean isPreferBubble = Commons.isForceAndroidBubble(mContext) ||
-                            (!isPreferOverlay && ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && "bubble".equalsIgnoreCase(prefMode)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R));
-                    if (isPreferBubble) {
+                assert (call.arguments != null);
+                arguments = (List) call.arguments;
+                String title = (String) arguments.get(0);
+                String body = (String) arguments.get(1);
+                HashMap<String, Object> params = (HashMap<String, Object>) arguments.get(2);
+                prefMode = (String) arguments.get(3);
+                if (prefMode == null) {
+                    prefMode = "default";
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
+                    if (checkPermission(false)) {
                         Log.d(TAG, "Going to show Bubble");
                         showBubble(title, body, params);
                     } else {
+                        Toast.makeText(mContext, "Please give enable bubbles", Toast.LENGTH_LONG).show();
+                        result.success(false);
+                    }
+                } else {
+                    if (checkPermission(true)) {
                         Log.d(TAG, "Going to show System Alert Window");
                         final Intent i = new Intent(mContext, WindowServiceNew.class);
                         i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
@@ -120,31 +135,34 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                         i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
                         //WindowService.enqueueWork(mContext, i);
                         mContext.startService(i);
+                    } else {
+                        Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
+                        result.success(false);
                     }
-                    result.success(true);
-                } else {
-                    Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
-                    result.success(false);
                 }
+                result.success(true);
                 break;
             case "updateSystemWindow":
-                if (checkPermission()) {
-                    assert (call.arguments != null);
-                    List updateArguments = (List) call.arguments;
-                    String updateTitle = (String) updateArguments.get(0);
-                    String updateBody = (String) updateArguments.get(1);
-                    HashMap<String, Object> updateParams = (HashMap<String, Object>) updateArguments.get(2);
-                    String prefMode = (String) updateArguments.get(3);
-                    if(prefMode == null){
-                        prefMode = "default";
-                    }
-                    boolean isPreferOverlay = "overlay".equalsIgnoreCase(prefMode);
-                    boolean isPreferBubble = Commons.isForceAndroidBubble(mContext) ||
-                            (!isPreferOverlay && ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && "bubble".equalsIgnoreCase(prefMode)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R));
-                    if (isPreferBubble) {
+                assert (call.arguments != null);
+                List updateArguments = (List) call.arguments;
+                String updateTitle = (String) updateArguments.get(0);
+                String updateBody = (String) updateArguments.get(1);
+                HashMap<String, Object> updateParams = (HashMap<String, Object>) updateArguments.get(2);
+                prefMode = (String) updateArguments.get(3);
+                if (prefMode == null) {
+                    prefMode = "default";
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
+                    if (checkPermission(false)) {
                         Log.d(TAG, "Going to update Bubble");
+                        NotificationHelper.getInstance(mContext).dismissNotification();
                         showBubble(updateTitle, updateBody, updateParams);
                     } else {
+                        Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
+                        result.success(false);
+                    }
+                } else {
+                    if (checkPermission(true)) {
                         Log.d(TAG, "Going to update System Alert Window");
                         final Intent i = new Intent(mContext, WindowServiceNew.class);
                         i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
@@ -153,16 +171,21 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                         i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
                         //WindowService.enqueueWork(mContext, i);
                         mContext.startService(i);
+                    } else {
+                        Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
+                        result.success(false);
                     }
-                    result.success(true);
-                } else {
-                    Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
-                    result.success(false);
                 }
+                result.success(true);
                 break;
             case "closeSystemWindow":
-                if (checkPermission()) {
-                    if (Commons.isForceAndroidBubble(mContext) || Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                arguments = (List) call.arguments;
+                prefMode = (String) arguments.get(0);
+                if (prefMode == null) {
+                    prefMode = "default";
+                }
+                if (checkPermission(!isBubbleMode(prefMode))) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
                         NotificationHelper.getInstance(mContext).dismissNotification();
                     } else {
                         final Intent i = new Intent(mContext, WindowServiceNew.class);
@@ -171,9 +194,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                         mContext.startService(i);
                     }
                     result.success(true);
-                } else {
-                    Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
-                    result.success(false);
                 }
                 break;
             case "registerCallBackHandler":
@@ -199,6 +219,13 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
             default:
                 result.notImplemented();
         }
+
+    }
+
+    private boolean isBubbleMode(String prefMode) {
+        boolean isPreferOverlay = "overlay".equalsIgnoreCase(prefMode);
+        return Commons.isForceAndroidBubble(mContext) ||
+                (!isPreferOverlay && ("bubble".equalsIgnoreCase(prefMode) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R));
     }
 
     public static void setPluginRegistrant(PluginRegistry.PluginRegistrantCallback callback) {
@@ -331,8 +358,8 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public boolean askPermission() {
-        if (Commons.isForceAndroidBubble(mContext) || Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+    public boolean askPermission(boolean isOverlay) {
+        if (!isOverlay && (Commons.isForceAndroidBubble(mContext) || Build.VERSION.SDK_INT > Build.VERSION_CODES.Q)) {
             return NotificationHelper.getInstance(mContext).areBubblesAllowed();
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(mContext)) {
@@ -359,8 +386,8 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public boolean checkPermission() {
-        if (Commons.isForceAndroidBubble(mContext) || Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+    public boolean checkPermission(boolean isOverlay) {
+        if (!isOverlay && (Commons.isForceAndroidBubble(mContext) || Build.VERSION.SDK_INT > Build.VERSION_CODES.Q)) {
             //return NotificationHelper.getInstance(mContext).areBubblesAllowed();
             return true;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -369,7 +396,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         return false;
     }
 
-    //@RequiresApi(api = Build.VERSION_CODES.Q)
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     private void showBubble(String title, String body, HashMap<String, Object> params) {
         Icon icon = Icon.createWithResource(mContext, R.drawable.ic_notification);
         NotificationHelper notificationHelper = NotificationHelper.getInstance(mContext);
