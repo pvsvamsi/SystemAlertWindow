@@ -15,6 +15,7 @@ class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   bool _isShowingWindow = false;
   bool _isUpdatedWindow = false;
+  SystemWindowPrefMode prefMode = SystemWindowPrefMode.OVERLAY;
 
   @override
   void initState() {
@@ -45,7 +46,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _requestPermissions() async {
-    await SystemAlertWindow.requestPermissions;
+    await SystemAlertWindow.requestPermissions(prefMode: prefMode);
   }
 
   void _showOverlayWindow() {
@@ -126,7 +127,7 @@ class _MyAppState extends State<MyApp> {
           gravity: SystemWindowGravity.TOP,
           notificationTitle: "Incoming Call",
           notificationBody: "+1 646 980 4741",
-          prefMode: SystemWindowPrefMode.OVERLAY
+          prefMode: prefMode
       );
       setState(() {
         _isShowingWindow = true;
@@ -208,7 +209,7 @@ class _MyAppState extends State<MyApp> {
           gravity: SystemWindowGravity.TOP,
           notificationTitle: "Outgoing Call",
           notificationBody: "+1 646 980 4741",
-          prefMode: SystemWindowPrefMode.OVERLAY);
+          prefMode: prefMode);
       setState(() {
         _isUpdatedWindow = true;
       });
@@ -217,7 +218,7 @@ class _MyAppState extends State<MyApp> {
         _isShowingWindow = false;
         _isUpdatedWindow = false;
       });
-      SystemAlertWindow.closeSystemWindow();
+      SystemAlertWindow.closeSystemWindow(prefMode: prefMode);
     }
   }
 
@@ -261,7 +262,7 @@ void callBack(String tag) {
   switch (tag) {
     case "simple_button":
     case "updated_simple_button":
-      SystemAlertWindow.closeSystemWindow();
+      SystemAlertWindow.closeSystemWindow(prefMode: SystemWindowPrefMode.OVERLAY);
       break;
     case "focus_button":
       print("Focus button has been called");

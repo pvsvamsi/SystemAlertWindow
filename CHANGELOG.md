@@ -2,6 +2,14 @@
 
 * Migrated to Null safety + Updated the readme
 
+## 0.4.4
+
+* Fixed issues in prefMode not being honored by the permissions and close layout calls
+
+## 0.4.3+1
+
+* Fixed prefMode crash
+
 ## 0.4.3
 
 * Added support for prefMode to SystemAlertWindow. Using this users can force SystemAlertWindow to show overlay on Android 11 (prefMode = OVERLAY) and Bubble in Android 10 (prefMode = BUBBLE)
