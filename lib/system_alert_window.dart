@@ -39,11 +39,11 @@ class SystemAlertWindow {
     return version;
   }
 
-  static Future<bool> checkPermissions(SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+  static Future<bool> checkPermissions({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
     return await _channel.invokeMethod('checkPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
-  static Future<bool> requestPermissions(SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+  static Future<bool> requestPermissions({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
     return await _channel.invokeMethod('requestPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
@@ -117,7 +117,7 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
-  static Future<bool> closeSystemWindow(SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+  static Future<bool> closeSystemWindow({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
     return await _channel.invokeMethod('closeSystemWindow', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 }
