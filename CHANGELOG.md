@@ -1,3 +1,7 @@
+## 0.4.4
+
+* Fixed issues in prefMode not being honored by the permissions and close layout calls
+
 ## 0.4.3+1
 
 * Fixed prefMode crash
