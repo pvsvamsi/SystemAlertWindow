@@ -16,7 +16,7 @@ class SystemWindowBody {
     final Map<String, dynamic> map = <String, dynamic>{
       'rows': (rows == null)
           ? null
-          : List<dynamic>.from(rows!.map((x) => x?.getMap())),
+          : List<dynamic>.from(rows!.map((x) => x.getMap())),
       'padding': padding?.getMap(),
       'decoration': decoration?.getMap()
     };
@@ -38,7 +38,7 @@ class EachRow {
     final Map<String, dynamic> map = <String, dynamic>{
       'columns': (columns == null)
           ? null
-          : List<dynamic>.from(columns!.map((x) => x?.getMap())),
+          : List<dynamic>.from(columns!.map((x) => x.getMap())),
       'padding': padding?.getMap(),
       'margin': margin?.getMap(),
       'gravity': Commons.getContentGravity(gravity),
