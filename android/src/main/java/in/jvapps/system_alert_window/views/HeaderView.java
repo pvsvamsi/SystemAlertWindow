@@ -3,6 +3,8 @@ package in.jvapps.system_alert_window.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,8 +22,9 @@ import in.jvapps.system_alert_window.utils.UiBuilder;
 import static in.jvapps.system_alert_window.utils.Constants.*;
 
 public class HeaderView {
-    private Map<String, Object> headerMap;
-    private Context context;
+    private final Map<String, Object> headerMap;
+    private final Context context;
+    private final UiBuilder uiBuilder = UiBuilder.getInstance();
 
     public HeaderView(Context context, Map<String, Object> headerMap) {
         this.context = context;
@@ -33,9 +36,9 @@ public class HeaderView {
     public RelativeLayout getRelativeView() {
         RelativeLayout relativeLayout = new RelativeLayout(context);
         relativeLayout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
-        Decoration decoration = UiBuilder.getDecoration(context, headerMap.get(KEY_DECORATION));
+        Decoration decoration = uiBuilder.getDecoration(context, Commons.getMapFromObject(headerMap, KEY_DECORATION));
         if (decoration != null) {
-            GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
+            GradientDrawable gd = uiBuilder.getGradientDrawable(decoration);
             relativeLayout.setBackground(gd);
         } else {
             relativeLayout.setBackgroundColor(Color.WHITE);
@@ -43,14 +46,14 @@ public class HeaderView {
         Map<String, Object> titleMap = Commons.getMapFromObject(headerMap, KEY_TITLE);
         Map<String, Object> subTitleMap = Commons.getMapFromObject(headerMap, KEY_SUBTITLE);
         Map<String, Object> buttonMap = Commons.getMapFromObject(headerMap, KEY_BUTTON);
-        Padding padding = UiBuilder.getPadding(context, headerMap.get(KEY_PADDING));
+        Padding padding = uiBuilder.getPadding(context, headerMap.get(KEY_PADDING));
         relativeLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
         boolean isShowButton = (buttonMap != null);
         assert titleMap != null;
         View textColumn = createTextColumn(titleMap, subTitleMap);
         if (isShowButton) {
             String buttonPosition = (String) headerMap.get(KEY_BUTTON_POSITION);
-            Button button = UiBuilder.getButtonView(context, buttonMap);
+            Button button = uiBuilder.getButtonView(context, buttonMap);
             if ("leading".equals(buttonPosition)) {
                 relativeLayout.addView(button);
                 relativeLayout.addView(textColumn);
@@ -68,9 +71,14 @@ public class HeaderView {
     public LinearLayout getView() {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        Decoration decoration = UiBuilder.getDecoration(context, headerMap.get(KEY_DECORATION));
+        linearLayout.setBackgroundColor(Color.GREEN);
+        Log.d("WindowServiceNew", Commons.getMapFromObject(headerMap, KEY_DECORATION).toString());
+        Decoration decoration = uiBuilder.getDecoration(context, Commons.getMapFromObject(headerMap, KEY_DECORATION));
         if (decoration != null) {
-            GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
+            GradientDrawable gd = uiBuilder.getGradientDrawable(decoration);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Log.d("WindowServiceNew", gd.getColor().toString());
+            }
             linearLayout.setBackground(gd);
         } else {
             linearLayout.setBackgroundColor(Color.WHITE);
@@ -79,14 +87,14 @@ public class HeaderView {
         Map<String, Object> titleMap = Commons.getMapFromObject(headerMap, KEY_TITLE);
         Map<String, Object> subTitleMap = Commons.getMapFromObject(headerMap, KEY_SUBTITLE);
         Map<String, Object> buttonMap = Commons.getMapFromObject(headerMap, KEY_BUTTON);
-        Padding padding = UiBuilder.getPadding(context, headerMap.get(KEY_PADDING));
+        Padding padding = uiBuilder.getPadding(context, headerMap.get(KEY_PADDING));
         linearLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
         boolean isShowButton = (buttonMap != null);
         //assert titleMap != null;
         View textColumn = createTextColumn(titleMap, subTitleMap);
         if (isShowButton) {
             String buttonPosition = (String) headerMap.get(KEY_BUTTON_POSITION);
-            Button button = UiBuilder.getButtonView(context, buttonMap);
+            Button button = uiBuilder.getButtonView(context, buttonMap);
             if ("leading".equals(buttonPosition)) {
                 linearLayout.addView(button);
                 if (textColumn != null) {
@@ -112,12 +120,12 @@ public class HeaderView {
     }
 
     private View createTextColumn(Map<String, Object> titleMap, Map<String, Object> subTitleMap) {
-        TextView titleView = UiBuilder.getTextView(context, titleMap);
+        TextView titleView = uiBuilder.getTextView(context, titleMap);
         if (subTitleMap != null) {
             LinearLayout linearLayout = new LinearLayout(context);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
             linearLayout.addView(titleView);
-            linearLayout.addView(UiBuilder.getTextView(context, subTitleMap));
+            linearLayout.addView(uiBuilder.getTextView(context, subTitleMap));
             return linearLayout;
         }
         return titleView;

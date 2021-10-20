@@ -1,6 +1,8 @@
 package in.jvapps.system_alert_window.utils;
 
-import android.annotation.TargetApi;
+import static android.content.Context.ACTIVITY_SERVICE;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_MARGIN;
+
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -13,16 +15,11 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityManagerCompat;
 
 import java.util.List;
 import java.util.Map;
 
 import in.jvapps.system_alert_window.models.Margin;
-
-import static android.content.Context.ACTIVITY_SERVICE;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_MARGIN;
 
 public class Commons {
 
@@ -100,7 +97,7 @@ public class Commons {
     }
 
     public static void setMargin(Context context, LinearLayout.LayoutParams params, Map<String, Object> map) {
-        Margin margin = UiBuilder.getMargin(context, map.get(KEY_MARGIN));
+        Margin margin = UiBuilder.getInstance().getMargin(context, map.get(KEY_MARGIN));
         params.setMargins(margin.getLeft(), margin.getTop(), margin.getRight(), margin.getBottom());
     }
 

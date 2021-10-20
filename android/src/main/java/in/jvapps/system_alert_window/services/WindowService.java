@@ -135,7 +135,7 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
                 Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, KEY_HEADER);
                 Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, KEY_BODY);
                 Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, KEY_FOOTER);
-                windowMargin = UiBuilder.getMargin(mContext, paramsMap.get(KEY_MARGIN));
+                windowMargin = UiBuilder.getInstance().getMargin(mContext, paramsMap.get(KEY_MARGIN));
                 windowGravity = (String) paramsMap.get(KEY_GRAVITY);
                 windowWidth = NumberUtils.getInt(paramsMap.get(KEY_WIDTH));
                 windowHeight = NumberUtils.getInt(paramsMap.get(KEY_HEIGHT));
@@ -179,7 +179,7 @@ public class WindowService extends JobIntentService implements View.OnTouchListe
             params.type = LayoutParams.TYPE_APPLICATION_OVERLAY;
             params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_SHOW_WHEN_LOCKED | LayoutParams.FLAG_NOT_FOCUSABLE;
         } else {
-            params.type = LayoutParams.TYPE_SYSTEM_ALERT | LayoutParams.TYPE_SYSTEM_OVERLAY;
+            params.type = LayoutParams.TYPE_SYSTEM_OVERLAY;
             params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_NOT_FOCUSABLE;
         }
         params.gravity = Commons.getGravity(windowGravity, Gravity.TOP);

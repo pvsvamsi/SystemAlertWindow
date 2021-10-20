@@ -14,13 +14,17 @@ public class NumberUtils {
         return getNumber(object).intValue();
     }
 
+    public static long getLong(Object object) {
+        return getNumber(object).longValue();
+    }
+
     private static Number getNumber(Object object) {
         Number val = 0;
         if (object != null) {
             try {
                 val = ((Number) object);
             } catch (Exception ex) {
-                Log.d(TAG, ex.toString());
+                Log.e(TAG, ex.toString());
             }
         }
         return val;

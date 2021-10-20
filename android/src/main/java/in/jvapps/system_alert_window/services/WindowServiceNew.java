@@ -132,7 +132,8 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, KEY_HEADER);
         Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, KEY_BODY);
         Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, KEY_FOOTER);
-        windowMargin = UiBuilder.getMargin(mContext, paramsMap.get(KEY_MARGIN));
+        Log.d(TAG, headersMap.toString());
+        windowMargin = UiBuilder.getInstance().getMargin(mContext, paramsMap.get(KEY_MARGIN));
         windowGravity = (String) paramsMap.get(KEY_GRAVITY);
         windowWidth = NumberUtils.getInt(paramsMap.get(KEY_WIDTH));
         windowHeight = NumberUtils.getInt(paramsMap.get(KEY_HEIGHT));
@@ -153,7 +154,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             params.type = android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
             params.flags = android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         } else {
-            params.type = android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ALERT | android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+            params.type = android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
             params.flags = android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         }
         params.gravity = Commons.getGravity(windowGravity, Gravity.TOP);

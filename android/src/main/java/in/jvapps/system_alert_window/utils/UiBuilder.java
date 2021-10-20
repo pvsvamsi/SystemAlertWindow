@@ -4,11 +4,13 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import in.jvapps.system_alert_window.SystemAlertWindowPlugin;
@@ -39,7 +41,20 @@ import static in.jvapps.system_alert_window.utils.Constants.KEY_WIDTH;
 
 public class UiBuilder {
 
-    public static TextView getTextView(Context context, Map<String, Object> textMap) {
+    private static UiBuilder _instance;
+    private final SystemAlertWindowPlugin systemAlertWindowPlugin = new SystemAlertWindowPlugin();
+
+    private UiBuilder() {
+    }
+
+    public static UiBuilder getInstance() {
+        if (_instance == null) {
+            _instance = new UiBuilder();
+        }
+        return _instance;
+    }
+
+    public TextView getTextView(Context context, Map<String, Object> textMap) {
         if (textMap == null) return null;
         TextView textView = new TextView(context);
         textView.setText((String) textMap.get(KEY_TEXT));
@@ -51,7 +66,7 @@ public class UiBuilder {
         return textView;
     }
 
-    public static Padding getPadding(Context context, Object object) {
+    public Padding getPadding(Context context, Object object) {
         @SuppressWarnings("unchecked")
         Map<String, Object> paddingMap = (Map<String, Object>) object;
         if (paddingMap == null) {
@@ -60,7 +75,7 @@ public class UiBuilder {
         return new Padding(paddingMap.get(KEY_LEFT), paddingMap.get(KEY_TOP), paddingMap.get(KEY_RIGHT), paddingMap.get(KEY_BOTTOM), context);
     }
 
-    public static Margin getMargin(Context context, Object object) {
+    public Margin getMargin(Context context, Object object) {
         @SuppressWarnings("unchecked")
         Map<String, Object> marginMap = (Map<String, Object>) object;
         if (marginMap == null) {
@@ -69,9 +84,7 @@ public class UiBuilder {
         return new Margin(marginMap.get(KEY_LEFT), marginMap.get(KEY_TOP), marginMap.get(KEY_RIGHT), marginMap.get(KEY_BOTTOM), context);
     }
 
-    public static Decoration getDecoration(Context context, Object object) {
-        @SuppressWarnings("unchecked")
-        Map<String, Object> decorationMap = (Map<String, Object>) object;
+    public Decoration getDecoration(Context context, Map<String, Object> decorationMap) {
         if (decorationMap == null) {
             return null;
         }
@@ -80,7 +93,7 @@ public class UiBuilder {
                 decorationMap.get(KEY_BORDER_COLOR), context);
     }
 
-    public static Button getButtonView(Context context, Map<String, Object> buttonMap) {
+    public Button getButtonView(Context context, Map<String, Object> buttonMap) {
         if (buttonMap == null) return null;
         Button button = new Button(context);
         TextView buttonText = getTextView(context, Commons.getMapFromObject(buttonMap, KEY_TEXT));
@@ -93,29 +106,29 @@ public class UiBuilder {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             button.setElevation(10);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                Commons.getPixelsFromDp(context, (int) buttonMap.get(KEY_WIDTH)),
-                Commons.getPixelsFromDp(context, (int) buttonMap.get(KEY_HEIGHT)),
+                Commons.getPixelsFromDp(context, (int) ((double) buttonMap.get(KEY_WIDTH))),
+                Commons.getPixelsFromDp(context, (int) ((double) buttonMap.get(KEY_HEIGHT))),
                 1.0f);
         Margin buttonMargin = getMargin(context, buttonMap.get(KEY_MARGIN));
         params.setMargins(buttonMargin.getLeft(), buttonMargin.getTop(), buttonMargin.getRight(), Math.min(buttonMargin.getBottom(), 4));
         button.setLayoutParams(params);
         Padding padding = getPadding(context, buttonMap.get(KEY_PADDING));
         button.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
-        Decoration decoration = getDecoration(context, buttonMap.get(KEY_DECORATION));
+        Decoration decoration = getDecoration(context, Commons.getMapFromObject(buttonMap, KEY_DECORATION));
         if (decoration != null) {
             GradientDrawable gd = getGradientDrawable(decoration);
             button.setBackground(gd);
         }
         button.setOnClickListener(v -> {
-            if (!SystemAlertWindowPlugin.sIsIsolateRunning.get()) {
-                SystemAlertWindowPlugin.startCallBackHandler(context);
+            if (!systemAlertWindowPlugin.sIsIsolateRunning.get()) {
+                systemAlertWindowPlugin.startCallBackHandler(context);
             }
-            SystemAlertWindowPlugin.invokeCallBack(context, CALLBACK_TYPE_ONCLICK, tag);
+            systemAlertWindowPlugin.invokeCallBack(context, CALLBACK_TYPE_ONCLICK, tag);
         });
         return button;
     }
 
-    public static GradientDrawable getGradientDrawable(Decoration decoration) {
+    public GradientDrawable getGradientDrawable(Decoration decoration) {
         GradientDrawable gd = new GradientDrawable();
         if (decoration.isGradient()) {
             int[] colors = {decoration.getStartColor(), decoration.getEndColor()};

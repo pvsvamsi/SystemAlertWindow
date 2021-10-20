@@ -1,10 +1,12 @@
 package in.jvapps.system_alert_window;
 
-import android.annotation.SuppressLint;
+import static in.jvapps.system_alert_window.services.WindowServiceNew.INTENT_EXTRA_IS_CLOSE_WINDOW;
+import static in.jvapps.system_alert_window.services.WindowServiceNew.INTENT_EXTRA_IS_UPDATE_WINDOW;
+import static in.jvapps.system_alert_window.utils.Constants.CHANNEL;
+import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,52 +20,48 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import in.jvapps.system_alert_window.services.WindowServiceNew;
 import in.jvapps.system_alert_window.utils.Commons;
 import in.jvapps.system_alert_window.utils.Constants;
 import in.jvapps.system_alert_window.utils.NotificationHelper;
+import io.flutter.FlutterInjector;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterEngineCache;
+import io.flutter.embedding.engine.dart.DartExecutor;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.JSONMethodCodec;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.view.FlutterCallbackInformation;
-import io.flutter.view.FlutterMain;
-import io.flutter.view.FlutterNativeView;
-import io.flutter.view.FlutterRunArguments;
 
-import static in.jvapps.system_alert_window.services.WindowServiceNew.INTENT_EXTRA_IS_CLOSE_WINDOW;
-import static in.jvapps.system_alert_window.services.WindowServiceNew.INTENT_EXTRA_IS_UPDATE_WINDOW;
-import static in.jvapps.system_alert_window.utils.Constants.CHANNEL;
-import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
+public class SystemAlertWindowPlugin extends Activity implements FlutterPlugin, ActivityAware, MethodCallHandler {
 
-public class SystemAlertWindowPlugin extends Activity implements MethodCallHandler {
-
+    private final String flutterEngineId = "system_alert_window_engine";
     private Context mContext;
-    @SuppressLint("StaticFieldLeak")
-    private static Activity mActivity;
-    @SuppressLint("StaticFieldLeak")
-    private static FlutterNativeView sBackgroundFlutterView;
-    private static PluginRegistry.PluginRegistrantCallback sPluginRegistrantCallback;
-    public static AtomicBoolean sIsIsolateRunning = new AtomicBoolean(false);
+    private Activity mActivity;
+    public AtomicBoolean sIsIsolateRunning = new AtomicBoolean(false);
 
-    static MethodChannel methodChannel;
-    static MethodChannel backgroundChannel;
-    public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1237;
-    private static NotificationManager notificationManager;
-    private static String TAG = "SystemAlertWindowPlugin";
+    private MethodChannel methodChannel;
+    private MethodChannel backgroundChannel;
+    public int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1237;
+    private final String TAG = "SystemAlertWindowPlugin";
 
-    @SuppressWarnings("unused")
-    public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), CHANNEL);
-        channel.setMethodCallHandler(new SystemAlertWindowPlugin(registrar.context(), registrar.activity(), channel));
+    public SystemAlertWindowPlugin() {
     }
 
     private SystemAlertWindowPlugin(Context context, Activity activity, MethodChannel newMethodChannel) {
@@ -73,151 +71,216 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         methodChannel.setMethodCallHandler(this);
     }
 
+    public synchronized FlutterEngine getFlutterEngine(Context context) {
+        FlutterEngine flutterEngine = FlutterEngineCache.getInstance().get(flutterEngineId);
+        if (flutterEngine == null) {
+            // XXX: The constructor triggers onAttachedToEngine so this variable doesn't help us.
+            // Maybe need a boolean flag to tell us we're currently loading the main flutter engine.
+            flutterEngine = new FlutterEngine(context.getApplicationContext());
+            flutterEngine.getDartExecutor().executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault());
+            FlutterEngineCache.getInstance().put(flutterEngineId, flutterEngine);
+        }
+        return flutterEngine;
+    }
+
+    public void disposeFlutterEngine() {
+        FlutterEngine flutterEngine = FlutterEngineCache.getInstance().get(flutterEngineId);
+        if (flutterEngine != null) {
+            flutterEngine.destroy();
+            FlutterEngineCache.getInstance().remove(flutterEngineId);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static void registerWith(Registrar registrar) {
+        final MethodChannel channel = new MethodChannel(registrar.messenger(), CHANNEL, JSONMethodCodec.INSTANCE);
+        channel.setMethodCallHandler(new SystemAlertWindowPlugin(registrar.context(), registrar.activity(), channel));
+    }
+
+    @Override
+    public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+        this.mContext = flutterPluginBinding.getApplicationContext();
+        this.methodChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), CHANNEL, JSONMethodCodec.INSTANCE);
+        this.methodChannel.setMethodCallHandler(this);
+    }
+
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+        this.mContext = null;
+        this.methodChannel.setMethodCallHandler(null);
+    }
+
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding activityPluginBinding) {
+        this.mActivity = activityPluginBinding.getActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        this.mActivity = null;
+        disposeFlutterEngine();
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding activityPluginBinding) {
+
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void onMethodCall(MethodCall call, @NonNull Result result) {
-        String prefMode;
-        List arguments;
-        switch (call.method) {
-            case "getPlatformVersion":
-                result.success("Android " + Build.VERSION.RELEASE);
-                break;
-            case "requestPermissions":
-                assert (call.arguments != null);
-                arguments = (List) call.arguments;
-                prefMode = (String) arguments.get(0);
-                if (prefMode == null) {
-                    prefMode = "default";
-                }
-                if (askPermission(!isBubbleMode(prefMode))) {
-                    result.success(true);
-                } else {
-                    result.success(false);
-                }
-                break;
-            case "checkPermissions":
-                arguments = (List) call.arguments;
-                prefMode = (String) arguments.get(0);
-                if (prefMode == null) {
-                    prefMode = "default";
-                }
-                if (checkPermission(!isBubbleMode(prefMode))) {
-                    result.success(true);
-                } else {
-                    result.success(false);
-                }
-                break;
-            case "showSystemWindow":
-                assert (call.arguments != null);
-                arguments = (List) call.arguments;
-                String title = (String) arguments.get(0);
-                String body = (String) arguments.get(1);
-                HashMap<String, Object> params = (HashMap<String, Object>) arguments.get(2);
-                prefMode = (String) arguments.get(3);
-                if (prefMode == null) {
-                    prefMode = "default";
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
-                    if (checkPermission(false)) {
-                        Log.d(TAG, "Going to show Bubble");
-                        showBubble(title, body, params);
-                    } else {
-                        Toast.makeText(mContext, "Please give enable bubbles", Toast.LENGTH_LONG).show();
-                        result.success(false);
+    public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
+        try {
+            String prefMode;
+            JSONArray arguments;
+            switch (call.method) {
+                case "getPlatformVersion":
+                    result.success("Android " + Build.VERSION.RELEASE);
+                    break;
+                case "requestPermissions":
+                    assert (call.arguments != null);
+                    arguments = (JSONArray) call.arguments;
+                    prefMode = (String) arguments.get(0);
+                    if (prefMode == null) {
+                        prefMode = "default";
                     }
-                } else {
-                    if (checkPermission(true)) {
-                        Log.d(TAG, "Going to show System Alert Window");
-                        final Intent i = new Intent(mContext, WindowServiceNew.class);
-                        i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
-                        //WindowService.enqueueWork(mContext, i);
-                        mContext.startService(i);
-                    } else {
-                        Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
-                        result.success(false);
-                    }
-                }
-                result.success(true);
-                break;
-            case "updateSystemWindow":
-                assert (call.arguments != null);
-                List updateArguments = (List) call.arguments;
-                String updateTitle = (String) updateArguments.get(0);
-                String updateBody = (String) updateArguments.get(1);
-                HashMap<String, Object> updateParams = (HashMap<String, Object>) updateArguments.get(2);
-                prefMode = (String) updateArguments.get(3);
-                if (prefMode == null) {
-                    prefMode = "default";
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
-                    if (checkPermission(false)) {
-                        Log.d(TAG, "Going to update Bubble");
-                        NotificationHelper.getInstance(mContext).dismissNotification();
-                        showBubble(updateTitle, updateBody, updateParams);
-                    } else {
-                        Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
-                        result.success(false);
-                    }
-                } else {
-                    if (checkPermission(true)) {
-                        Log.d(TAG, "Going to update System Alert Window");
-                        final Intent i = new Intent(mContext, WindowServiceNew.class);
-                        i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
-                        //WindowService.enqueueWork(mContext, i);
-                        mContext.startService(i);
-                    } else {
-                        Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
-                        result.success(false);
-                    }
-                }
-                result.success(true);
-                break;
-            case "closeSystemWindow":
-                arguments = (List) call.arguments;
-                prefMode = (String) arguments.get(0);
-                if (prefMode == null) {
-                    prefMode = "default";
-                }
-                if (checkPermission(!isBubbleMode(prefMode))) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
-                        NotificationHelper.getInstance(mContext).dismissNotification();
-                    } else {
-                        final Intent i = new Intent(mContext, WindowServiceNew.class);
-                        i.putExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, true);
-                        //WindowService.dequeueWork(mContext, i);
-                        mContext.startService(i);
-                    }
-                    result.success(true);
-                }
-                break;
-            case "registerCallBackHandler":
-                try {
-                    List callBackArguments = (List) call.arguments;
-                    if (callBackArguments != null) {
-                        long callbackHandle = Long.parseLong(String.valueOf(callBackArguments.get(0)));
-                        long onClickHandle = Long.parseLong(String.valueOf(callBackArguments.get(1)));
-                        SharedPreferences preferences = mContext.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
-                        preferences.edit().putLong(Constants.CALLBACK_HANDLE_KEY, callbackHandle)
-                                .putLong(Constants.CODE_CALLBACK_HANDLE_KEY, onClickHandle).apply();
-                        startCallBackHandler(mContext);
+                    if (askPermission(!isBubbleMode(prefMode))) {
                         result.success(true);
                     } else {
-                        Log.e(TAG, "Unable to register on click handler. Arguments are null");
                         result.success(false);
                     }
-                } catch (Exception ex) {
-                    Log.e(TAG, "Exception in registerOnClickHandler " + ex.toString());
-                    result.success(false);
-                }
-                break;
-            default:
-                result.notImplemented();
+                    break;
+                case "checkPermissions":
+                    arguments = (JSONArray) call.arguments;
+                    prefMode = (String) arguments.get(0);
+                    if (prefMode == null) {
+                        prefMode = "default";
+                    }
+                    if (checkPermission(!isBubbleMode(prefMode))) {
+                        result.success(true);
+                    } else {
+                        result.success(false);
+                    }
+                    break;
+                case "showSystemWindow":
+                    assert (call.arguments != null);
+                    arguments = (JSONArray) call.arguments;
+                    String title = (String) arguments.get(0);
+                    String body = (String) arguments.get(1);
+                    JSONObject paramObj = (JSONObject) arguments.get(2);
+                    HashMap params = new Gson().fromJson(paramObj.toString(), HashMap.class);
+                    prefMode = (String) arguments.get(3);
+                    if (prefMode == null) {
+                        prefMode = "default";
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
+                        if (checkPermission(false)) {
+                            Log.d(TAG, "Going to show Bubble");
+                            showBubble(title, body, params);
+                        } else {
+                            Toast.makeText(mContext, "Please give enable bubbles", Toast.LENGTH_LONG).show();
+                            result.success(false);
+                        }
+                    } else {
+                        if (checkPermission(true)) {
+                            Log.d(TAG, "Going to show System Alert Window");
+                            final Intent i = new Intent(mContext, WindowServiceNew.class);
+                            i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
+                            //WindowService.enqueueWork(mContext, i);
+                            mContext.startService(i);
+                        } else {
+                            Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
+                            result.success(false);
+                        }
+                    }
+                    result.success(true);
+                    break;
+                case "updateSystemWindow":
+                    assert (call.arguments != null);
+                    JSONArray updateArguments = (JSONArray) call.arguments;
+                    String updateTitle = (String) updateArguments.get(0);
+                    String updateBody = (String) updateArguments.get(1);
+                    HashMap<String, Object> updateParams = new Gson().fromJson(((JSONObject) updateArguments.get(2)).toString(), HashMap.class);
+                    prefMode = (String) updateArguments.get(3);
+                    if (prefMode == null) {
+                        prefMode = "default";
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
+                        if (checkPermission(false)) {
+                            Log.d(TAG, "Going to update Bubble");
+                            NotificationHelper.getInstance(mContext).dismissNotification();
+                            showBubble(updateTitle, updateBody, updateParams);
+                        } else {
+                            Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
+                            result.success(false);
+                        }
+                    } else {
+                        if (checkPermission(true)) {
+                            Log.d(TAG, "Going to update System Alert Window");
+                            final Intent i = new Intent(mContext, WindowServiceNew.class);
+                            i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
+                            //WindowService.enqueueWork(mContext, i);
+                            mContext.startService(i);
+                        } else {
+                            Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
+                            result.success(false);
+                        }
+                    }
+                    result.success(true);
+                    break;
+                case "closeSystemWindow":
+                    arguments = (JSONArray) call.arguments;
+                    prefMode = (String) arguments.get(0);
+                    if (prefMode == null) {
+                        prefMode = "default";
+                    }
+                    if (checkPermission(!isBubbleMode(prefMode))) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
+                            NotificationHelper.getInstance(mContext).dismissNotification();
+                        } else {
+                            final Intent i = new Intent(mContext, WindowServiceNew.class);
+                            i.putExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, true);
+                            //WindowService.dequeueWork(mContext, i);
+                            mContext.startService(i);
+                        }
+                        result.success(true);
+                    }
+                    break;
+                case "registerCallBackHandler":
+                    try {
+                        JSONArray callBackArguments = (JSONArray) call.arguments;
+                        if (callBackArguments != null) {
+                            long callbackHandle = Long.parseLong(String.valueOf(callBackArguments.get(0)));
+                            long onClickHandle = Long.parseLong(String.valueOf(callBackArguments.get(1)));
+                            SharedPreferences preferences = mContext.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
+                            preferences.edit().putLong(Constants.CALLBACK_HANDLE_KEY, callbackHandle)
+                                    .putLong(Constants.CODE_CALLBACK_HANDLE_KEY, onClickHandle).apply();
+                            startCallBackHandler(mContext);
+                            result.success(true);
+                        } else {
+                            Log.e(TAG, "Unable to register on click handler. Arguments are null");
+                            result.success(false);
+                        }
+                    } catch (Exception ex) {
+                        Log.e(TAG, "Exception in registerOnClickHandler " + ex.toString());
+                        result.success(false);
+                    }
+                    break;
+                default:
+                    result.notImplemented();
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
         }
 
     }
@@ -228,45 +291,29 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
                 (!isPreferOverlay && ("bubble".equalsIgnoreCase(prefMode) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R));
     }
 
-    public static void setPluginRegistrant(PluginRegistry.PluginRegistrantCallback callback) {
+    /*public static void setPluginRegistrant(PluginRegistry.PluginRegistrantCallback callback) {
         sPluginRegistrantCallback = callback;
-    }
+    }*/
 
-    public static void startCallBackHandler(Context context) {
+    public void startCallBackHandler(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
         long callBackHandle = preferences.getLong(Constants.CALLBACK_HANDLE_KEY, -1);
         Log.d(TAG, "onClickCallBackHandle " + callBackHandle);
         if (callBackHandle != -1) {
-            FlutterMain.ensureInitializationComplete(context, null);
-            String mAppBundlePath = FlutterMain.findAppBundlePath();
-            FlutterCallbackInformation flutterCallback = FlutterCallbackInformation.lookupCallbackInformation(callBackHandle);
-            if (sBackgroundFlutterView == null) {
-                sBackgroundFlutterView = new FlutterNativeView(context, true);
-                if (mAppBundlePath != null && !sIsIsolateRunning.get()) {
-                    if (sPluginRegistrantCallback == null) {
-                        Log.i(TAG, "Unable to start callBackHandle... as plugin is not registered");
-                        return;
-                    }
-                    Log.i(TAG, "Starting callBackHandle...");
-                    FlutterRunArguments args = new FlutterRunArguments();
-                    args.bundlePath = mAppBundlePath;
-                    args.entrypoint = flutterCallback.callbackName;
-                    args.libraryPath = flutterCallback.callbackLibraryPath;
-                    sBackgroundFlutterView.runFromBundle(args);
-                    sPluginRegistrantCallback.registerWith(sBackgroundFlutterView.getPluginRegistry());
-                    backgroundChannel = new MethodChannel(sBackgroundFlutterView, Constants.BACKGROUND_CHANNEL);
-                    sIsIsolateRunning.set(true);
-                }
-            } else {
-                if (backgroundChannel == null) {
-                    backgroundChannel = new MethodChannel(sBackgroundFlutterView, Constants.BACKGROUND_CHANNEL);
-                }
-                sIsIsolateRunning.set(true);
+            FlutterCallbackInformation callback = FlutterCallbackInformation.lookupCallbackInformation(callBackHandle);
+            if (callback == null) {
+                Log.e(TAG, "callback handle not found");
+                return;
             }
+            FlutterEngine backgroundEngine = new FlutterEngine(context);
+            backgroundChannel = new MethodChannel(backgroundEngine.getDartExecutor().getBinaryMessenger(), Constants.BACKGROUND_CHANNEL, JSONMethodCodec.INSTANCE);
+            sIsIsolateRunning.set(true);
+            DartExecutor.DartCallback dartCallback = new DartExecutor.DartCallback(context.getAssets(), FlutterInjector.instance().flutterLoader().findAppBundlePath(), callback);
+            backgroundEngine.getDartExecutor().executeDartCallback(dartCallback);
         }
     }
 
-    public static void invokeCallBack(Context context, String type, Object params) {
+    public void invokeCallBack(Context context, String type, Object params) {
         List<Object> argumentsList = new ArrayList<>();
         Log.v(TAG, "invoking callback for tag " + params);
         /*try {
@@ -300,10 +347,6 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
             argumentsList.add(type);
             argumentsList.add(params);
             if (sIsIsolateRunning.get()) {
-                if (backgroundChannel == null) {
-                    Log.v(TAG, "Recreating the background channel as it is null");
-                    backgroundChannel = new MethodChannel(sBackgroundFlutterView, Constants.BACKGROUND_CHANNEL);
-                }
                 try {
                     Log.v(TAG, "Invoking on method channel");
                     int[] retries = {2};
@@ -318,7 +361,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
         }
     }
 
-    private static void invokeCallBackToFlutter(final MethodChannel channel, final String method, final List<Object> arguments, final int[] retries) {
+    private void invokeCallBackToFlutter(final MethodChannel channel, final String method, final List<Object> arguments, final int[] retries) {
         channel.invokeMethod(method, arguments, new MethodChannel.Result() {
             @Override
             public void success(Object o) {
@@ -397,7 +440,7 @@ public class SystemAlertWindowPlugin extends Activity implements MethodCallHandl
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private void showBubble(String title, String body, HashMap<String, Object> params) {
+    private void showBubble(String title, String body, HashMap params) {
         Icon icon = Icon.createWithResource(mContext, R.drawable.ic_notification);
         NotificationHelper notificationHelper = NotificationHelper.getInstance(mContext);
         notificationHelper.showNotification(icon, title, body, params);

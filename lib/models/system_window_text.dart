@@ -10,12 +10,11 @@ class SystemWindowText {
   FontWeight fontWeight;
   SystemWindowPadding padding;
 
-  SystemWindowText(
-      {@required this.text,
-      this.fontSize,
-      this.fontWeight,
-      this.textColor,
-      this.padding})
+  SystemWindowText({@required this.text,
+    this.fontSize,
+    this.fontWeight,
+    this.textColor,
+    this.padding})
       : assert(text != null);
 
   Map<String, dynamic> getMap() {
@@ -23,7 +22,7 @@ class SystemWindowText {
       'text': text,
       'fontSize': fontSize ?? 14.0,
       'fontWeight': Commons.getFontWeight(fontWeight),
-      'textColor': textColor?.value ?? Colors.black.value,
+      'textColor': textColor?.value?.toSigned(32) ?? Colors.black.value.toSigned(32),
       'padding': padding?.getMap(),
     };
     return map;

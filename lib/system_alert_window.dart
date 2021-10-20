@@ -32,7 +32,7 @@ enum SystemWindowPrefMode { DEFAULT, OVERLAY, BUBBLE }
 typedef void OnClickListener(String tag);
 
 class SystemAlertWindow {
-  static const MethodChannel _channel = const MethodChannel(Constants.CHANNEL);
+  static const MethodChannel _channel = const MethodChannel(Constants.CHANNEL,JSONMethodCodec());
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -124,7 +124,7 @@ class SystemAlertWindow {
 
 void callbackDispatcher() {
   // 1. Initialize MethodChannel used to communicate with the platform portion of the plugin
-  const MethodChannel _backgroundChannel = const MethodChannel(Constants.BACKGROUND_CHANNEL);
+  const MethodChannel _backgroundChannel = const MethodChannel(Constants.BACKGROUND_CHANNEL,JSONMethodCodec());
   // 2. Setup internal state needed for MethodChannels.
   WidgetsFlutterBinding.ensureInitialized();
 

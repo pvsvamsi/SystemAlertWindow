@@ -125,7 +125,7 @@ public class NotificationHelper {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void showNotification(Icon icon, String notificationTitle, String notificationBody, HashMap<String, Object> params) {
+    public void showNotification(Icon icon, String notificationTitle, String notificationBody, HashMap params) {
         if (isMinAndroidR())
             updateShortcuts(icon);
         Person user = new Person.Builder().setName("You").build();

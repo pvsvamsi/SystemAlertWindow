@@ -24,8 +24,9 @@ import static in.jvapps.system_alert_window.utils.Constants.KEY_ROWS;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_TEXT;
 
 public class BodyView {
-    private Map<String, Object> bodyMap;
-    private Context context;
+    private final Map<String, Object> bodyMap;
+    private final Context context;
+    private final UiBuilder uiBuilder = UiBuilder.getInstance();
 
     public BodyView(Context context, Map<String, Object> bodyMap) {
         this.context = context;
@@ -35,9 +36,9 @@ public class BodyView {
     public LinearLayout getView() {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        Decoration decoration = UiBuilder.getDecoration(context, bodyMap.get(KEY_DECORATION));
+        Decoration decoration = uiBuilder.getDecoration(context, Commons.getMapFromObject(bodyMap, KEY_DECORATION));
         if(decoration != null){
-            GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
+            GradientDrawable gd = uiBuilder.getGradientDrawable(decoration);
             linearLayout.setBackground(gd);
         }else{
             linearLayout.setBackgroundColor(Color.WHITE);
@@ -46,7 +47,7 @@ public class BodyView {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         Commons.setMargin(context, params, bodyMap);
         linearLayout.setLayoutParams(params);
-        Padding padding = UiBuilder.getPadding(context, bodyMap.get(KEY_PADDING));
+        Padding padding = uiBuilder.getPadding(context, bodyMap.get(KEY_PADDING));
         linearLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> rowsMap = (List<Map<String, Object>>) bodyMap.get(KEY_ROWS);
@@ -67,11 +68,11 @@ public class BodyView {
         Commons.setMargin(context, params, rowMap);
         linearLayout.setLayoutParams(params);
         linearLayout.setGravity(Commons.getGravity((String) rowMap.get(KEY_GRAVITY), Gravity.START));
-        Padding padding = UiBuilder.getPadding(context, rowMap.get(KEY_PADDING));
+        Padding padding = uiBuilder.getPadding(context, rowMap.get(KEY_PADDING));
         linearLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
-        Decoration decoration = UiBuilder.getDecoration(context, rowMap.get(KEY_DECORATION));
+        Decoration decoration = uiBuilder.getDecoration(context, Commons.getMapFromObject(rowMap, KEY_DECORATION));
         if(decoration != null){
-            GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
+            GradientDrawable gd = uiBuilder.getGradientDrawable(decoration);
             linearLayout.setBackground(gd);
         }
         @SuppressWarnings("unchecked")
@@ -92,14 +93,14 @@ public class BodyView {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         Commons.setMargin(context, params, columnMap);
         columnLayout.setLayoutParams(params);
-        Padding padding = UiBuilder.getPadding(context, columnMap.get(KEY_PADDING));
+        Padding padding = uiBuilder.getPadding(context, columnMap.get(KEY_PADDING));
         columnLayout.setPadding(padding.getLeft(), padding.getTop(), padding.getRight(), padding.getBottom());
-        Decoration decoration = UiBuilder.getDecoration(context, columnMap.get(KEY_DECORATION));
+        Decoration decoration = uiBuilder.getDecoration(context, Commons.getMapFromObject(columnMap, KEY_DECORATION));
         if(decoration != null){
-            GradientDrawable gd = UiBuilder.getGradientDrawable(decoration);
+            GradientDrawable gd = uiBuilder.getGradientDrawable(decoration);
             columnLayout.setBackground(gd);
         }
-        TextView textView = UiBuilder.getTextView(context, Commons.getMapFromObject(columnMap, KEY_TEXT));
+        TextView textView = uiBuilder.getTextView(context, Commons.getMapFromObject(columnMap, KEY_TEXT));
         columnLayout.addView(textView);
         return columnLayout;
     }
