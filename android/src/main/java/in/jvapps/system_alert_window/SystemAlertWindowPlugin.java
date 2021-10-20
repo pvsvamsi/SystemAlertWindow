@@ -122,7 +122,7 @@ public class SystemAlertWindowPlugin extends Activity implements FlutterPlugin, 
 
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding activityPluginBinding) {
-        this.mActivity = null;
+        this.mActivity = activityPluginBinding.getActivity();
     }
 
     @Override
