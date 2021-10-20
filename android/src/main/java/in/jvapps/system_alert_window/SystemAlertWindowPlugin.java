@@ -305,7 +305,7 @@ public class SystemAlertWindowPlugin extends Activity implements FlutterPlugin, 
                 return;
             }
             FlutterEngine backgroundEngine = new FlutterEngine(context);
-            backgroundEngine.getServiceControlSurface().attachToService(new WindowServiceNew(), null, false);
+            //backgroundEngine.getServiceControlSurface().attachToService(new WindowServiceNew(), null, false);
             backgroundChannel = new MethodChannel(backgroundEngine.getDartExecutor().getBinaryMessenger(), Constants.BACKGROUND_CHANNEL, JSONMethodCodec.INSTANCE);
             sIsIsolateRunning.set(true);
             DartExecutor.DartCallback dartCallback = new DartExecutor.DartCallback(context.getAssets(), FlutterInjector.instance().flutterLoader().findAppBundlePath(), callback);
