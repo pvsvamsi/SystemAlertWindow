@@ -29,10 +29,9 @@ enum FontWeight { NORMAL, BOLD, ITALIC, BOLD_ITALIC }
 
 enum SystemWindowPrefMode { DEFAULT, OVERLAY, BUBBLE }
 
-typedef void OnClickListener(String tag);
 
 class SystemAlertWindow {
-  static const MethodChannel _channel = const MethodChannel(Constants.CHANNEL,JSONMethodCodec());
+  static const MethodChannel _channel = const MethodChannel(Constants.CHANNEL, JSONMethodCodec());
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -47,7 +46,7 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('requestPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
-  static Future<bool> registerOnClickListener(OnClickListener callBackFunction) async {
+  static Future<bool> registerOnClickListener(Function callBackFunction) async {
     final callBackDispatcher = PluginUtilities.getCallbackHandle(callbackDispatcher);
     final callBack = PluginUtilities.getCallbackHandle(callBackFunction);
     _channel.setMethodCallHandler((MethodCall call) {

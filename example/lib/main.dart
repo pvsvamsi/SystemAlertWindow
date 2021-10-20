@@ -4,7 +4,30 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:system_alert_window/system_alert_window.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
+}
+
+///
+/// Whenever a button is clicked, this method will be invoked with a tag (As tag is unique for every button, it helps in identifying the button).
+/// You can check for the tag value and perform the relevant action for the button click
+///
+void callBack(String tag) {
+  WidgetsFlutterBinding.ensureInitialized();
+  print(tag);
+  switch (tag) {
+    case "simple_button":
+    case "updated_simple_button":
+      SystemAlertWindow.closeSystemWindow(prefMode: SystemWindowPrefMode.OVERLAY);
+      break;
+    case "focus_button":
+      print("Focus button has been called");
+      break;
+    default:
+      print("OnClick event of $tag");
+  }
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -127,8 +150,7 @@ class _MyAppState extends State<MyApp> {
           gravity: SystemWindowGravity.TOP,
           notificationTitle: "Incoming Call",
           notificationBody: "+1 646 980 4741",
-          prefMode: prefMode
-      );
+          prefMode: prefMode);
       setState(() {
         _isShowingWindow = true;
       });
@@ -240,7 +262,9 @@ class _MyAppState extends State<MyApp> {
                   textColor: Colors.white,
                   child: !_isShowingWindow
                       ? Text("Show system alert window")
-                      : !_isUpdatedWindow ? Text("Update system alert window") : Text("Close system alert window"),
+                      : !_isUpdatedWindow
+                          ? Text("Update system alert window")
+                          : Text("Close system alert window"),
                   color: Colors.deepOrange,
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                 ),
@@ -250,24 +274,5 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
-  }
-}
-
-///
-/// Whenever a button is clicked, this method will be invoked with a tag (As tag is unique for every button, it helps in identifying the button).
-/// You can check for the tag value and perform the relevant action for the button click
-///
-void callBack(String tag) {
-  print(tag);
-  switch (tag) {
-    case "simple_button":
-    case "updated_simple_button":
-      SystemAlertWindow.closeSystemWindow(prefMode: SystemWindowPrefMode.OVERLAY);
-      break;
-    case "focus_button":
-      print("Focus button has been called");
-      break;
-    default:
-      print("OnClick event of $tag");
   }
 }

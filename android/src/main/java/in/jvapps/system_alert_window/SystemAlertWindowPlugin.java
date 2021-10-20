@@ -118,17 +118,16 @@ public class SystemAlertWindowPlugin extends Activity implements FlutterPlugin, 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
         this.mActivity = null;
-        disposeFlutterEngine();
     }
 
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding activityPluginBinding) {
-
+        this.mActivity = null;
     }
 
     @Override
     public void onDetachedFromActivity() {
-
+        this.mActivity = null;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -306,6 +305,7 @@ public class SystemAlertWindowPlugin extends Activity implements FlutterPlugin, 
                 return;
             }
             FlutterEngine backgroundEngine = new FlutterEngine(context);
+            backgroundEngine.getServiceControlSurface().attachToService(new WindowServiceNew(), null, false);
             backgroundChannel = new MethodChannel(backgroundEngine.getDartExecutor().getBinaryMessenger(), Constants.BACKGROUND_CHANNEL, JSONMethodCodec.INSTANCE);
             sIsIsolateRunning.set(true);
             DartExecutor.DartCallback dartCallback = new DartExecutor.DartCallback(context.getAssets(), FlutterInjector.instance().flutterLoader().findAppBundlePath(), callback);
