@@ -1,3 +1,8 @@
+## 1.0.0
+
+* Supporting latest flutter version.
+* Fixed issues related to deprecated embedded versions
+
 ## 0.5.0+1
 
 * Fixed issues in prefMode not being honored by the permissions and close layout calls
