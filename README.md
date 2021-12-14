@@ -148,7 +148,11 @@ Displays as a notification in the notification center [Help Needed]
           margin: SystemWindowMargin(left: 8, right: 8, top: 100, bottom: 0),
           gravity: SystemWindowGravity.TOP,
           notificationTitle: "Incoming Call",
-          notificationBody: "+1 646 980 4741");
+          notificationBody: "+1 646 980 4741",
+          prefMode: SystemWindowPrefMode.DEFAULT);
+          //Using SystemWindowPrefMode.DEFAULT uses Overlay window till Android 10 and bubble in Android 11
+          //Using SystemWindowPrefMode.OVERLAY forces overlay window instead of bubble in Android 11.
+          //Using SystemWindowPrefMode.BUBBLE forces Bubble instead of overlay window in Android 10 & above
           
 ### Register for onClick events (button click)
 

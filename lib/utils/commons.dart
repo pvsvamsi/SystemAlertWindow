@@ -14,7 +14,7 @@ class Commons {
     }
   }
 
-  static String getContentGravity(ContentGravity gravity) {
+  static String getContentGravity(ContentGravity? gravity) {
     if (gravity == null) gravity = ContentGravity.LEFT;
     switch (gravity) {
       case ContentGravity.CENTER:
@@ -27,7 +27,7 @@ class Commons {
     }
   }
 
-  static String getPosition(ButtonPosition buttonPosition) {
+  static String getPosition(ButtonPosition? buttonPosition) {
     if (buttonPosition == null) buttonPosition = ButtonPosition.CENTER;
     switch (buttonPosition) {
       case ButtonPosition.LEADING:
@@ -40,7 +40,7 @@ class Commons {
     }
   }
 
-  static String getFontWeight(FontWeight fontWeight) {
+  static String getFontWeight(FontWeight? fontWeight) {
     if (fontWeight == null) fontWeight = FontWeight.NORMAL;
     switch (fontWeight) {
       case FontWeight.BOLD:

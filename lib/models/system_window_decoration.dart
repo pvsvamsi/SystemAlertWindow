@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class SystemWindowDecoration {
-  Color startColor;
-  Color endColor;
-  int borderWidth;
-  double borderRadius;
-  Color borderColor;
+  Color? startColor;
+  Color? endColor;
+  int? borderWidth;
+  double? borderRadius;
+  Color? borderColor;
 
   SystemWindowDecoration({this.startColor,
     this.endColor,
