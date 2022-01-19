@@ -50,7 +50,7 @@ class SystemAlertWindow {
   static Future<bool?> registerOnClickListener(OnClickListener callBackFunction) async {
     final callBackDispatcher = PluginUtilities.getCallbackHandle(callbackDispatcher)!;
     final callBack = PluginUtilities.getCallbackHandle(callBackFunction)!;
-    _channel.setMethodCallHandler((MethodCall call) {
+     _channel.setMethodCallHandler((MethodCall call) async {
       print("Got callback");
       switch (call.method) {
         case "callBack":
@@ -64,7 +64,7 @@ class SystemAlertWindow {
           }
       }
       return null;
-    } as Future<dynamic> Function(MethodCall)?);
+    });
     await _channel.invokeMethod("registerCallBackHandler", <dynamic>[callBackDispatcher.toRawHandle(), callBack.toRawHandle()]);
     return true;
   }
