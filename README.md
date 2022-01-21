@@ -9,50 +9,6 @@ A flutter plugin to show Truecaller like overlay window, over all other apps alo
 ###### 1. Clip of example app and 2. Working of button click in the background
 <img src="https://github.com/pvsvamsi/SystemAlertWindow/raw/master/assets/images/example%20demo.gif" width="300" height="570">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/pvsvamsi/SystemAlertWindow/raw/master/assets/images/background%20button%20click.gif" width="300" height="570">
 
-### Application Class
-
-#### JAVA (Application.java)
-
-      import android.os.Bundle;
-      import in.jvapps.system_alert_window.SystemAlertWindowPlugin;
-      import io.flutter.app.FlutterApplication;
-      import io.flutter.plugin.common.PluginRegistry;
-      import io.flutter.plugins.GeneratedPluginRegistrant;
-
-      public class Application extends FlutterApplication implements PluginRegistry.PluginRegistrantCallback {
-
-          @Override
-          public void onCreate() {
-              super.onCreate();
-              //This is required as we are using background channel for dispatching click events
-              SystemAlertWindowPlugin.setPluginRegistrant(this);
-          }
-
-          @Override
-          public void registerWith(PluginRegistry pluginRegistry) {
-              GeneratedPluginRegistrant.registerWith(pluginRegistry);
-          }
-
-      }
-
-#### KOTLIN (Application.kt)
-
-      import `in`.jvapps.system_alert_window.SystemAlertWindowPlugin
-      import io.flutter.app.FlutterApplication
-      import io.flutter.plugin.common.PluginRegistry
-      import io.flutter.plugin.common.PluginRegistry.PluginRegistrantCallback
-      class Application : FlutterApplication(), PluginRegistrantCallback {
-          override fun onCreate() {
-              super.onCreate()
-              SystemAlertWindowPlugin.setPluginRegistrant(this)
-          }
-
-         override fun registerWith(registry: PluginRegistry) {
-            SystemAlertWindowPlugin.registerWith(registry.registrarFor("in.jvapps.system_alert_window"));
-         }
-      }
-
-
 ### Manifest
 
       //Permissions
@@ -73,7 +29,8 @@ Uses &#x27;draw on top&#x27; permission and displays it as a overlay window
 
 #### Android 11 & above
 
-User has to allow 'All conversations can bubble' in the notification settings of the app. Uses Android Bubble APIs to show the overlay window inside a notification bubble.
+With SystemWindowPrefMode.OVERLAY, system alert windows uses 'overlay functionality' wherever it's supported. In that mode, it will show as bubbles if the 'display over other apps' is not supported.
+With SystemWindowPrefMode.DEFAULT/SystemWindowPrefMode.BUBBLE, User has to allow 'All conversations can bubble' in the notification settings of the app. Uses Android Bubble APIs to show the overlay window inside a notification bubble.
 
 #### Android GO (API 29)
 
