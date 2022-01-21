@@ -21,7 +21,8 @@ class SystemWindowFooter {
 
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{
-      'isShowFooter': (text != null || (buttons != null && buttons!.length > 0)),
+      'isShowFooter':
+          (text != null || (buttons != null && buttons!.length > 0)),
       'text': text?.getMap(),
       'buttons': (buttons == null)
           ? null
