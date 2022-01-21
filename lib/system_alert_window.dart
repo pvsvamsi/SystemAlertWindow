@@ -64,7 +64,7 @@ class SystemAlertWindow {
           }
       }
       return null;
-    } as Future<dynamic> Function(MethodCall)?);
+    }
     await _channel.invokeMethod("registerCallBackHandler", <dynamic>[callBackDispatcher!.toRawHandle(), callBack!.toRawHandle()]);
     return true;
   }
