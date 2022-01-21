@@ -1,3 +1,7 @@
+## 1.0.1
+
+* Fixed issue with casting
+
 ## 1.0.0
 
 * Supporting latest flutter version.
