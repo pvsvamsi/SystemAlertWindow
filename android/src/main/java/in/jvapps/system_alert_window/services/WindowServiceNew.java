@@ -193,7 +193,28 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         setWindowLayoutFromMap(paramsMap);
         WindowManager.LayoutParams params = getLayoutParams();
         setWindowView(params, true);
-        wm.addView(windowView, params);
+        try {
+            wm.addView(windowView, params);
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+            retryCreateWindow(paramsMap);
+        }
+    }
+
+    private void retryCreateWindow(HashMap<String, Object> paramsMap) {
+        if(wm != null){
+            wm.removeViewImmediate(windowView);
+        }
+        closeWindow(false);
+        setWindowManager();
+        //setWindowLayoutFromMap(paramsMap);
+        WindowManager.LayoutParams params = getLayoutParams();
+        setWindowView(params, true);
+        try {
+            wm.addView(windowView, params);
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
     }
 
     private void updateWindow(HashMap<String, Object> paramsMap) {
@@ -218,7 +239,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "view not found");
         }
-        if(isEverythingDone){
+        if (isEverythingDone) {
             stopSelf();
         }
     }
