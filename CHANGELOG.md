@@ -1,3 +1,8 @@
+## 1.0.1+1
+
+* Added try catch to fix runtime exceptions
+
+
 ## 1.0.1
 
 * Fixed issue with casting
