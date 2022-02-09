@@ -1,6 +1,6 @@
 name: system_alert_window
 description: A flutter plugin to show Truecaller like overlay window, over all other apps along with callback events.
-version: 1.0.1+1
+version: 1.0.1+2
 homepage: https://github.com/pvsvamsi/SystemAlertWindow
 
 
