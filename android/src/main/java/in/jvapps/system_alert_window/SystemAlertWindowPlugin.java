@@ -181,7 +181,7 @@ public class SystemAlertWindowPlugin extends Activity implements FlutterPlugin, 
                             Log.d(TAG, "Going to show Bubble");
                             showBubble(title, body, params);
                         } else {
-                            Toast.makeText(mContext, "Please give enable bubbles", Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
                             result.success(false);
                         }
                     } else {
