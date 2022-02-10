@@ -33,6 +33,7 @@ pubscpec.lock
 **/android/**/gradle-wrapper.jar
 **/android/.gradle
 **/android/captures/
+**/build/*
 **/android/gradlew
 **/android/gradlew.bat
 **/android/local.properties

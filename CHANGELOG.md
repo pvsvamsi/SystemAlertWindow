@@ -1,3 +1,7 @@
+## 1.0.1+3
+
+* Removed unused fonts + updated pubignore
+
 ## 1.0.1+2
 
 * Updated the gradle + removed unused dependencies

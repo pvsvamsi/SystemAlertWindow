@@ -25,7 +25,6 @@
 .packages
 .pub-cache/
 .pub/
-/build/
 pubscpec.lock
 
 # Android related
@@ -37,6 +36,7 @@ pubscpec.lock
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/localLib/
+**/build/*
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
