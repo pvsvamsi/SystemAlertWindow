@@ -1,7 +1,10 @@
+## 1.0.1+2
+
+* Updated the gradle + removed unused dependencies
+
 ## 1.0.1+1
 
 * Added try catch to fix runtime exceptions
-
 
 ## 1.0.1
 
