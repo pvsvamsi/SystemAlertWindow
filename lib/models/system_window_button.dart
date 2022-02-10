@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:system_alert_window/models/system_window_decoration.dart';
 import 'package:system_alert_window/models/system_window_margin.dart';
 import 'package:system_alert_window/models/system_window_padding.dart';
@@ -23,8 +22,7 @@ class SystemWindowButton {
       this.margin,
       this.width,
       this.height,
-      this.decoration})
-      : assert(text != null, tag != null);
+      this.decoration});
 
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{

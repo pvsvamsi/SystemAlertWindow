@@ -2,7 +2,7 @@ import 'package:system_alert_window/system_alert_window.dart';
 
 class Commons {
   static String getWindowGravity(SystemWindowGravity gravity) {
-    if (gravity == null) gravity = SystemWindowGravity.TOP;
+    //if (gravity == null) gravity = SystemWindowGravity.TOP;
     switch (gravity) {
       case SystemWindowGravity.CENTER:
         return "center";
@@ -56,7 +56,7 @@ class Commons {
   }
 
   static String getSystemWindowPrefMode(SystemWindowPrefMode prefMode) {
-    if (prefMode == null) prefMode = SystemWindowPrefMode.DEFAULT;
+    //if (prefMode == null) prefMode = SystemWindowPrefMode.DEFAULT;
     switch (prefMode) {
       case SystemWindowPrefMode.OVERLAY:
         return "overlay";

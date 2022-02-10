@@ -1,15 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
 
-export 'models/system_window_body.dart';
-export 'models/system_window_button.dart';
-export 'models/system_window_decoration.dart';
-export 'models/system_window_footer.dart';
-export 'models/system_window_header.dart';
-export 'models/system_window_margin.dart';
-export 'models/system_window_padding.dart';
-export 'models/system_window_text.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:system_alert_window/models/system_window_body.dart';
@@ -18,6 +9,15 @@ import 'package:system_alert_window/models/system_window_header.dart';
 import 'package:system_alert_window/models/system_window_margin.dart';
 import 'package:system_alert_window/utils/commons.dart';
 import 'package:system_alert_window/utils/constants.dart';
+
+export 'models/system_window_body.dart';
+export 'models/system_window_button.dart';
+export 'models/system_window_decoration.dart';
+export 'models/system_window_footer.dart';
+export 'models/system_window_header.dart';
+export 'models/system_window_margin.dart';
+export 'models/system_window_padding.dart';
+export 'models/system_window_text.dart';
 
 enum SystemWindowGravity { TOP, BOTTOM, CENTER }
 
@@ -86,7 +86,6 @@ class SystemAlertWindow {
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
-    assert(header != null);
     final Map<String, dynamic> params = <String, dynamic>{
       'header': header.getMap(),
       'body': body?.getMap(),
@@ -115,7 +114,6 @@ class SystemAlertWindow {
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
-    assert(header != null);
     final Map<String, dynamic> params = <String, dynamic>{
       'header': header.getMap(),
       'body': body?.getMap(),
@@ -153,7 +151,6 @@ void callbackDispatcher() {
     // 3.1. Retrieve callback instance for handle.
     final Function callback = PluginUtilities.getCallbackFromHandle(
         CallbackHandle.fromRawHandle(args[0]))!;
-    assert(callback != null);
     final type = args[1];
     if (type == "onClick") {
       final tag = args[2];
