@@ -208,9 +208,6 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     private void retryCreateWindow() {
         try {
-            if (wm != null) {
-                wm.removeViewImmediate(windowView);
-            }
             closeWindow(false);
             setWindowManager();
             //setWindowLayoutFromMap(paramsMap);
