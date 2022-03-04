@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -136,7 +135,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, Constants.KEY_HEADER);
         Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, Constants.KEY_BODY);
         Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, Constants.KEY_FOOTER);
-        Log.d(TAG, headersMap.toString());
+        LogUtils.getInstance().d(TAG, headersMap.toString());
         windowMargin = UiBuilder.getInstance().getMargin(mContext, paramsMap.get(Constants.KEY_MARGIN));
         windowGravity = (String) paramsMap.get(Constants.KEY_GRAVITY);
         windowWidth = NumberUtils.getInt(paramsMap.get(Constants.KEY_WIDTH));
@@ -201,7 +200,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         try {
             wm.addView(windowView, params);
         } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
+            LogUtils.getInstance().e(TAG, ex.toString());
             retryCreateWindow();
         }
     }
@@ -215,7 +214,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             setWindowView(params, true);
             wm.addView(windowView, params);
         } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
+            LogUtils.getInstance().e(TAG, ex.toString());
         }
     }
 
@@ -229,7 +228,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     }
 
     private void closeWindow(boolean isEverythingDone) {
-        Log.i(TAG, "Closing the overlay window");
+        LogUtils.getInstance().i(TAG, "Closing the overlay window");
         try {
             if (wm != null) {
                 if (windowView != null) {
@@ -239,7 +238,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             }
             wm = null;
         } catch (IllegalArgumentException e) {
-            Log.e(TAG, "view not found");
+            LogUtils.getInstance().e(TAG, "view not found");
         }
         if (isEverythingDone) {
             stopSelf();
@@ -283,7 +282,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     @Override
     public void onDestroy() {
         //Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "Destroying the overlay window service");
+        LogUtils.getInstance().d(TAG, "Destroying the overlay window service");
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         assert notificationManager != null;
         notificationManager.cancel(NOTIFICATION_ID);

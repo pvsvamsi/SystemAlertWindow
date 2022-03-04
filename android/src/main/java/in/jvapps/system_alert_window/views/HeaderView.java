@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,6 +16,7 @@ import java.util.Map;
 import in.jvapps.system_alert_window.models.Decoration;
 import in.jvapps.system_alert_window.models.Padding;
 import in.jvapps.system_alert_window.utils.Commons;
+import in.jvapps.system_alert_window.utils.LogUtils;
 import in.jvapps.system_alert_window.utils.UiBuilder;
 
 import static in.jvapps.system_alert_window.utils.Constants.*;
@@ -72,12 +72,12 @@ public class HeaderView {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         linearLayout.setBackgroundColor(Color.GREEN);
-        Log.d("WindowServiceNew", Commons.getMapFromObject(headerMap, KEY_DECORATION).toString());
+        LogUtils.getInstance().d("SAW:HeaderView", Commons.getMapFromObject(headerMap, KEY_DECORATION).toString());
         Decoration decoration = uiBuilder.getDecoration(context, Commons.getMapFromObject(headerMap, KEY_DECORATION));
         if (decoration != null) {
             GradientDrawable gd = uiBuilder.getGradientDrawable(decoration);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Log.d("WindowServiceNew", gd.getColor().toString());
+                LogUtils.getInstance().d("SAW:HeaderView", gd.getColor().toString());
             }
             linearLayout.setBackground(gd);
         } else {

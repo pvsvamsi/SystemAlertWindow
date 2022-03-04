@@ -42,6 +42,7 @@ public class FooterView {
             GradientDrawable gd = uiBuilder.getGradientDrawable(decoration);
             linearLayout.setBackground(gd);
         }
+        //noinspection ConstantConditions
         if ((boolean) footerMap.get(KEY_IS_SHOW_FOOTER)) {
             Map<String, Object> textMap = Commons.getMapFromObject(footerMap, KEY_TEXT);
             List<Map<String, Object>> buttonsMap = Commons.getMapListFromObject(footerMap, KEY_BUTTONS_LIST);

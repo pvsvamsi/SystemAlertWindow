@@ -214,7 +214,7 @@ public class SystemAlertWindowPlugin extends Activity implements FlutterPlugin, 
                     String updateTitle = (String) updateArguments.get(0);
                     String updateBody = (String) updateArguments.get(1);
                     @SuppressWarnings("unchecked")
-                    HashMap<String, Object> updateParams = new Gson().fromJson(((JSONObject) updateArguments.get(2)).toString(), HashMap.class);
+                    HashMap<String, Object> updateParams = new Gson().fromJson(updateArguments.get(2).toString(), HashMap.class);
                     prefMode = (String) updateArguments.get(3);
                     if (prefMode == null) {
                         prefMode = "default";
@@ -322,7 +322,7 @@ public class SystemAlertWindowPlugin extends Activity implements FlutterPlugin, 
         LogUtils.getInstance().d(TAG, "invoking callback for tag " + params);
         SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
         long codeCallBackHandle = preferences.getLong(Constants.CODE_CALLBACK_HANDLE_KEY, -1);
-        //Log.i(TAG, "codeCallBackHandle " + codeCallBackHandle);
+        //LogUtils.getInstance().i(TAG, "codeCallBackHandle " + codeCallBackHandle);
         if (codeCallBackHandle == -1) {
             LogUtils.getInstance().e(TAG, "invokeCallBack failed, as codeCallBackHandle is null");
         } else {

@@ -7,10 +7,10 @@ import in.jvapps.system_alert_window.utils.NumberUtils;
 
 
 public class Padding {
-    private int left;
-    private int top;
-    private int right;
-    private int bottom;
+    private final int left;
+    private final int top;
+    private final int right;
+    private final int bottom;
 
     public int getLeft() {
         return left;

@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -108,7 +107,7 @@ public class Commons {
                 PackageManager pm = context.getPackageManager();
                 return !pm.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) || pm.hasSystemFeature(PackageManager.FEATURE_RAM_LOW) || activityManager.isLowRamDevice();
             } else {
-                Log.i("Commons", "Marking force android bubble as false");
+                LogUtils.getInstance().i("SAW:Commons", "Marking force android bubble as false");
             }
         }
         return false;

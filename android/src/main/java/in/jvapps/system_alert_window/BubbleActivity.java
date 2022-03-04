@@ -3,7 +3,6 @@ package in.jvapps.system_alert_window;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;

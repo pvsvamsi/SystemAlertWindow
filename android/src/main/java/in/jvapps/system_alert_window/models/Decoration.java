@@ -6,13 +6,13 @@ import in.jvapps.system_alert_window.utils.Commons;
 import in.jvapps.system_alert_window.utils.NumberUtils;
 
 public class Decoration {
-    private int startColor;
+    private final int startColor;
     private int endColor;
-    private int borderWidth;
-    private float borderRadius;
-    private int borderColor;
+    private final int borderWidth;
+    private final float borderRadius;
+    private final int borderColor;
 
-    private boolean isGradient;
+    private final boolean isGradient;
 
     public int getStartColor() {
         return startColor;
