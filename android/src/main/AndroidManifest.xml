@@ -15,7 +15,8 @@
             android:allowEmbedded="true"
             android:resizeableActivity="true"
             android:showOnLockScreen="true"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="UnusedAttribute" />
         <service
             android:name=".services.WindowServiceNew"
             android:enabled="true"
