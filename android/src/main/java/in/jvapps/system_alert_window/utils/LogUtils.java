@@ -11,6 +11,7 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class LogUtils {
 
@@ -18,9 +19,11 @@ public class LogUtils {
 
     private static LogUtils _instance;
 
+    private final String TAG = "SAW:LogUtils";
+
     private boolean isLogFileEnabled = false;
 
-    private File applicationFolder;
+    private File ctFolder;
 
     private WeakReference<Context> context;
 
@@ -64,39 +67,35 @@ public class LogUtils {
 
     private void appendLog(String text) {
         if (isLogFileEnabled && context != null) {
-            String TAG = "CT:LogUtils";
-
-            if (applicationFolder == null) {
-                applicationFolder = context.get().getExternalFilesDir(null);
-            }
-
-            String logsFolderStr = applicationFolder.getAbsolutePath() + File.separator + "Logs";
-            File LogsFolder = new File(logsFolderStr);
-            if (!LogsFolder.exists()) {
-                if (!LogsFolder.mkdir()) {
-                    Log.e(TAG, "Unable to create the Logs directory");
-                    return;
+            if (ctFolder == null) {
+                String logsFolderStr = context.get().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "Logs";
+                File logsFolder = new File(logsFolderStr);
+                if (!logsFolder.exists()) {
+                    if (!logsFolder.mkdir()) {
+                        Log.e(TAG, "Unable to create the Logs directory");
+                        return;
+                    }
+                }
+                String ctFolderStr = logsFolder.getAbsolutePath() + File.separator + "SAW";
+                ctFolder = new File(ctFolderStr);
+                if (!ctFolder.exists()) {
+                    if (!ctFolder.mkdir()) {
+                        Log.e(TAG, "Unable to create the SAW directory");
+                        ctFolder = null;
+                        return;
+                    }
                 }
             }
 
-            String ctFolderStr = LogsFolder.getAbsolutePath() + File.separator + "CT";
-            File CTFolder = new File(ctFolderStr);
-            if (!CTFolder.exists()) {
-                if (!CTFolder.mkdir()) {
-                    Log.e(TAG, "Unable to create the CT directory");
-                    return;
-                }
-            }
 
             Date now = new Date();
 
             String today = new SimpleDateFormat("ddMMyyyy", Locale.getDefault()).format(now);
 
-            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()).format(now);
-
-            File logFile = new File(CTFolder.getAbsolutePath() + File.separator + today + ".txt");
+            File logFile = new File(ctFolder.getAbsolutePath() + File.separator + today + ".log");
 
             if (!logFile.exists()) {
+                deleteRecursive(ctFolder);
                 try {
                     if (!logFile.createNewFile()) {
                         Log.e(TAG, "Unable to create the log file");
@@ -109,6 +108,7 @@ public class LogUtils {
             }
 
             try {
+                String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()).format(now);
                 text = timeStamp + " - " + text;
                 //BufferedWriter for performance, true to set append to file flag
                 BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
@@ -119,6 +119,20 @@ public class LogUtils {
                 Log.e(TAG, e.getMessage());
                 e.printStackTrace();
             }
+        }
+    }
+
+    void deleteRecursive(File fileOrDirectory) {
+        try {
+            if (fileOrDirectory.isDirectory()) {
+                for (File child : Objects.requireNonNull(fileOrDirectory.listFiles()))
+                    deleteRecursive(child);
+            }
+            //noinspection ResultOfMethodCallIgnored
+            fileOrDirectory.delete();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.e(TAG, ex.toString());
         }
     }
 }
