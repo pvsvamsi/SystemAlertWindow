@@ -29,26 +29,20 @@ import in.jvapps.system_alert_window.R;
 import in.jvapps.system_alert_window.SystemAlertWindowPlugin;
 import in.jvapps.system_alert_window.models.Margin;
 import in.jvapps.system_alert_window.utils.Commons;
+import in.jvapps.system_alert_window.utils.Constants;
+import in.jvapps.system_alert_window.utils.LogUtils;
 import in.jvapps.system_alert_window.utils.NumberUtils;
 import in.jvapps.system_alert_window.utils.UiBuilder;
 import in.jvapps.system_alert_window.views.BodyView;
 import in.jvapps.system_alert_window.views.FooterView;
 import in.jvapps.system_alert_window.views.HeaderView;
 
-import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_BODY;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_FOOTER;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_GRAVITY;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_HEADER;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_HEIGHT;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_MARGIN;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_WIDTH;
-
 public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     private static final String TAG = WindowServiceNew.class.getSimpleName();
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
     private static final int NOTIFICATION_ID = 1;
+    private static final int WINDOW_VIEW_ID = 1947;
     public static final String INTENT_EXTRA_IS_UPDATE_WINDOW = "IsUpdateWindow";
     public static final String INTENT_EXTRA_IS_CLOSE_WINDOW = "IsCloseWindow";
 
@@ -71,14 +65,22 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private boolean moving;
 
     private Context mContext = this;
+    boolean isEnableDraggable = true;
 
+
+    @SuppressLint("UnspecifiedImmutableFlag")
     @Override
     public void onCreate() {
         mContext = this;
         createNotificationChannel();
         Intent notificationIntent = new Intent(this, SystemAlertWindowPlugin.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
+        PendingIntent pendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            pendingIntent = PendingIntent.getActivity(this,
+                    0, notificationIntent, PendingIntent.FLAG_MUTABLE);
+        } else {
+            pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        }
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Overlay window service is running")
                 .setSmallIcon(R.drawable.ic_desktop_windows_black_24dp)
@@ -91,14 +93,15 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         if (null != intent && intent.getExtras() != null) {
-            @SuppressWarnings("unchecked")
-            HashMap<String, Object> paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
             mContext = this;
+            LogUtils.getInstance().setContext(this.mContext);
+            @SuppressWarnings("unchecked")
+            HashMap<String, Object> paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(Constants.INTENT_EXTRA_PARAMS_MAP);
             boolean isCloseWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, false);
             if (!isCloseWindow) {
                 assert paramsMap != null;
                 boolean isUpdateWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
-                if (wm != null && isUpdateWindow && windowView != null) {
+                if (isUpdateWindow && wm != null && windowView != null) {
                     updateWindow(paramsMap);
                 } else {
                     createWindow(paramsMap);
@@ -130,14 +133,14 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     }
 
     private void setWindowLayoutFromMap(HashMap<String, Object> paramsMap) {
-        Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, KEY_HEADER);
-        Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, KEY_BODY);
-        Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, KEY_FOOTER);
+        Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, Constants.KEY_HEADER);
+        Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, Constants.KEY_BODY);
+        Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, Constants.KEY_FOOTER);
         Log.d(TAG, headersMap.toString());
-        windowMargin = UiBuilder.getInstance().getMargin(mContext, paramsMap.get(KEY_MARGIN));
-        windowGravity = (String) paramsMap.get(KEY_GRAVITY);
-        windowWidth = NumberUtils.getInt(paramsMap.get(KEY_WIDTH));
-        windowHeight = NumberUtils.getInt(paramsMap.get(KEY_HEIGHT));
+        windowMargin = UiBuilder.getInstance().getMargin(mContext, paramsMap.get(Constants.KEY_MARGIN));
+        windowGravity = (String) paramsMap.get(Constants.KEY_GRAVITY);
+        windowWidth = NumberUtils.getInt(paramsMap.get(Constants.KEY_WIDTH));
+        windowHeight = NumberUtils.getInt(paramsMap.get(Constants.KEY_HEIGHT));
         headerView = new HeaderView(mContext, headersMap).getView();
         if (bodyMap != null)
             bodyView = new BodyView(mContext, bodyMap).getView();
@@ -171,9 +174,10 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setWindowView(WindowManager.LayoutParams params, boolean isCreate) {
-        boolean isEnableDraggable = true;//params.width == WindowManager.LayoutParams.MATCH_PARENT;
+        //params.width == WindowManager.LayoutParams.MATCH_PARENT;
         if (isCreate) {
             windowView = new LinearLayout(mContext);
+            windowView.setId(WINDOW_VIEW_ID);
         }
         windowView.setOrientation(LinearLayout.VERTICAL);
         windowView.setBackgroundColor(Color.WHITE);
@@ -198,11 +202,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             wm.addView(windowView, params);
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());
-            retryCreateWindow(paramsMap);
+            retryCreateWindow();
         }
     }
 
-    private void retryCreateWindow(HashMap<String, Object> paramsMap) {
+    private void retryCreateWindow() {
         try {
             if (wm != null) {
                 wm.removeViewImmediate(windowView);
