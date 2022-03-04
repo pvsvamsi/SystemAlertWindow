@@ -48,7 +48,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     private static final String TAG = WindowServiceNew.class.getSimpleName();
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
-    private static int NOTIFICATION_ID = 1;
+    private static final int NOTIFICATION_ID = 1;
     public static final String INTENT_EXTRA_IS_UPDATE_WINDOW = "IsUpdateWindow";
     public static final String INTENT_EXTRA_IS_CLOSE_WINDOW = "IsCloseWindow";
 
@@ -70,10 +70,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private int originalYPos;
     private boolean moving;
 
-    private Context mContext;
+    private Context mContext = this;
 
     @Override
     public void onCreate() {
+        mContext = this;
         createNotificationChannel();
         Intent notificationIntent = new Intent(this, SystemAlertWindowPlugin.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -124,7 +125,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     private void setWindowManager() {
         if (wm == null) {
-            wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+            wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         }
     }
 
@@ -206,15 +207,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             if (wm != null) {
                 wm.removeViewImmediate(windowView);
             }
-        } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
-        }
-        closeWindow(false);
-        setWindowManager();
-        //setWindowLayoutFromMap(paramsMap);
-        WindowManager.LayoutParams params = getLayoutParams();
-        setWindowView(params, true);
-        try {
+            closeWindow(false);
+            setWindowManager();
+            //setWindowLayoutFromMap(paramsMap);
+            WindowManager.LayoutParams params = getLayoutParams();
+            setWindowView(params, true);
             wm.addView(windowView, params);
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());
