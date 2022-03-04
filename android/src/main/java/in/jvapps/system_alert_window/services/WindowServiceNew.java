@@ -202,8 +202,12 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     }
 
     private void retryCreateWindow(HashMap<String, Object> paramsMap) {
-        if(wm != null){
-            wm.removeViewImmediate(windowView);
+        try {
+            if (wm != null) {
+                wm.removeViewImmediate(windowView);
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
         }
         closeWindow(false);
         setWindowManager();
