@@ -135,7 +135,6 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, Constants.KEY_HEADER);
         Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, Constants.KEY_BODY);
         Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, Constants.KEY_FOOTER);
-        LogUtils.getInstance().d(TAG, headersMap.toString());
         windowMargin = UiBuilder.getInstance().getMargin(mContext, paramsMap.get(Constants.KEY_MARGIN));
         windowGravity = (String) paramsMap.get(Constants.KEY_GRAVITY);
         windowWidth = NumberUtils.getInt(paramsMap.get(Constants.KEY_WIDTH));
