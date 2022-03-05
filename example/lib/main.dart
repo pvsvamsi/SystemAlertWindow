@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:system_alert_window/system_alert_window.dart';
+import 'package:share_plus/share_plus.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -269,7 +270,15 @@ class _MyAppState extends State<MyApp> {
                   color: Colors.deepOrange,
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                 ),
-              )
+              ),
+              TextButton(onPressed: () async{
+                String logFilePath = await SystemAlertWindow.getLogFile;
+                if(logFilePath != null && logFilePath.isNotEmpty) {
+                  Share.shareFiles([logFilePath]);
+                }else{
+                  print("Path is empty");
+                }
+              }, child: Text("Share Log file"))
             ],
           ),
         ),
