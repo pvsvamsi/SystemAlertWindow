@@ -152,6 +152,9 @@ public class SystemAlertWindowPlugin extends Activity implements FlutterPlugin, 
                     LogUtils.getInstance().setLogFileEnabled((boolean) arguments.get(0));
                     result.success(true);
                     break;
+                case "getLogFile":
+                    result.success(LogUtils.getInstance().getLogFilePath());
+                    break;
                 case "requestPermissions":
                     assert (call.arguments != null);
                     arguments = (JSONArray) call.arguments;

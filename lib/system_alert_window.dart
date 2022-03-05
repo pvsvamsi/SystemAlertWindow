@@ -37,6 +37,10 @@ class SystemAlertWindow {
     return version;
   }
 
+  static Future<String?> get getLogFile async {
+    return await _channel.invokeMethod('getLogFile');
+  }
+
   static Future<void> enableLogs(bool flag) async {
     await _channel.invokeMethod('enableLogs', [flag]);
   }

@@ -120,12 +120,26 @@ public class LogUtils {
         }
     }
 
+    public String getLogFilePath() {
+        if (sawFolder != null) {
+            Date now = new Date();
+
+            String today = new SimpleDateFormat("ddMMyyyy", Locale.getDefault()).format(now);
+
+            File logFile = new File(sawFolder.getAbsolutePath() + File.separator + today + ".log");
+            if (logFile.exists()) {
+                return logFile.getAbsolutePath();
+            }
+        }
+        return null;
+    }
+
     void deleteRecursive(File fileOrDirectory) {
         try {
             if (fileOrDirectory.isDirectory()) {
                 for (File child : Objects.requireNonNull(fileOrDirectory.listFiles()))
                     deleteRecursive(child);
-            }else {
+            } else {
                 //noinspection ResultOfMethodCallIgnored
                 fileOrDirectory.delete();
             }
