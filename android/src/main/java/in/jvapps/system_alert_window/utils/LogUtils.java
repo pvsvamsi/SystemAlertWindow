@@ -23,7 +23,7 @@ public class LogUtils {
 
     private boolean isLogFileEnabled = false;
 
-    private File ctFolder;
+    private File sawFolder;
 
     private WeakReference<Context> context;
 
@@ -67,24 +67,22 @@ public class LogUtils {
 
     private void appendLog(String text) {
         if (isLogFileEnabled && context != null) {
-            if (ctFolder == null) {
-                String logsFolderStr = context.get().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "Logs";
-                File logsFolder = new File(logsFolderStr);
-                if (!logsFolder.exists()) {
-                    if (!logsFolder.mkdir()) {
-                        Log.e(TAG, "Unable to create the Logs directory");
+
+            if (sawFolder == null) {
+                Log.d(TAG, "sawFolder is null");
+                sawFolder = new File(context.get().getApplicationContext().getFilesDir(), "Logs" + File.separator + "SAW");
+                Log.d(TAG, sawFolder.getAbsolutePath());
+                if (!sawFolder.exists()) {
+                    if (!sawFolder.mkdirs()) {
+                        Log.e(TAG, "sawFolder to create the SAW directory");
+                        sawFolder = null;
                         return;
                     }
+                } else {
+                    Log.d(TAG, "sawFolder is already created");
                 }
-                String ctFolderStr = logsFolder.getAbsolutePath() + File.separator + "SAW";
-                ctFolder = new File(ctFolderStr);
-                if (!ctFolder.exists()) {
-                    if (!ctFolder.mkdir()) {
-                        Log.e(TAG, "Unable to create the SAW directory");
-                        ctFolder = null;
-                        return;
-                    }
-                }
+            } else {
+                Log.d(TAG, "sawFolder is not null");
             }
 
 
@@ -92,17 +90,17 @@ public class LogUtils {
 
             String today = new SimpleDateFormat("ddMMyyyy", Locale.getDefault()).format(now);
 
-            File logFile = new File(ctFolder.getAbsolutePath() + File.separator + today + ".log");
+            File logFile = new File(sawFolder.getAbsolutePath() + File.separator + today + ".log");
 
             if (!logFile.exists()) {
-                deleteRecursive(ctFolder);
+                deleteRecursive(sawFolder);
                 try {
                     if (!logFile.createNewFile()) {
                         Log.e(TAG, "Unable to create the log file");
                         return;
                     }
                 } catch (IOException e) {
-                    Log.e("appendLog", e.getMessage());
+                    Log.e(TAG, e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -127,9 +125,10 @@ public class LogUtils {
             if (fileOrDirectory.isDirectory()) {
                 for (File child : Objects.requireNonNull(fileOrDirectory.listFiles()))
                     deleteRecursive(child);
+            }else {
+                //noinspection ResultOfMethodCallIgnored
+                fileOrDirectory.delete();
             }
-            //noinspection ResultOfMethodCallIgnored
-            fileOrDirectory.delete();
         } catch (Exception ex) {
             ex.printStackTrace();
             Log.e(TAG, ex.toString());

@@ -30,29 +30,27 @@ enum FontWeight { NORMAL, BOLD, ITALIC, BOLD_ITALIC }
 enum SystemWindowPrefMode { DEFAULT, OVERLAY, BUBBLE }
 
 class SystemAlertWindow {
-  static const MethodChannel _channel =
-      const MethodChannel(Constants.CHANNEL, JSONMethodCodec());
+  static const MethodChannel _channel = const MethodChannel(Constants.CHANNEL, JSONMethodCodec());
 
   static Future<String?> get platformVersion async {
     final String? version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
 
-  static Future<bool?> checkPermissions(
-      {SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
-    return await _channel.invokeMethod(
-        'checkPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
+  static Future<void> enableLogs(bool flag) async {
+    await _channel.invokeMethod('enableLogs', [flag]);
   }
 
-  static Future<bool?> requestPermissions(
-      {SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
-    return await _channel.invokeMethod(
-        'requestPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
+  static Future<bool?> checkPermissions({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+    return await _channel.invokeMethod('checkPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
+  }
+
+  static Future<bool?> requestPermissions({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+    return await _channel.invokeMethod('requestPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
   static Future<bool> registerOnClickListener(Function callBackFunction) async {
-    final callBackDispatcher =
-        PluginUtilities.getCallbackHandle(callbackDispatcher);
+    final callBackDispatcher = PluginUtilities.getCallbackHandle(callbackDispatcher);
     final callBack = PluginUtilities.getCallbackHandle(callBackFunction);
 
     _channel.setMethodCallHandler((MethodCall call) {
@@ -70,8 +68,7 @@ class SystemAlertWindow {
       }
       return Future.value(null);
     });
-    await _channel.invokeMethod("registerCallBackHandler",
-        <dynamic>[callBackDispatcher!.toRawHandle(), callBack!.toRawHandle()]);
+    await _channel.invokeMethod("registerCallBackHandler", <dynamic>[callBackDispatcher!.toRawHandle(), callBack!.toRawHandle()]);
     return true;
   }
 
@@ -95,12 +92,7 @@ class SystemAlertWindow {
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT
     };
-    return await _channel.invokeMethod('showSystemWindow', [
-      notificationTitle,
-      notificationBody,
-      params,
-      Commons.getSystemWindowPrefMode(prefMode)
-    ]);
+    return await _channel.invokeMethod('showSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
   static Future<bool?> updateSystemWindow(
@@ -123,25 +115,18 @@ class SystemAlertWindow {
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT
     };
-    return await _channel.invokeMethod('updateSystemWindow', [
-      notificationTitle,
-      notificationBody,
-      params,
-      Commons.getSystemWindowPrefMode(prefMode)
-    ]);
+    return await _channel
+        .invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
-  static Future<bool?> closeSystemWindow(
-      {SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
-    return await _channel.invokeMethod(
-        'closeSystemWindow', [Commons.getSystemWindowPrefMode(prefMode)]);
+  static Future<bool?> closeSystemWindow({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+    return await _channel.invokeMethod('closeSystemWindow', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 }
 
 void callbackDispatcher() {
   // 1. Initialize MethodChannel used to communicate with the platform portion of the plugin
-  const MethodChannel _backgroundChannel =
-      const MethodChannel(Constants.BACKGROUND_CHANNEL, JSONMethodCodec());
+  const MethodChannel _backgroundChannel = const MethodChannel(Constants.BACKGROUND_CHANNEL, JSONMethodCodec());
   // 2. Setup internal state needed for MethodChannels.
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -149,8 +134,7 @@ void callbackDispatcher() {
   _backgroundChannel.setMethodCallHandler((MethodCall call) async {
     final args = call.arguments;
     // 3.1. Retrieve callback instance for handle.
-    final Function callback = PluginUtilities.getCallbackFromHandle(
-        CallbackHandle.fromRawHandle(args[0]))!;
+    final Function callback = PluginUtilities.getCallbackFromHandle(CallbackHandle.fromRawHandle(args[0]))!;
     final type = args[1];
     if (type == "onClick") {
       final tag = args[2];

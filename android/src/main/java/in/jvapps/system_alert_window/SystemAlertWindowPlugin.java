@@ -146,6 +146,12 @@ public class SystemAlertWindowPlugin extends Activity implements FlutterPlugin, 
                 case "getPlatformVersion":
                     result.success("Android " + Build.VERSION.RELEASE);
                     break;
+                case "enableLogs":
+                    assert (call.arguments != null);
+                    arguments = (JSONArray) call.arguments;
+                    LogUtils.getInstance().setLogFileEnabled((boolean) arguments.get(0));
+                    result.success(true);
+                    break;
                 case "requestPermissions":
                     assert (call.arguments != null);
                     arguments = (JSONArray) call.arguments;
