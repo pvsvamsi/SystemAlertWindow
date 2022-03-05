@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Added provision to save and fetch logs + Fixed run time errors
+
 ## 1.0.1+3
 
 * Removed unused fonts + updated pubignore
