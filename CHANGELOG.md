@@ -1,3 +1,7 @@
+## 1.1.0+1
+
+* Changed the base folder of the logs
+
 ## 1.1.0
 
 * Added provision to save and fetch logs + Fixed run time errors
