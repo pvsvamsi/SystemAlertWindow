@@ -70,7 +70,7 @@ public class LogUtils {
 
             if (sawFolder == null) {
                 Log.d(TAG, "sawFolder is null");
-                sawFolder = new File(context.get().getApplicationContext().getFilesDir(), "Logs" + File.separator + "SAW");
+                sawFolder = new File(context.get().getApplicationContext().getExternalFilesDir(null), "Logs" + File.separator + "SAW");
                 Log.d(TAG, sawFolder.getAbsolutePath());
                 if (!sawFolder.exists()) {
                     if (!sawFolder.mkdirs()) {
