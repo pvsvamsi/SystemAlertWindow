@@ -1,5 +1,8 @@
 package in.jvapps.system_alert_window.utils;
 
+import static java.lang.System.currentTimeMillis;
+import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -24,9 +27,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import in.jvapps.system_alert_window.BubbleActivity;
-
-import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_MAP;
-import static java.lang.System.currentTimeMillis;
 
 public class NotificationHelper {
     private static final String CHANNEL_ID = "bubble_notification_channel";
@@ -133,7 +133,9 @@ public class NotificationHelper {
         bubbleIntent.setAction(Intent.ACTION_VIEW);
         bubbleIntent.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
         @SuppressLint("UnspecifiedImmutableFlag")
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext.get(), REQUEST_BUBBLE, bubbleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext.get(), REQUEST_BUBBLE, bubbleIntent,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? (PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE)
+                : PendingIntent.FLAG_UPDATE_CURRENT);
         long now = currentTimeMillis() - 100;
         @SuppressLint("UnspecifiedImmutableFlag")
         Notification.Builder builder = new Notification.Builder(mContext.get(), CHANNEL_ID)
@@ -145,28 +147,30 @@ public class NotificationHelper {
                 .setLocusId(new LocusId(BUBBLE_SHORTCUT_ID))
                 .addPerson(person)
                 .setShowWhen(true)
-                .setContentIntent(PendingIntent.getActivity(mContext.get(), REQUEST_CONTENT, bubbleIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+                .setContentIntent(PendingIntent.getActivity(mContext.get(), REQUEST_CONTENT, bubbleIntent,
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? (PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE)
+                                : PendingIntent.FLAG_UPDATE_CURRENT))
                 .setStyle(new Notification.MessagingStyle(user)
                         .addMessage(new Notification.MessagingStyle.Message(notificationBody, now, person))
                         .setGroupConversation(false))
                 .setWhen(now);
-        if(isMinAndroidR()){
+        if (isMinAndroidR()) {
             builder.addAction(new Notification.Action.Builder(null, "Click the icon in the end ->", null).build());
         }
         notificationManager.notify(BUBBLE_NOTIFICATION_ID, builder.build());
     }
 
-    public void dismissNotification(){
+    public void dismissNotification() {
         notificationManager.cancel(BUBBLE_NOTIFICATION_ID);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public boolean areBubblesAllowed(){
-        if(isMinAndroidR()) {
+    public boolean areBubblesAllowed() {
+        if (isMinAndroidR()) {
             NotificationChannel notificationChannel = notificationManager.getNotificationChannel(CHANNEL_ID, BUBBLE_SHORTCUT_ID);
             assert notificationChannel != null;
-            return notificationManager.areBubblesAllowed() ||notificationChannel.canBubble();
-        }else{
+            return notificationManager.areBubblesAllowed() || notificationChannel.canBubble();
+        } else {
             int devOptions = Settings.Secure.getInt(mContext.get().getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
             if (devOptions == 1) {
                 LogUtils.getInstance().d(TAG, "Android bubbles are enabled");
