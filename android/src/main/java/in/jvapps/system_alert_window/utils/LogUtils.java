@@ -66,7 +66,7 @@ public class LogUtils {
     }
 
     private void appendLog(String text) {
-        if (isLogFileEnabled && context != null) {
+        if (isLogFileEnabled && context.get() != null) {
 
             if (sawFolder == null) {
                 Log.d(TAG, "sawFolder is null");
