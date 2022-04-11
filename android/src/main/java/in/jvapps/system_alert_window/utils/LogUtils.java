@@ -66,57 +66,61 @@ public class LogUtils {
     }
 
     private void appendLog(String text) {
-        if (isLogFileEnabled && context.get() != null) {
+        try {
+            if (isLogFileEnabled && context.get() != null) {
 
-            if (sawFolder == null) {
-                Log.d(TAG, "sawFolder is null");
-                sawFolder = new File(context.get().getApplicationContext().getExternalFilesDir(null), "Logs" + File.separator + "SAW");
-                Log.d(TAG, sawFolder.getAbsolutePath());
-                if (!sawFolder.exists()) {
-                    if (!sawFolder.mkdirs()) {
-                        Log.e(TAG, "sawFolder to create the SAW directory");
-                        sawFolder = null;
-                        return;
+                if (sawFolder == null) {
+                    Log.d(TAG, "sawFolder is null");
+                    sawFolder = new File(context.get().getApplicationContext().getExternalFilesDir(null), "Logs" + File.separator + "SAW");
+                    Log.d(TAG, sawFolder.getAbsolutePath());
+                    if (!sawFolder.exists()) {
+                        if (!sawFolder.mkdirs()) {
+                            Log.e(TAG, "sawFolder to create the SAW directory");
+                            sawFolder = null;
+                            return;
+                        }
+                    } else {
+                        Log.d(TAG, "sawFolder is already created");
                     }
                 } else {
-                    Log.d(TAG, "sawFolder is already created");
+                    Log.d(TAG, "sawFolder is not null");
                 }
-            } else {
-                Log.d(TAG, "sawFolder is not null");
-            }
 
 
-            Date now = new Date();
+                Date now = new Date();
 
-            String today = new SimpleDateFormat("ddMMyyyy", Locale.getDefault()).format(now);
+                String today = new SimpleDateFormat("ddMMyyyy", Locale.getDefault()).format(now);
 
-            File logFile = new File(sawFolder.getAbsolutePath() + File.separator + today + ".log");
+                File logFile = new File(sawFolder.getAbsolutePath() + File.separator + today + ".log");
 
-            if (!logFile.exists()) {
-                deleteRecursive(sawFolder);
-                try {
-                    if (!logFile.createNewFile()) {
-                        Log.e(TAG, "Unable to create the log file");
-                        return;
+                if (!logFile.exists()) {
+                    deleteRecursive(sawFolder);
+                    try {
+                        if (!logFile.createNewFile()) {
+                            Log.e(TAG, "Unable to create the log file");
+                            return;
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, e.getMessage());
+                        e.printStackTrace();
                     }
+                }
+
+                try {
+                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()).format(now);
+                    text = timeStamp + " - " + text;
+                    //BufferedWriter for performance, true to set append to file flag
+                    BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+                    buf.append(text);
+                    buf.newLine();
+                    buf.close();
                 } catch (IOException e) {
                     Log.e(TAG, e.getMessage());
                     e.printStackTrace();
                 }
             }
-
-            try {
-                String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()).format(now);
-                text = timeStamp + " - " + text;
-                //BufferedWriter for performance, true to set append to file flag
-                BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
-                buf.append(text);
-                buf.newLine();
-                buf.close();
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-                e.printStackTrace();
-            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
