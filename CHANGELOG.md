@@ -1,3 +1,7 @@
+## 1.1.1
+
+* Fixed Android Bubble related issue in Android 12 + Fixed log file crash related issue
+
 ## 1.1.0+1
 
 * Changed the base folder of the logs
