@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.view.ViewCompat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -101,7 +102,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
                 assert paramsMap != null;
                 boolean isUpdateWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
                 if (isUpdateWindow && wm != null && windowView != null) {
-                    updateWindow(paramsMap);
+                    if (ViewCompat.isAttachedToWindow(windowView)) {
+                        updateWindow(paramsMap);
+                    } else {
+                        createWindow(paramsMap);
+                    }
                 } else {
                     createWindow(paramsMap);
                 }
