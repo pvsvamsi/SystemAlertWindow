@@ -19,7 +19,7 @@ dev_dependencies:
 
   system_alert_window:
     path: ../
-  share_plus: ^3.1.0
+  share_plus: ^4.0.10
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
