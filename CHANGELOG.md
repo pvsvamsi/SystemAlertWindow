@@ -1,3 +1,7 @@
+## 1.1.2
+
+* Fixed a crash while updating the window layout
+
 ## 1.1.1
 
 * Fixed Android Bubble related issue in Android 12 + Fixed log file crash related issue
