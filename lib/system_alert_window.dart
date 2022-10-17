@@ -86,7 +86,8 @@ class SystemAlertWindow {
       int? height,
       String notificationTitle = "Title",
       String notificationBody = "Body",
-      SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+      SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT,
+      Color backgroundColor = Colors.white}) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'header': header.getMap(),
       'body': body?.getMap(),
@@ -94,7 +95,8 @@ class SystemAlertWindow {
       'margin': margin?.getMap(),
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
-      'height': height ?? Constants.WRAP_CONTENT
+      'height': height ?? Constants.WRAP_CONTENT,
+      'bgColor': backgroundColor
     };
     return await _channel.invokeMethod('showSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
@@ -109,7 +111,8 @@ class SystemAlertWindow {
       int? height,
       String notificationTitle = "Title",
       String notificationBody = "Body",
-      SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+      SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT,
+      Color backgroundColor = Colors.white}) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'header': header.getMap(),
       'body': body?.getMap(),
@@ -117,7 +120,8 @@ class SystemAlertWindow {
       'margin': margin?.getMap(),
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
-      'height': height ?? Constants.WRAP_CONTENT
+      'height': height ?? Constants.WRAP_CONTENT,
+      'bgColor': backgroundColor
     };
     return await _channel
         .invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
