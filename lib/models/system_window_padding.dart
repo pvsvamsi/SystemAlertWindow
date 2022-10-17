@@ -19,6 +19,7 @@ class SystemWindowPadding {
 
   /// Internal method to create symmetric padding across the axis
   static SystemWindowPadding setSymmetricPadding(int vertical, int horizontal) {
-    return SystemWindowPadding(left: horizontal, right: horizontal, top: vertical, bottom: vertical);
+    return SystemWindowPadding(
+        left: horizontal, right: horizontal, top: vertical, bottom: vertical);
   }
 }

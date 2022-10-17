@@ -15,7 +15,14 @@ class SystemWindowButton {
   String tag;
   SystemWindowDecoration? decoration;
 
-  SystemWindowButton({required this.text, required this.tag, this.padding, this.margin, this.width, this.height, this.decoration});
+  SystemWindowButton(
+      {required this.text,
+      required this.tag,
+      this.padding,
+      this.margin,
+      this.width,
+      this.height,
+      this.decoration});
 
   /// Internal method to convert SystemWindowButton to primitive dataTypes
   Map<String, dynamic> getMap() {

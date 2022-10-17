@@ -30,7 +30,8 @@ enum FontWeight { NORMAL, BOLD, ITALIC, BOLD_ITALIC }
 enum SystemWindowPrefMode { DEFAULT, OVERLAY, BUBBLE }
 
 class SystemAlertWindow {
-  static const MethodChannel _channel = const MethodChannel(Constants.CHANNEL, JSONMethodCodec());
+  static const MethodChannel _channel =
+      const MethodChannel(Constants.CHANNEL, JSONMethodCodec());
 
   /// Fetches the current platform version
   static Future<String?> get platformVersion async {
@@ -49,19 +50,24 @@ class SystemAlertWindow {
   }
 
   /// Check if system window permission is granted
-  static Future<bool?> checkPermissions({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
-    return await _channel.invokeMethod('checkPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
+  static Future<bool?> checkPermissions(
+      {SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+    return await _channel.invokeMethod(
+        'checkPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
   /// Request the corresponding system window permission
-  static Future<bool?> requestPermissions({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
-    return await _channel.invokeMethod('requestPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
+  static Future<bool?> requestPermissions(
+      {SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+    return await _channel.invokeMethod(
+        'requestPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
   /// Register your callbackFunction to receive click events
   /// Your callback function should be declared as a global function (Outside the scope of the class)
   static Future<bool> registerOnClickListener(Function callBackFunction) async {
-    final callBackDispatcher = PluginUtilities.getCallbackHandle(callbackDispatcher);
+    final callBackDispatcher =
+        PluginUtilities.getCallbackHandle(callbackDispatcher);
     final callBack = PluginUtilities.getCallbackHandle(callBackFunction);
 
     _channel.setMethodCallHandler((MethodCall call) {
@@ -79,10 +85,10 @@ class SystemAlertWindow {
       }
       return Future.value(null);
     });
-    await _channel.invokeMethod("registerCallBackHandler", <dynamic>[callBackDispatcher!.toRawHandle(), callBack!.toRawHandle()]);
+    await _channel.invokeMethod("registerCallBackHandler",
+        <dynamic>[callBackDispatcher!.toRawHandle(), callBack!.toRawHandle()]);
     return true;
   }
-
 
   /// Show System Window
   ///
@@ -123,7 +129,12 @@ class SystemAlertWindow {
       'isDisableClicks': isDisableClicks
     };
     print(backgroundColor.toHex(leadingHashSign: true, withAlpha: true));
-    return await _channel.invokeMethod('showSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
+    return await _channel.invokeMethod('showSystemWindow', [
+      notificationTitle,
+      notificationBody,
+      params,
+      Commons.getSystemWindowPrefMode(prefMode)
+    ]);
   }
 
   /// Update System Window
@@ -164,20 +175,27 @@ class SystemAlertWindow {
       'bgColor': backgroundColor.toHex(leadingHashSign: true, withAlpha: true),
       'isDisableClicks': isDisableClicks
     };
-    return await _channel
-        .invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
+    return await _channel.invokeMethod('updateSystemWindow', [
+      notificationTitle,
+      notificationBody,
+      params,
+      Commons.getSystemWindowPrefMode(prefMode)
+    ]);
   }
 
   /// Closes the system window
-  static Future<bool?> closeSystemWindow({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
-    return await _channel.invokeMethod('closeSystemWindow', [Commons.getSystemWindowPrefMode(prefMode)]);
+  static Future<bool?> closeSystemWindow(
+      {SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+    return await _channel.invokeMethod(
+        'closeSystemWindow', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 }
 
 /// Global function to handle the callbacks in background isolate
 void callbackDispatcher() {
   // 1. Initialize MethodChannel used to communicate with the platform portion of the plugin
-  const MethodChannel _backgroundChannel = const MethodChannel(Constants.BACKGROUND_CHANNEL, JSONMethodCodec());
+  const MethodChannel _backgroundChannel =
+      const MethodChannel(Constants.BACKGROUND_CHANNEL, JSONMethodCodec());
   // 2. Setup internal state needed for MethodChannels.
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -185,7 +203,8 @@ void callbackDispatcher() {
   _backgroundChannel.setMethodCallHandler((MethodCall call) async {
     final args = call.arguments;
     // 3.1. Retrieve callback instance for handle.
-    final Function callback = PluginUtilities.getCallbackFromHandle(CallbackHandle.fromRawHandle(args[0]))!;
+    final Function callback = PluginUtilities.getCallbackFromHandle(
+        CallbackHandle.fromRawHandle(args[0]))!;
     final type = args[1];
     if (type == "onClick") {
       final tag = args[2];
@@ -205,10 +224,11 @@ extension HexColor on Color {
   }
 
   /// Extension method for Color to generate Hex code
-  String toHex({bool leadingHashSign = false, bool withAlpha = false}) => '${leadingHashSign ? '#' : ''}'
-          '${_generateAlpha(alpha: alpha, withAlpha: withAlpha)}'
-          '${red.toRadixString(16).padLeft(2, '0')}'
-          '${green.toRadixString(16).padLeft(2, '0')}'
-          '${blue.toRadixString(16).padLeft(2, '0')}'
-      .toUpperCase();
+  String toHex({bool leadingHashSign = false, bool withAlpha = false}) =>
+      '${leadingHashSign ? '#' : ''}'
+              '${_generateAlpha(alpha: alpha, withAlpha: withAlpha)}'
+              '${red.toRadixString(16).padLeft(2, '0')}'
+              '${green.toRadixString(16).padLeft(2, '0')}'
+              '${blue.toRadixString(16).padLeft(2, '0')}'
+          .toUpperCase();
 }

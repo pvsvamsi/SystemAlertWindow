@@ -1,7 +1,6 @@
 import 'package:system_alert_window/system_alert_window.dart';
 
 class Commons {
-
   ///Converts SystemWindowGravity to string format
   static String getWindowGravity(SystemWindowGravity gravity) {
     //if (gravity == null) gravity = SystemWindowGravity.TOP;

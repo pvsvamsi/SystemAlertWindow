@@ -19,6 +19,7 @@ class SystemWindowMargin {
 
   /// Internal method to create symmetric margin across the axis
   static SystemWindowMargin setSymmetricMargin(int vertical, int horizontal) {
-    return SystemWindowMargin(left: horizontal, right: horizontal, top: vertical, bottom: vertical);
+    return SystemWindowMargin(
+        left: horizontal, right: horizontal, top: vertical, bottom: vertical);
   }
 }

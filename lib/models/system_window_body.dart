@@ -11,7 +11,9 @@ class SystemWindowBody {
   /// Internal method to convert SystemWindowBody to primitive dataTypes
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{
-      'rows': (rows == null) ? null : List<dynamic>.from(rows!.map((x) => x.getMap())),
+      'rows': (rows == null)
+          ? null
+          : List<dynamic>.from(rows!.map((x) => x.getMap())),
       'padding': padding?.getMap(),
       'decoration': decoration?.getMap()
     };
@@ -26,12 +28,15 @@ class EachRow {
   ContentGravity? gravity;
   SystemWindowDecoration? decoration;
 
-  EachRow({this.columns, this.padding, this.margin, this.gravity, this.decoration});
+  EachRow(
+      {this.columns, this.padding, this.margin, this.gravity, this.decoration});
 
   /// Internal method to convert EachRow to primitive dataTypes
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{
-      'columns': (columns == null) ? null : List<dynamic>.from(columns!.map((x) => x.getMap())),
+      'columns': (columns == null)
+          ? null
+          : List<dynamic>.from(columns!.map((x) => x.getMap())),
       'padding': padding?.getMap(),
       'margin': margin?.getMap(),
       'gravity': Commons.getContentGravity(gravity),
