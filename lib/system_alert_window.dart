@@ -87,7 +87,8 @@ class SystemAlertWindow {
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT,
-      Color backgroundColor = Colors.white}) async {
+      Color backgroundColor = Colors.white,
+      bool isDisableClicks = false}) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'header': header.getMap(),
       'body': body?.getMap(),
@@ -96,7 +97,8 @@ class SystemAlertWindow {
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT,
-      'bgColor': backgroundColor.toHex(leadingHashSign: true, withAlpha: true)
+      'bgColor': backgroundColor.toHex(leadingHashSign: true, withAlpha: true),
+      'isDisableClicks': isDisableClicks
     };
     print(backgroundColor.toHex(leadingHashSign: true, withAlpha: true));
     return await _channel.invokeMethod('showSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
@@ -113,7 +115,8 @@ class SystemAlertWindow {
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT,
-      Color backgroundColor = Colors.white}) async {
+      Color backgroundColor = Colors.white,
+      bool isDisableClicks = false}) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'header': header.getMap(),
       'body': body?.getMap(),
@@ -122,7 +125,8 @@ class SystemAlertWindow {
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT,
-      'bgColor': backgroundColor.toHex(leadingHashSign: true, withAlpha: true)
+      'bgColor': backgroundColor.toHex(leadingHashSign: true, withAlpha: true),
+      'isDisableClicks': isDisableClicks
     };
     return await _channel
         .invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);

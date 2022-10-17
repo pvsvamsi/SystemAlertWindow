@@ -2,6 +2,7 @@ package in.jvapps.system_alert_window.utils;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_BACKGROUND_COLOR;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_IS_DISABLE_CLICKS;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_MARGIN;
 
 import android.app.ActivityManager;
@@ -41,6 +42,14 @@ public class Commons {
             color = Color.parseColor(colorObj.toString());
         }
         return color;
+    }
+
+    public static boolean getIsClicksDisabled(@NonNull Map<String, Object> paramsMap) {
+        Object isDisableClicksObj = paramsMap.get(KEY_IS_DISABLE_CLICKS);
+        if(isDisableClicksObj != null){
+            return (Boolean) isDisableClicksObj;
+        }
+        return false;
     }
 
     public static float getSpFromPixels(@NonNull Context context, float px) {

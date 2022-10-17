@@ -19,6 +19,7 @@ public class Constants {
     public static final String KEY_BODY = "body";
     public static final String KEY_FOOTER = "footer";
     public static final String KEY_IS_SHOW_FOOTER = "isShowFooter";
+    public static final String KEY_IS_DISABLE_CLICKS = "isDisableClicks";
     public static final String KEY_TITLE = "title";
     public static final String KEY_SUBTITLE = "subTitle";
     static final String KEY_TAG = "tag";
