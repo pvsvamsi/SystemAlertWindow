@@ -96,8 +96,9 @@ class SystemAlertWindow {
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT,
-      'bgColor': backgroundColor
+      'bgColor': backgroundColor.toHex(leadingHashSign: true, withAlpha: true)
     };
+    print(backgroundColor.toHex(leadingHashSign: true, withAlpha: true));
     return await _channel.invokeMethod('showSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
@@ -121,7 +122,7 @@ class SystemAlertWindow {
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT,
-      'bgColor': backgroundColor
+      'bgColor': backgroundColor.toHex(leadingHashSign: true, withAlpha: true)
     };
     return await _channel
         .invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
@@ -150,4 +151,21 @@ void callbackDispatcher() {
       callback(tag);
     }
   });
+}
+
+extension HexColor on Color {
+  String _generateAlpha({required int alpha, required bool withAlpha}) {
+    if (withAlpha) {
+      return alpha.toRadixString(16).padLeft(2, '0');
+    } else {
+      return '';
+    }
+  }
+
+  String toHex({bool leadingHashSign = false, bool withAlpha = false}) => '${leadingHashSign ? '#' : ''}'
+          '${_generateAlpha(alpha: alpha, withAlpha: withAlpha)}'
+          '${red.toRadixString(16).padLeft(2, '0')}'
+          '${green.toRadixString(16).padLeft(2, '0')}'
+          '${blue.toRadixString(16).padLeft(2, '0')}'
+      .toUpperCase();
 }
