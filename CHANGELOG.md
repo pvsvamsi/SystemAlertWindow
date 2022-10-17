@@ -1,3 +1,9 @@
+## 1.2.0
+
+* Added support for background color across the system alert window through the param 'bgColor'. This will be used as a default background color
+* Added support for disabling clicks across the system alert window through the param 'isDisableClicks'. This is not applicable for bubbles.
+* Added comments for the methods
+
 ## 1.1.2
 
 * Fixed a crash while updating the window layout
