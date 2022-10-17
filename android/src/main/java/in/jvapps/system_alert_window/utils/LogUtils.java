@@ -82,8 +82,6 @@ public class LogUtils {
                     } else {
                         Log.d(TAG, "sawFolder is already created");
                     }
-                } else {
-                    Log.d(TAG, "sawFolder is not null");
                 }
 
 
