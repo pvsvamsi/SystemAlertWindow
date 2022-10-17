@@ -1,11 +1,13 @@
 package in.jvapps.system_alert_window.utils;
 
 import static android.content.Context.ACTIVITY_SERVICE;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_BACKGROUND_COLOR;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_MARGIN;
 
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.TypedValue;
@@ -30,6 +32,20 @@ public class Commons {
     @SuppressWarnings("unchecked")
     public static List<Map<String, Object>> getMapListFromObject(@NonNull Map<String, Object> map, String key) {
         return (List<Map<String, Object>>) map.get(key);
+    }
+
+    public static int getBgColorFromParams(@NonNull Map<String, Object> paramsMap) {
+        int color = Color.WHITE;
+        Object colorObj = paramsMap.get(KEY_BACKGROUND_COLOR);
+        if(colorObj != null){
+            String colorStr = colorObj.toString();
+            if(colorStr.equalsIgnoreCase("transparent")){
+                color = Color.TRANSPARENT;
+            }else{
+                color = Color.parseColor(colorStr);
+            }
+        }
+        return color;
     }
 
     public static float getSpFromPixels(@NonNull Context context, float px) {

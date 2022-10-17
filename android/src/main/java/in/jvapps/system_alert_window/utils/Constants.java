@@ -14,6 +14,7 @@ public class Constants {
     static final String CALLBACK_TYPE_ONCLICK = "onClick";
 
     //Internal plugin param map keys
+    public static final String KEY_BACKGROUND_COLOR = "bgColor";
     public static final String KEY_HEADER = "header";
     public static final String KEY_BODY = "body";
     public static final String KEY_FOOTER = "footer";
