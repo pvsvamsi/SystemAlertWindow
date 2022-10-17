@@ -27,10 +27,12 @@ public class BodyView {
     private final Map<String, Object> bodyMap;
     private final Context context;
     private final UiBuilder uiBuilder = UiBuilder.getInstance();
+    private final int bgColor;
 
-    public BodyView(Context context, Map<String, Object> bodyMap) {
+    public BodyView(Context context, Map<String, Object> bodyMap, int bgColor) {
         this.context = context;
         this.bodyMap = bodyMap;
+        this.bgColor = bgColor;
     }
 
     public LinearLayout getView() {
@@ -40,8 +42,8 @@ public class BodyView {
         if(decoration != null){
             GradientDrawable gd = uiBuilder.getGradientDrawable(decoration);
             linearLayout.setBackground(gd);
-        }else{
-            linearLayout.setBackgroundColor(Color.WHITE);
+        } else{
+            linearLayout.setBackgroundColor(bgColor);
         }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);

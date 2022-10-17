@@ -8,7 +8,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
@@ -52,6 +51,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private int windowWidth;
     private int windowHeight;
     private Margin windowMargin;
+    private int windowBgColor;
 
     private LinearLayout windowView;
     private LinearLayout headerView;
@@ -141,16 +141,15 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, Constants.KEY_BODY);
         Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, Constants.KEY_FOOTER);
         windowMargin = UiBuilder.getInstance().getMargin(mContext, paramsMap.get(Constants.KEY_MARGIN));
-        int bgColor = Commons.getBgColorFromParams(paramsMap);
-        windowView.setBackgroundColor(bgColor);
+        windowBgColor = Commons.getBgColorFromParams(paramsMap);
         windowGravity = (String) paramsMap.get(Constants.KEY_GRAVITY);
         windowWidth = NumberUtils.getInt(paramsMap.get(Constants.KEY_WIDTH));
         windowHeight = NumberUtils.getInt(paramsMap.get(Constants.KEY_HEIGHT));
-        headerView = new HeaderView(mContext, headersMap).getView();
+        headerView = new HeaderView(mContext, headersMap, windowBgColor).getView();
         if (bodyMap != null)
-            bodyView = new BodyView(mContext, bodyMap).getView();
+            bodyView = new BodyView(mContext, bodyMap, windowBgColor).getView();
         if (footerMap != null)
-            footerView = new FooterView(mContext, footerMap).getView();
+            footerView = new FooterView(mContext, footerMap, windowBgColor).getView();
     }
 
     private WindowManager.LayoutParams getLayoutParams() {
@@ -186,6 +185,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         }
         windowView.setOrientation(LinearLayout.VERTICAL);
         windowView.setLayoutParams(params);
+        windowView.setBackgroundColor(windowBgColor);
         windowView.removeAllViews();
         windowView.addView(headerView);
         if (bodyView != null)

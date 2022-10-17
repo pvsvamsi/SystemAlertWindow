@@ -38,12 +38,7 @@ public class Commons {
         int color = Color.WHITE;
         Object colorObj = paramsMap.get(KEY_BACKGROUND_COLOR);
         if(colorObj != null){
-            String colorStr = colorObj.toString();
-            if(colorStr.equalsIgnoreCase("transparent")){
-                color = Color.TRANSPARENT;
-            }else{
-                color = Color.parseColor(colorStr);
-            }
+            color = Color.parseColor(colorObj.toString());
         }
         return color;
     }

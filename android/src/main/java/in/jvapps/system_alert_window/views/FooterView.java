@@ -23,10 +23,12 @@ public class FooterView {
     private final Map<String, Object> footerMap;
     private final Context context;
     private final UiBuilder uiBuilder = UiBuilder.getInstance();
+    private final int bgColor;
 
-    public FooterView(Context context, Map<String, Object> footerMap) {
+    public FooterView(Context context, Map<String, Object> footerMap, int bgColor) {
         this.context = context;
         this.footerMap = footerMap;
+        this.bgColor = bgColor;
     }
 
     public LinearLayout getView() {
@@ -41,6 +43,8 @@ public class FooterView {
         if (decoration != null) {
             GradientDrawable gd = uiBuilder.getGradientDrawable(decoration);
             linearLayout.setBackground(gd);
+        } else{
+            linearLayout.setBackgroundColor(bgColor);
         }
         //noinspection ConstantConditions
         if ((boolean) footerMap.get(KEY_IS_SHOW_FOOTER)) {

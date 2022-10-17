@@ -2,7 +2,6 @@ package in.jvapps.system_alert_window;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -47,11 +46,12 @@ public class BubbleActivity extends AppCompatActivity {
         Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, KEY_HEADER);
         Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, KEY_BODY);
         Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, KEY_FOOTER);
-        LinearLayout headerView = new HeaderView(mContext, headersMap).getView();
-        LinearLayout bodyView = new BodyView(mContext, bodyMap).getView();
-        LinearLayout footerView = new FooterView(mContext, footerMap).getView();
+        int bubbleBgColor = Commons.getBgColorFromParams(paramsMap);
+        LinearLayout headerView = new HeaderView(mContext, headersMap, bubbleBgColor).getView();
+        LinearLayout bodyView = new BodyView(mContext, bodyMap, bubbleBgColor).getView();
+        LinearLayout footerView = new FooterView(mContext, footerMap, bubbleBgColor).getView();
 
-        bubbleLayout.setBackgroundColor(Color.WHITE);
+        bubbleLayout.setBackgroundColor(bubbleBgColor);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         bubbleLayout.setLayoutParams(params);

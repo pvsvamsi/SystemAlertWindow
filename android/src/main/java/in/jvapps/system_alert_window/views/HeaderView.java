@@ -23,10 +23,12 @@ public class HeaderView {
     private final Map<String, Object> headerMap;
     private final Context context;
     private final UiBuilder uiBuilder = UiBuilder.getInstance();
+    private final int bgColor;
 
-    public HeaderView(Context context, Map<String, Object> headerMap) {
+    public HeaderView(Context context, Map<String, Object> headerMap, int bgColor) {
         this.context = context;
         this.headerMap = headerMap;
+        this.bgColor = bgColor;
     }
 
 
@@ -39,7 +41,7 @@ public class HeaderView {
             GradientDrawable gd = uiBuilder.getGradientDrawable(decoration);
             relativeLayout.setBackground(gd);
         } else {
-            relativeLayout.setBackgroundColor(Color.WHITE);
+            relativeLayout.setBackgroundColor(bgColor);
         }
         Map<String, Object> titleMap = Commons.getMapFromObject(headerMap, KEY_TITLE);
         Map<String, Object> subTitleMap = Commons.getMapFromObject(headerMap, KEY_SUBTITLE);
