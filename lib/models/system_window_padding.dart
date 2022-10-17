@@ -6,6 +6,7 @@ class SystemWindowPadding {
 
   SystemWindowPadding({this.left, this.right, this.top, this.bottom});
 
+  /// Internal method to convert SystemWindowPadding to primitive dataTypes
   Map<String, int> getMap() {
     final Map<String, int> map = <String, int>{
       'left': left ?? 0,
@@ -16,8 +17,8 @@ class SystemWindowPadding {
     return map;
   }
 
+  /// Internal method to create symmetric padding across the axis
   static SystemWindowPadding setSymmetricPadding(int vertical, int horizontal) {
-    return SystemWindowPadding(
-        left: horizontal, right: horizontal, top: vertical, bottom: vertical);
+    return SystemWindowPadding(left: horizontal, right: horizontal, top: vertical, bottom: vertical);
   }
 }

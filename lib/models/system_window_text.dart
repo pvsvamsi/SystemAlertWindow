@@ -9,20 +9,15 @@ class SystemWindowText {
   FontWeight? fontWeight;
   SystemWindowPadding? padding;
 
-  SystemWindowText(
-      {required this.text,
-      this.fontSize,
-      this.fontWeight,
-      this.textColor,
-      this.padding});
+  SystemWindowText({required this.text, this.fontSize, this.fontWeight, this.textColor, this.padding});
 
+  /// Internal method to convert SystemWindowText to primitive dataTypes
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{
       'text': text,
       'fontSize': fontSize ?? 14.0,
       'fontWeight': Commons.getFontWeight(fontWeight),
-      'textColor':
-          textColor?.value.toSigned(32) ?? Colors.black.value.toSigned(32),
+      'textColor': textColor?.value.toSigned(32) ?? Colors.black.value.toSigned(32),
       'padding': padding?.getMap(),
     };
     return map;

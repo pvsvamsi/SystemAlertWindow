@@ -1,6 +1,8 @@
 import 'package:system_alert_window/system_alert_window.dart';
 
 class Commons {
+
+  ///Converts SystemWindowGravity to string format
   static String getWindowGravity(SystemWindowGravity gravity) {
     //if (gravity == null) gravity = SystemWindowGravity.TOP;
     switch (gravity) {
@@ -14,6 +16,7 @@ class Commons {
     }
   }
 
+  ///Converts ContentGravity to string format
   static String getContentGravity(ContentGravity? gravity) {
     if (gravity == null) gravity = ContentGravity.LEFT;
     switch (gravity) {
@@ -27,6 +30,7 @@ class Commons {
     }
   }
 
+  ///Converts ButtonPosition to string format
   static String getPosition(ButtonPosition? buttonPosition) {
     if (buttonPosition == null) buttonPosition = ButtonPosition.CENTER;
     switch (buttonPosition) {
@@ -40,6 +44,7 @@ class Commons {
     }
   }
 
+  ///Converts FontWeight to string format
   static String getFontWeight(FontWeight? fontWeight) {
     if (fontWeight == null) fontWeight = FontWeight.NORMAL;
     switch (fontWeight) {
@@ -55,6 +60,7 @@ class Commons {
     }
   }
 
+  ///Converts SystemWindowPrefMode to string format
   static String getSystemWindowPrefMode(SystemWindowPrefMode prefMode) {
     //if (prefMode == null) prefMode = SystemWindowPrefMode.DEFAULT;
     switch (prefMode) {

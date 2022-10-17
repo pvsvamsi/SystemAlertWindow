@@ -15,6 +15,7 @@ class SystemWindowFooter {
       this.buttonsPosition,
       this.decoration});
 
+  /// Internal method to convert SystemWindowFooter to primitive dataTypes
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{
       'isShowFooter':

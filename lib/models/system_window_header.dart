@@ -11,14 +11,9 @@ class SystemWindowHeader {
   ButtonPosition? buttonPosition;
   SystemWindowDecoration? decoration;
 
-  SystemWindowHeader(
-      {this.title,
-      this.subTitle,
-      this.button,
-      this.padding,
-      this.buttonPosition,
-      this.decoration});
+  SystemWindowHeader({this.title, this.subTitle, this.button, this.padding, this.buttonPosition, this.decoration});
 
+  /// Internal method to convert SystemWindowHeader to primitive dataTypes
   Map<String, dynamic> getMap() {
     final Map<String, dynamic> map = <String, dynamic>{
       'title': title?.getMap(),

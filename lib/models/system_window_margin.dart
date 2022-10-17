@@ -6,6 +6,7 @@ class SystemWindowMargin {
 
   SystemWindowMargin({this.left, this.right, this.top, this.bottom});
 
+  /// Internal method to convert SystemWindowMargin to primitive dataTypes
   Map<String, int> getMap() {
     final Map<String, int> map = <String, int>{
       'left': left ?? 0,
@@ -16,8 +17,8 @@ class SystemWindowMargin {
     return map;
   }
 
+  /// Internal method to create symmetric margin across the axis
   static SystemWindowMargin setSymmetricMargin(int vertical, int horizontal) {
-    return SystemWindowMargin(
-        left: horizontal, right: horizontal, top: vertical, bottom: vertical);
+    return SystemWindowMargin(left: horizontal, right: horizontal, top: vertical, bottom: vertical);
   }
 }
