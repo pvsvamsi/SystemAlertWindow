@@ -1,10 +1,13 @@
 class SystemWindowPadding {
   /// Padding value of the left
   int? left;
+
   /// Padding value of the right
   int? right;
+
   /// Padding value of the top
   int? top;
+
   /// Padding value of the bottom
   int? bottom;
 

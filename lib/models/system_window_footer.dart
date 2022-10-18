@@ -4,12 +4,16 @@ import 'package:system_alert_window/utils/commons.dart';
 class SystemWindowFooter {
   /// Text of the system window footer
   SystemWindowText? text;
+
   /// Padding for the system window footer
   SystemWindowPadding? padding;
+
   /// List of buttons to be shown in the system window footer
   List<SystemWindowButton>? buttons;
+
   /// Position of the button in system window footer
   ButtonPosition? buttonsPosition;
+
   /// Decoration of the system window footer
   SystemWindowDecoration? decoration;
 

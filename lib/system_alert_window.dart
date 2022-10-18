@@ -30,7 +30,6 @@ enum FontWeight { NORMAL, BOLD, ITALIC, BOLD_ITALIC }
 enum SystemWindowPrefMode { DEFAULT, OVERLAY, BUBBLE }
 
 class SystemAlertWindow {
-
   ///Channel name to handle the communication between flutter and platform specific code
   static const MethodChannel _channel =
       const MethodChannel(Constants.CHANNEL, JSONMethodCodec());
