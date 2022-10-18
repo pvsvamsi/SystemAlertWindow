@@ -1,3 +1,8 @@
+## 1.2.1
+
+* Fixed an issue in invoking the callbacks, while running the app in release mode.
+* Added comments for the methods
+
 ## 1.2.0
 
 * Added support for background color across the system alert window through the param 'bgColor'. This will be used as a default background color
