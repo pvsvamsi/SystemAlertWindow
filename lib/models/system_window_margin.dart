@@ -1,7 +1,11 @@
 class SystemWindowMargin {
+  /// Margin value of the left
   int? left;
+  /// Margin value of the right
   int? right;
+  /// Margin value of the top
   int? top;
+  /// Margin value of the bottom
   int? bottom;
 
   SystemWindowMargin({this.left, this.right, this.top, this.bottom});

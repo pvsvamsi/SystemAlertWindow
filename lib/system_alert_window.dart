@@ -30,6 +30,8 @@ enum FontWeight { NORMAL, BOLD, ITALIC, BOLD_ITALIC }
 enum SystemWindowPrefMode { DEFAULT, OVERLAY, BUBBLE }
 
 class SystemAlertWindow {
+
+  ///Channel name to handle the communication between flutter and platform specific code
   static const MethodChannel _channel =
       const MethodChannel(Constants.CHANNEL, JSONMethodCodec());
 
@@ -129,7 +131,6 @@ class SystemAlertWindow {
       'bgColor': backgroundColor.toHex(leadingHashSign: true, withAlpha: true),
       'isDisableClicks': isDisableClicks
     };
-    print(backgroundColor.toHex(leadingHashSign: true, withAlpha: true));
     return await _channel.invokeMethod('showSystemWindow', [
       notificationTitle,
       notificationBody,

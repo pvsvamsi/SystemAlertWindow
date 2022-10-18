@@ -2,8 +2,11 @@ import 'package:system_alert_window/system_alert_window.dart';
 import 'package:system_alert_window/utils/commons.dart';
 
 class SystemWindowBody {
+  /// Rows to show in the body
   List<EachRow>? rows;
+  /// Padding for the system window body
   SystemWindowPadding? padding;
+  /// Decoration of the system window body
   SystemWindowDecoration? decoration;
 
   SystemWindowBody({this.rows, this.padding, this.decoration});
