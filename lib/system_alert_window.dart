@@ -65,6 +65,7 @@ class SystemAlertWindow {
 
   /// Register your callbackFunction to receive click events
   /// Your callback function should be declared as a global function (Outside the scope of the class)
+  /// Don't forget to add @pragma('vm:entry-point') above your global function
   static Future<bool> registerOnClickListener(Function callBackFunction) async {
     final callBackDispatcher =
         PluginUtilities.getCallbackHandle(callbackDispatcher);
@@ -192,6 +193,7 @@ class SystemAlertWindow {
 }
 
 /// Global function to handle the callbacks in background isolate
+@pragma('vm:entry-point')
 void callbackDispatcher() {
   // 1. Initialize MethodChannel used to communicate with the platform portion of the plugin
   const MethodChannel _backgroundChannel =
