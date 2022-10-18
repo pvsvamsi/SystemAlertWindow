@@ -13,7 +13,7 @@ void main() {
 ///
 /// Whenever a button is clicked, this method will be invoked with a tag (As tag is unique for every button, it helps in identifying the button).
 /// You can check for the tag value and perform the relevant action for the button click
-///
+@pragma('vm:entry-point')
 void callBack(String tag) {
   WidgetsFlutterBinding.ensureInitialized();
   print(tag);
