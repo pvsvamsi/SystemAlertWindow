@@ -7,7 +7,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -25,7 +24,6 @@ public class LogUtils {
 
     private File sawFolder;
 
-    private WeakReference<Context> context;
 
     private LogUtils() {
     }
@@ -39,10 +37,6 @@ public class LogUtils {
 
     public void setLogFileEnabled(boolean logFileEnabled) {
         this.isLogFileEnabled = logFileEnabled;
-    }
-
-    public void setContext(Context context) {
-        this.context = new WeakReference<>(context);
     }
 
     public void i(String TAG, String text) {
@@ -67,11 +61,12 @@ public class LogUtils {
 
     private void appendLog(String text) {
         try {
-            if (isLogFileEnabled && context.get() != null) {
+            Context context = ContextHolder.getApplicationContext();
+            if (isLogFileEnabled && context != null) {
 
                 if (sawFolder == null) {
                     Log.d(TAG, "sawFolder is null");
-                    sawFolder = new File(context.get().getApplicationContext().getExternalFilesDir(null), "Logs" + File.separator + "SAW");
+                    sawFolder = new File(context.getApplicationContext().getExternalFilesDir(null), "Logs" + File.separator + "SAW");
                     Log.d(TAG, sawFolder.getAbsolutePath());
                     if (!sawFolder.exists()) {
                         if (!sawFolder.mkdirs()) {

@@ -3,7 +3,6 @@ package in.jvapps.system_alert_window.utils;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.Map;
 
-import in.jvapps.system_alert_window.SystemAlertWindowPlugin;
+import in.jvapps.system_alert_window.BackgroundMethodCallHandlerImpl;
 import in.jvapps.system_alert_window.models.Decoration;
 import in.jvapps.system_alert_window.models.Margin;
 import in.jvapps.system_alert_window.models.Padding;
@@ -19,7 +18,7 @@ import in.jvapps.system_alert_window.models.Padding;
 public class UiBuilder {
 
     private static UiBuilder _instance;
-    private final SystemAlertWindowPlugin systemAlertWindowPlugin = new SystemAlertWindowPlugin();
+    private final BackgroundMethodCallHandlerImpl backgroundMethodCallHandler = BackgroundMethodCallHandlerImpl.getInstance();
 
     private UiBuilder() {
     }
@@ -80,8 +79,7 @@ public class UiBuilder {
         button.setTag(tag);
         button.setTextSize(Commons.getSpFromPixels(context, buttonText.getTextSize()));
         button.setTextColor(buttonText.getTextColors());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            button.setElevation(10);
+        button.setElevation(10);
         @SuppressWarnings("ConstantConditions")
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 Commons.getPixelsFromDp(context, (int) ((double) buttonMap.get(Constants.KEY_WIDTH))),
@@ -98,10 +96,7 @@ public class UiBuilder {
             button.setBackground(gd);
         }
         button.setOnClickListener(v -> {
-            if (!systemAlertWindowPlugin.sIsIsolateRunning.get()) {
-                systemAlertWindowPlugin.startCallBackHandler(context);
-            }
-            systemAlertWindowPlugin.invokeCallBack(context, Constants.CALLBACK_TYPE_ONCLICK, tag);
+            backgroundMethodCallHandler.invokeCallBack(context, Constants.CALLBACK_TYPE_ONCLICK, tag);
         });
         return button;
     }
