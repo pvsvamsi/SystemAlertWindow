@@ -52,6 +52,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         try {
+            LogUtils.getInstance().d(TAG, "On method call " + call.method);
             Context mContext = ContextHolder.getApplicationContext();
             String prefMode;
             JSONArray arguments;
