@@ -1,3 +1,9 @@
+## 1.2.2
+
+* Updated Gradle, min SDK is now set as 21
+* Added new notifications permission for Android 13
+* Added removeOnClickListener
+
 ## 1.2.1
 
 * Fixed an issue in invoking the callbacks, while running the app in release mode.
