@@ -93,8 +93,9 @@ class _MyAppState extends State<MyApp> {
     await SystemAlertWindow.requestPermissions(prefMode: prefMode);
   }
 
-  void _showOverlayWindow() {
+  void _showOverlayWindow() async {
     if (!_isShowingWindow) {
+      await SystemAlertWindow.shareData('show system window');
       SystemAlertWindow.showSystemWindow(
           height: 230,
           gravity: SystemWindowGravity.CENTER,
@@ -107,6 +108,7 @@ class _MyAppState extends State<MyApp> {
         _isShowingWindow = true;
       });
     } else if (!_isUpdatedWindow) {
+      await SystemAlertWindow.shareData('update system window');
       SystemAlertWindow.updateSystemWindow(
           height: 130,
           gravity: SystemWindowGravity.CENTER,

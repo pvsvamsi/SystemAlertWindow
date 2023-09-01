@@ -9,15 +9,25 @@ class TrueCallerOverlay extends StatefulWidget {
 }
 
 class _TrueCallerOverlayState extends State<TrueCallerOverlay> {
+  bool show =true;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     SystemAlertWindow.overlayListener.listen((event) {
       log("$event");
+      if(event == "update system window"){
+        setState(() {
+          show = false;
+        });
+      }else{
+        setState(() {
+          show = true;
+        });
+      }
     });
   }
-
+  SystemWindowPrefMode prefMode = SystemWindowPrefMode.OVERLAY;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +40,12 @@ class _TrueCallerOverlayState extends State<TrueCallerOverlay> {
                   onPressed: () async {
                     await SystemAlertWindow.shareData('update');
                   },
-                  child: Text("Update"))
+                  child: Text("Update")),
+              show?ElevatedButton(
+                  onPressed: () async {
+                    await SystemAlertWindow.closeSystemWindow(prefMode: prefMode);
+                  },
+                  child: Text("close")):Text("cant")
             ],
           )),
     );

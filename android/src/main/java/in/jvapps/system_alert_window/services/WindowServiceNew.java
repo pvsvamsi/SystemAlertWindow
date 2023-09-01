@@ -54,6 +54,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private static final int WINDOW_VIEW_ID = 1947;
     public static final String INTENT_EXTRA_IS_UPDATE_WINDOW = "IsUpdateWindow";
     public static final String INTENT_EXTRA_IS_CLOSE_WINDOW = "IsCloseWindow";
+    private final String FLUTTER_CACHE_ENGINE = "in.jvapps.flutter_cache_engine";
 
     private WindowManager windowManager;
 
@@ -73,8 +74,8 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private boolean moving;
 
     boolean isEnableDraggable = true;
-    //private MethodChannel flutterChannel = new MethodChannel(FlutterEngineCache.getInstance().get("my_cache_engine").getDartExecutor(),Constants.BACKGROUND_CHANNEL );
-    private BasicMessageChannel<Object> overlayMessageChannel = new BasicMessageChannel(FlutterEngineCache.getInstance().get("my_cache_engine").getDartExecutor(), Constants.MESSAGE_CHANNEL, JSONMessageCodec.INSTANCE);
+    //private MethodChannel flutterChannel = new MethodChannel(FlutterEngineCache.getInstance().get(FLUTTER_CACHE_ENGINE).getDartExecutor(),Constants.BACKGROUND_CHANNEL );
+    private BasicMessageChannel<Object> overlayMessageChannel = new BasicMessageChannel(FlutterEngineCache.getInstance().get(FLUTTER_CACHE_ENGINE).getDartExecutor(), Constants.MESSAGE_CHANNEL, JSONMessageCodec.INSTANCE);
 
     @SuppressLint("UnspecifiedImmutableFlag")
     @Override
@@ -203,11 +204,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         setWindowManager();
         setWindowLayoutFromMap(paramsMap);
         WindowManager.LayoutParams params = getLayoutParams();
-        FlutterEngine engine = FlutterEngineCache.getInstance().get("my_cache_engine");
+        FlutterEngine engine = FlutterEngineCache.getInstance().get(FLUTTER_CACHE_ENGINE);
         assert engine != null;
         engine.getLifecycleChannel().appIsResumed();
         flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
-        flutterView.attachToFlutterEngine(Objects.requireNonNull(FlutterEngineCache.getInstance().get("my_cache_engine")));
+        flutterView.attachToFlutterEngine(Objects.requireNonNull(FlutterEngineCache.getInstance().get(FLUTTER_CACHE_ENGINE)));
         flutterView.setFitsSystemWindows(true);
         flutterView.setFocusable(true);
         flutterView.setFocusableInTouchMode(true);
@@ -230,11 +231,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             setWindowManager();
             setWindowLayoutFromMap(paramsMap);
             WindowManager.LayoutParams params = getLayoutParams();
-            FlutterEngine engine = FlutterEngineCache.getInstance().get("my_cache_engine");
+            FlutterEngine engine = FlutterEngineCache.getInstance().get(FLUTTER_CACHE_ENGINE);
             assert engine != null;
             engine.getLifecycleChannel().appIsResumed();
             flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
-            flutterView.attachToFlutterEngine(Objects.requireNonNull(FlutterEngineCache.getInstance().get("my_cache_engine")));
+            flutterView.attachToFlutterEngine(Objects.requireNonNull(FlutterEngineCache.getInstance().get(FLUTTER_CACHE_ENGINE)));
             flutterView.setFitsSystemWindows(true);
             flutterView.setFocusable(true);
             flutterView.setFocusableInTouchMode(true);
@@ -283,10 +284,6 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
                 float x = event.getRawX();
                 float y = event.getRawY();
                 moving = false;
-//                int[] location = new int[2];
-//                windowView.getLocationOnScreen(location);
-//                originalXPos = location[0];
-//                originalYPos = location[1];
                 offsetX = originalXPos - x;
                 offsetY = originalYPos - y;
             } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
