@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
@@ -23,6 +24,7 @@ import androidx.core.view.ViewCompat;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import in.jvapps.system_alert_window.R;
 import in.jvapps.system_alert_window.SystemAlertWindowPlugin;
@@ -36,6 +38,13 @@ import in.jvapps.system_alert_window.utils.UiBuilder;
 import in.jvapps.system_alert_window.views.BodyView;
 import in.jvapps.system_alert_window.views.FooterView;
 import in.jvapps.system_alert_window.views.HeaderView;
+import io.flutter.embedding.android.FlutterTextureView;
+import io.flutter.embedding.android.FlutterView;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterEngineCache;
+import io.flutter.plugin.common.BasicMessageChannel;
+import io.flutter.plugin.common.JSONMessageCodec;
+import io.flutter.plugin.common.MethodChannel;
 
 public class WindowServiceNew extends Service implements View.OnTouchListener {
 
@@ -51,14 +60,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private String windowGravity;
     private int windowWidth;
     private int windowHeight;
-    private Margin windowMargin;
     private int windowBgColor;
     private boolean isDisableClicks = false;
 
     private LinearLayout windowView;
-    private LinearLayout headerView;
-    private LinearLayout bodyView;
-    private LinearLayout footerView;
+    private FlutterView flutterView;
 
     private float offsetX;
     private float offsetY;
@@ -67,7 +73,8 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private boolean moving;
 
     boolean isEnableDraggable = true;
-
+    //private MethodChannel flutterChannel = new MethodChannel(FlutterEngineCache.getInstance().get("my_cache_engine").getDartExecutor(),Constants.BACKGROUND_CHANNEL );
+    private BasicMessageChannel<Object> overlayMessageChannel = new BasicMessageChannel(FlutterEngineCache.getInstance().get("my_cache_engine").getDartExecutor(), Constants.MESSAGE_CHANNEL, JSONMessageCodec.INSTANCE);
 
     @SuppressLint("UnspecifiedImmutableFlag")
     @Override
@@ -101,8 +108,10 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
                 assert paramsMap != null;
                 boolean isUpdateWindow = intent.getBooleanExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
                 if (isUpdateWindow && windowManager != null && windowView != null) {
+                    System.out.println("yes");
                     if (ViewCompat.isAttachedToWindow(windowView)) {
-                        updateWindow(paramsMap);
+                        System.out.println("NO");
+                        // updateWindow(paramsMap);
                     } else {
                         createWindow(paramsMap);
                     }
@@ -136,21 +145,12 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     }
 
     private void setWindowLayoutFromMap(HashMap<String, Object> paramsMap) {
-        Map<String, Object> headersMap = Commons.getMapFromObject(paramsMap, Constants.KEY_HEADER);
-        Map<String, Object> bodyMap = Commons.getMapFromObject(paramsMap, Constants.KEY_BODY);
-        Map<String, Object> footerMap = Commons.getMapFromObject(paramsMap, Constants.KEY_FOOTER);
-        windowMargin = UiBuilder.getInstance().getMargin(this, paramsMap.get(Constants.KEY_MARGIN));
         windowBgColor = Commons.getBgColorFromParams(paramsMap);
         isDisableClicks = Commons.getIsClicksDisabled(paramsMap);
         LogUtils.getInstance().i(TAG, String.valueOf(isDisableClicks));
         windowGravity = (String) paramsMap.get(Constants.KEY_GRAVITY);
         windowWidth = NumberUtils.getInt(paramsMap.get(Constants.KEY_WIDTH));
         windowHeight = NumberUtils.getInt(paramsMap.get(Constants.KEY_HEIGHT));
-        headerView = new HeaderView(this, headersMap, windowBgColor).getView();
-        if (bodyMap != null)
-            bodyView = new BodyView(this, bodyMap, windowBgColor).getView();
-        if (footerMap != null)
-            footerView = new FooterView(this, footerMap, windowBgColor).getView();
     }
 
     private WindowManager.LayoutParams getLayoutParams() {
@@ -162,104 +162,109 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             params.type = android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
             if (isDisableClicks) {
-                params.flags = android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                params.flags = android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
+                        | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
             } else {
-                params.flags = android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                params.flags = android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
+                        | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
             }
         } else {
             params.type = android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
             if (isDisableClicks) {
-                params.flags = android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                params.flags = android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
+                        | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
             } else {
-                params.flags = android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                params.flags = android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
+                        | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isDisableClicks) {
             params.alpha = 0.8f;
         }
         params.gravity = Commons.getGravity(windowGravity, Gravity.TOP);
-        int marginTop = windowMargin.getTop();
-        int marginBottom = windowMargin.getBottom();
-        int marginLeft = windowMargin.getLeft();
-        int marginRight = windowMargin.getRight();
-        params.x = Math.max(marginLeft, marginRight);
-        params.y = (params.gravity == Gravity.TOP) ? marginTop :
-                (params.gravity == Gravity.BOTTOM) ? marginBottom : Math.max(marginTop, marginBottom);
         return params;
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void setWindowView(WindowManager.LayoutParams params, boolean isCreate) {
-        //params.width == WindowManager.LayoutParams.MATCH_PARENT;
-        if (isCreate) {
-            windowView = new LinearLayout(this);
-            windowView.setId(WINDOW_VIEW_ID);
-        }
-        windowView.setOrientation(LinearLayout.VERTICAL);
-        windowView.setLayoutParams(params);
-        windowView.setBackgroundColor(windowBgColor);
-        windowView.removeAllViews();
-        windowView.addView(headerView);
-        if (bodyView != null)
-            windowView.addView(bodyView);
-        if (footerView != null)
-            windowView.addView(footerView);
-        if (isEnableDraggable && !isDisableClicks)
-            windowView.setOnTouchListener(this);
-    }
-
     private void createWindow(HashMap<String, Object> paramsMap) {
         closeWindow(false);
         setWindowManager();
         setWindowLayoutFromMap(paramsMap);
         WindowManager.LayoutParams params = getLayoutParams();
-        setWindowView(params, true);
+        FlutterEngine engine = FlutterEngineCache.getInstance().get("my_cache_engine");
+        assert engine != null;
+        engine.getLifecycleChannel().appIsResumed();
+        flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
+        flutterView.attachToFlutterEngine(Objects.requireNonNull(FlutterEngineCache.getInstance().get("my_cache_engine")));
+        flutterView.setFitsSystemWindows(true);
+        flutterView.setFocusable(true);
+        flutterView.setFocusableInTouchMode(true);
+        flutterView.setBackgroundColor(Color.TRANSPARENT);
+        overlayMessageChannel.setMessageHandler((message, reply) -> Commons.messenger.send(message));
+        flutterView.setOnTouchListener(this);
         try {
-            windowManager.addView(windowView, params);
+            windowManager.addView(flutterView, params);
         } catch (Exception ex) {
             LogUtils.getInstance().e(TAG, ex.toString());
-            retryCreateWindow();
+            retryCreateWindow(paramsMap);
         }
     }
 
-    private void retryCreateWindow() {
+    @SuppressLint("ClickableViewAccessibility")
+    private void retryCreateWindow(HashMap<String, Object> paramsMap) {
         try {
             LogUtils.getInstance().d(TAG, "Retrying create window");
             closeWindow(false);
             setWindowManager();
-            //setWindowLayoutFromMap(paramsMap);
+            setWindowLayoutFromMap(paramsMap);
             WindowManager.LayoutParams params = getLayoutParams();
-            setWindowView(params, true);
-            windowManager.addView(windowView, params);
+            FlutterEngine engine = FlutterEngineCache.getInstance().get("my_cache_engine");
+            assert engine != null;
+            engine.getLifecycleChannel().appIsResumed();
+            flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
+            flutterView.attachToFlutterEngine(Objects.requireNonNull(FlutterEngineCache.getInstance().get("my_cache_engine")));
+            flutterView.setFitsSystemWindows(true);
+            flutterView.setFocusable(true);
+            flutterView.setFocusableInTouchMode(true);
+            flutterView.setBackgroundColor(Color.TRANSPARENT);
+            flutterView.setOnTouchListener(this);
+            windowManager.addView(flutterView, params);
         } catch (Exception ex) {
             LogUtils.getInstance().e(TAG, ex.toString());
         }
     }
 
-    private void updateWindow(HashMap<String, Object> paramsMap) {
-        setWindowLayoutFromMap(paramsMap);
-        WindowManager.LayoutParams newParams = getLayoutParams();
-        WindowManager.LayoutParams previousParams = (WindowManager.LayoutParams) windowView.getLayoutParams();
-        previousParams.width = (windowWidth == 0) ? android.view.WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(this, windowWidth);
-        previousParams.height = (windowHeight == 0) ? android.view.WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(this, windowHeight);
-        previousParams.flags = newParams.flags;
-        previousParams.alpha = newParams.alpha;
-        setWindowView(previousParams, false);
-        windowManager.updateViewLayout(windowView, previousParams);
-    }
+//    private void updateWindow(HashMap<String, Object> paramsMap) {
+//        setWindowLayoutFromMap(paramsMap);
+//        WindowManager.LayoutParams newParams = getLayoutParams();
+//        WindowManager.LayoutParams previousParams = (WindowManager.LayoutParams) windowView.getLayoutParams();
+//        previousParams.width = (windowWidth == 0) ? android.view.WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(this, windowWidth);
+//        previousParams.height = (windowHeight == 0) ? android.view.WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(this, windowHeight);
+//        previousParams.flags = newParams.flags;
+//        previousParams.alpha = newParams.alpha;
+//        setWindowView(previousParams, false);
+//        windowManager.updateViewLayout(windowView, previousParams);
+//    }
 
     private void closeWindow(boolean isStopService) {
         LogUtils.getInstance().i(TAG, "Closing the overlay window");
         try {
             if (windowManager != null) {
-                if (windowView != null) {
-                    windowManager.removeView(windowView);
-                    windowView = null;
-                    headerView = null;
-                    bodyView = null;
-                    footerView = null;
-                }
+                windowManager.removeView(flutterView);
                 windowManager = null;
+                flutterView.detachFromFlutterEngine();
             }
         } catch (IllegalArgumentException e) {
             LogUtils.getInstance().e(TAG, "view not found");
@@ -273,20 +278,20 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (null != windowManager) {
+            WindowManager.LayoutParams params = (WindowManager.LayoutParams) flutterView.getLayoutParams();
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 float x = event.getRawX();
                 float y = event.getRawY();
                 moving = false;
-                int[] location = new int[2];
-                windowView.getLocationOnScreen(location);
-                originalXPos = location[0];
-                originalYPos = location[1];
+//                int[] location = new int[2];
+//                windowView.getLocationOnScreen(location);
+//                originalXPos = location[0];
+//                originalYPos = location[1];
                 offsetX = originalXPos - x;
                 offsetY = originalYPos - y;
             } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
                 float x = event.getRawX();
                 float y = event.getRawY();
-                WindowManager.LayoutParams params = (WindowManager.LayoutParams) windowView.getLayoutParams();
                 int newX = (int) (offsetX + x);
                 int newY = (int) (offsetY + y);
                 if (Math.abs(newX - originalXPos) < 1 && Math.abs(newY - originalYPos) < 1 && !moving) {
@@ -294,10 +299,14 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
                 }
                 params.x = newX;
                 params.y = newY;
-                windowManager.updateViewLayout(windowView, params);
+                windowManager.updateViewLayout(flutterView, params);
                 moving = true;
             } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                return moving;
+                float x = event.getRawX();
+                float y = event.getRawY();
+                moving = false;
+                offsetX = originalXPos - x;
+                offsetY = originalYPos - y;
             }
         }
         return false;

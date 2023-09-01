@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.jvapps.system_alert_window.models.Margin;
+import io.flutter.plugin.common.BasicMessageChannel;
 
 public class Commons {
 
@@ -34,6 +35,8 @@ public class Commons {
     public static List<Map<String, Object>> getMapListFromObject(@NonNull Map<String, Object> map, String key) {
         return (List<Map<String, Object>>) map.get(key);
     }
+
+    public static BasicMessageChannel<Object> messenger = null;
 
     public static int getBgColorFromParams(@NonNull Map<String, Object> paramsMap) {
         int color = Color.WHITE;
