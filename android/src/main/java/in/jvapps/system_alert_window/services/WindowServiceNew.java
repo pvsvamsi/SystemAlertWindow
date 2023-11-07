@@ -1,5 +1,7 @@
 package in.jvapps.system_alert_window.services;
 
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -8,6 +10,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
@@ -86,7 +89,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
                 .setSmallIcon(R.drawable.ic_desktop_windows_black_24dp)
                 .setContentIntent(pendingIntent)
                 .build();
-        startForeground(NOTIFICATION_ID, notification);
+        if (Build.VERSION.SDK_INT >= 34) {
+            startForeground(NOTIFICATION_ID, notification, FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+        } else {
+            startForeground(NOTIFICATION_ID, notification);
+        }
     }
 
     @Override

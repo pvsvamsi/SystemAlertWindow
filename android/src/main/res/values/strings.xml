@@ -4,4 +4,6 @@
     <string name="channel_name">System Alert Window Channel</string>
     <string name="channel_description">This is a channel for system alert window</string>
 
+    <string name="foreground_service_special_use">This service helps this app to show overlay window</string>
+
 </resources>
