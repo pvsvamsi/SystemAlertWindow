@@ -64,17 +64,12 @@ class SystemAlertWindow {
 
   /// Show System Window
   ///
-  /// `header` Header content of the window
-  /// `body` Body content of the window
-  /// `footer` Footer content of the window
-  /// `margin` Margin for the window
   /// `gravity` Position of the window and default is [SystemWindowGravity.CENTER]
   /// `width` Width of the window and default is [Constants.MATCH_PARENT]
   /// `height` Height of the window and default is [Constants.WRAP_CONTENT]
   /// `notificationTitle` Notification title, applicable in case of bubble
   /// `notificationBody` Notification body, applicable in case of bubble
   /// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
-  /// `backgroundColor` Background color for the system window. Default is [Colors.white]. This will be the default background color for header, body, footer
   /// `isDisableClicks` Disables the clicks across the system window. Default is false. This is not applicable for bubbles.
   static Future<bool?> showSystemWindow(
       {SystemWindowGravity gravity = SystemWindowGravity.CENTER,
@@ -83,13 +78,11 @@ class SystemAlertWindow {
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT,
-      Color backgroundColor = Colors.white,
       bool isDisableClicks = false}) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT,
-      'bgColor': backgroundColor.toHex(leadingHashSign: true, withAlpha: true),
       'isDisableClicks': isDisableClicks
     };
     return await _channel.invokeMethod('showSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
@@ -97,17 +90,12 @@ class SystemAlertWindow {
 
   /// Update System Window
   ///
-  /// `header` Header content of the window
-  /// `body` Body content of the window
-  /// `footer` Footer content of the window
-  /// `margin` Margin for the window
   /// `gravity` Position of the window and default is [SystemWindowGravity.CENTER]
   /// `width` Width of the window and default is [Constants.MATCH_PARENT]
   /// `height` Height of the window and default is [Constants.WRAP_CONTENT]
   /// `notificationTitle` Notification title, applicable in case of bubble
   /// `notificationBody` Notification body, applicable in case of bubble
   /// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
-  /// `backgroundColor` Background color for the system window. Default is [Colors.white]. This will be the default background color for header, body, footer
   /// `isDisableClicks` Disables the clicks across the system window. Default is false. This is not applicable for bubbles.
   static Future<bool?> updateSystemWindow(
       {SystemWindowGravity gravity = SystemWindowGravity.CENTER,
@@ -116,13 +104,11 @@ class SystemAlertWindow {
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT,
-      Color backgroundColor = Colors.white,
       bool isDisableClicks = false}) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT,
-      'bgColor': backgroundColor.toHex(leadingHashSign: true, withAlpha: true),
       'isDisableClicks': isDisableClicks
     };
     return await _channel
