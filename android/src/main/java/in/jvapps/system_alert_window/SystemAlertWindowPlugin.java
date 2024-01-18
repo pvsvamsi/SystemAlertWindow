@@ -30,7 +30,7 @@ public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware,Bas
     private final String TAG = "SAW:Plugin";
     private Context context;
     private BasicMessageChannel<Object> messenger;
-    private final String FLUTTER_CACHE_ENGINE = "in.jvapps.flutter_cache_engine";
+
 
     public SystemAlertWindowPlugin() {
         LogUtils.getInstance().d(TAG, "Initializing the constructor");
@@ -102,7 +102,7 @@ public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware,Bas
                     FlutterInjector.instance().flutterLoader().findAppBundlePath(),
                     "overlayMain");
             FlutterEngine engine = enn.createAndRunEngine(context, dEntry);
-            FlutterEngineCache.getInstance().put(FLUTTER_CACHE_ENGINE, engine);
+            FlutterEngineCache.getInstance().put(Constants.FLUTTER_CACHE_ENGINE, engine);
 
         }
         this.pluginBinding = activityPluginBinding;
@@ -131,7 +131,7 @@ public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware,Bas
     @Override
     public void onMessage(@Nullable Object message, @NonNull BasicMessageChannel.Reply reply) {
         BasicMessageChannel overlayMessageChannel = new BasicMessageChannel(
-                FlutterEngineCache.getInstance().get(FLUTTER_CACHE_ENGINE)
+                FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE)
                         .getDartExecutor(),
                 Constants.MESSAGE_CHANNEL, JSONMessageCodec.INSTANCE);
         overlayMessageChannel.send(message, reply);

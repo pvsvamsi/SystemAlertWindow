@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:developer';
+import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:system_alert_window/system_alert_window.dart';
-import 'package:system_alert_window_example/trueCaller.dart';
+import 'custom_overlay.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,29 +20,9 @@ void overlayMain() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TrueCallerOverlay(),
+      home: CustomOverlay(),
     ),
   );
-}
-
-///
-/// Whenever a button is clicked, this method will be invoked with a tag (As tag is unique for every button, it helps in identifying the button).
-/// You can check for the tag value and perform the relevant action for the button click
-@pragma('vm:entry-point')
-void callBack(String tag) {
-  WidgetsFlutterBinding.ensureInitialized();
-  print(tag);
-  switch (tag) {
-    case "simple_button":
-    case "updated_simple_button":
-      SystemAlertWindow.closeSystemWindow(prefMode: SystemWindowPrefMode.OVERLAY);
-      break;
-    case "focus_button":
-      print("Focus button has been called");
-      break;
-    default:
-      print("OnClick event of $tag");
-  }
 }
 
 class MyApp extends StatefulWidget {
@@ -48,18 +31,29 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   String _platformVersion = 'Unknown';
   bool _isShowingWindow = false;
   bool _isUpdatedWindow = false;
   SystemWindowPrefMode prefMode = SystemWindowPrefMode.OVERLAY;
+  static const String _mainAppPort = 'MainApp';
+  final _receivePort = ReceivePort();
+  SendPort? homePort;
+  String? latestMessageFromOverlay;
 
   @override
   void initState() {
     super.initState();
     _initPlatformState();
     _requestPermissions();
-    SystemAlertWindow.registerOnClickListener(callBack);
+    if (homePort != null) return;
+    final res = IsolateNameServer.registerPortWithName(
+      _receivePort.sendPort,
+      _mainAppPort,
+    );
+    log("$res: OVERLAY");
+    _receivePort.listen((message) {
+      log("message from OVERLAY: $message");
+    });
   }
 
   @override
@@ -71,7 +65,7 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> _initPlatformState() async {
     await SystemAlertWindow.enableLogs(true);
-    String platformVersion;
+    String? platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       platformVersion = await SystemAlertWindow.platformVersion;
@@ -83,10 +77,10 @@ class _MyAppState extends State<MyApp> {
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
     if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    if (platformVersion != null)
+      setState(() {
+        _platformVersion = platformVersion!;
+      });
   }
 
   Future<void> _requestPermissions() async {
@@ -95,35 +89,33 @@ class _MyAppState extends State<MyApp> {
 
   void _showOverlayWindow() async {
     if (!_isShowingWindow) {
-      await SystemAlertWindow.shareData('show system window');
+      await SystemAlertWindow.sendMessageToOverlay('show system window');
       SystemAlertWindow.showSystemWindow(
-          height: 230,
-          gravity: SystemWindowGravity.CENTER,
-          notificationTitle: "Incoming Call",
-          notificationBody: "+1 646 980 4741",
-          prefMode: prefMode,
-          backgroundColor: Colors.black12,
-          isDisableClicks: false);
+        height: 200,
+        width: MediaQuery.of(context).size.width.floor(),
+        gravity: SystemWindowGravity.CENTER,
+        prefMode: prefMode,
+      );
       setState(() {
         _isShowingWindow = true;
       });
     } else if (!_isUpdatedWindow) {
-      await SystemAlertWindow.shareData('update system window');
+      await SystemAlertWindow.sendMessageToOverlay('update system window');
       SystemAlertWindow.updateSystemWindow(
-          height: 130,
+          height: 200,
+          width: MediaQuery.of(context).size.width.floor(),
           gravity: SystemWindowGravity.CENTER,
-          notificationTitle: "Outgoing Call",
-          notificationBody: "+1 646 980 4741",
           prefMode: prefMode,
-          backgroundColor: Colors.transparent,
           isDisableClicks: true);
       setState(() {
         _isUpdatedWindow = true;
+        SystemAlertWindow.sendMessageToOverlay(_isUpdatedWindow);
       });
     } else {
       setState(() {
         _isShowingWindow = false;
         _isUpdatedWindow = false;
+        SystemAlertWindow.sendMessageToOverlay(_isUpdatedWindow);
       });
       SystemAlertWindow.closeSystemWindow(prefMode: prefMode);
     }
@@ -148,15 +140,25 @@ class _MyAppState extends State<MyApp> {
                   child: !_isShowingWindow
                       ? Text("Show system alert window")
                       : !_isUpdatedWindow
-                      ? Text("Update system alert window")
-                      : Text("Close system alert window"),
+                          ? Text("Update system alert window")
+                          : Text("Close system alert window"),
+                  color: Colors.deepOrange,
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: MaterialButton(
+                  onPressed: () => SystemAlertWindow.sendMessageToOverlay("message from main"),
+                  textColor: Colors.white,
+                  child: Text("send message to overlay"),
                   color: Colors.deepOrange,
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                 ),
               ),
               TextButton(
                   onPressed: () async {
-                    String logFilePath = await SystemAlertWindow.getLogFile;
+                    String? logFilePath = await SystemAlertWindow.getLogFile;
                     if (logFilePath != null && logFilePath.isNotEmpty) {
                       Share.shareFiles([logFilePath]);
                     } else {
