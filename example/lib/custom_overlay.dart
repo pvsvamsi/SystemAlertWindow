@@ -59,7 +59,6 @@ class _CustomOverlayState extends State<CustomOverlay> {
                     overlayColor: MaterialStateProperty.all(Colors.transparent),
                   ),
                   onPressed: () {
-                    SystemAlertWindow.addCustomLog("close button clicked");
                     mainAppPort ??= IsolateNameServer.lookupPortByName(
                       _mainAppPort,
                     );
@@ -95,7 +94,6 @@ class _CustomOverlayState extends State<CustomOverlay> {
               overlayColor: MaterialStateProperty.all(Colors.transparent),
             ),
             onPressed: () {
-              SystemAlertWindow.addCustomLog("action button clicked");
               mainAppPort ??= IsolateNameServer.lookupPortByName(
                 _mainAppPort,
               );

@@ -209,12 +209,6 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                     BackgroundMethodCallHandlerImpl.getInstance().stopCallBackHandler();
                     result.success(true);
                     break;
-                case "logCustomMessage":
-                    arguments = (JSONArray) call.arguments;
-                    String message = (String) arguments.get(0);
-                    LogUtils.getInstance().d(TAG, message);
-                    result.success(true);
-                    break;
                 default:
                     result.notImplemented();
             }

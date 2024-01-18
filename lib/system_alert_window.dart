@@ -29,9 +29,6 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('getLogFile');
   }
 
-  static Future<void> addCustomLog(String text) async {
-    await _channel.invokeMethod('logCustomMessage', [text]);
-  }
 
   /// Method to enable the logs. By default, logs are disabled
   static Future<void> enableLogs(bool flag) async {
