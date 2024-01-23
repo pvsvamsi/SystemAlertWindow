@@ -44,10 +44,69 @@ Displays as a notification in the notification center [Help Needed]
 
 ## Example
 
-### Request overlay permission
+#### Show Overlay
+
+#### Request overlay permission
       await SystemAlertWindow.requestPermissions;
 
-### Show the overlay
+### Inside `main.dart` create an entry point for your Overlay widget;
+```dart
+// overlay entry point
+@pragma("vm:entry-point")
+void overlayMain() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: Material(child: Text("My overlay"))
+  ));
+}
+
+
+ //Open overLay content
+
+//  - Optional arguments:
+/// `gravity` Position of the window and default is [SystemWindowGravity.CENTER]
+/// `width` Width of the window and default is [Constants.MATCH_PARENT]
+/// `height` Height of the window and default is [Constants.WRAP_CONTENT]
+/// `notificationTitle` Notification title, applicable in case of bubble
+/// `notificationBody` Notification body, applicable in case of bubble
+/// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
+/// `isDisableClicks` Disables the clicks across the system window. Default is false. This is not applicable for bubbles.
+await SystemAlertWindow.showSystemWindow();
+
+ // closes overlay if open
+await SystemAlertWindow.closeSystemWindow();
+
+ // broadcast data to and from overlay app
+await SystemAlertWindow.sendMessageToOverlay("Hello from the other side");
+
+ //streams message shared between overlay and main app
+SystemAlertWindow.overlayListener.listen((event) {
+log("Current Event: $event");
+});
+
+//to add custom logs in log file
+SystemAlertWindow.addCustomLog("add custom log")
+
+
+/// update the overlay flag while the overlay in action
+///   - Optional arguments:
+/// `gravity` Position of the window and default is [SystemWindowGravity.CENTER]
+/// `width` Width of the window and default is [Constants.MATCH_PARENT]
+/// `height` Height of the window and default is [Constants.WRAP_CONTENT]
+/// `notificationTitle` Notification title, applicable in case of bubble
+/// `notificationBody` Notification body, applicable in case of bubble
+/// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
+/// `isDisableClicks` Disables the clicks across the system window. Default is false. This is not applicable for bubbles.
+await FlutterOverlayWindow.updateSystemWindow();
+
+```
+
+### Close the overlay
+      SystemAlertWindow.closeSystemWindow();
+
+
+
+#### Show the Bubble 
           
       SystemWindowHeader header = SystemWindowHeader(
           title: SystemWindowText(text: "Incoming Call", fontSize: 10, textColor: Colors.black45),
@@ -111,7 +170,7 @@ Displays as a notification in the notification center [Help Needed]
           //Using SystemWindowPrefMode.OVERLAY forces overlay window instead of bubble in Android 11.
           //Using SystemWindowPrefMode.BUBBLE forces Bubble instead of overlay window in Android 10 & above
           
-### Register for onClick events (button click)
+#### Register for onClick events (button click)
 
       SystemAlertWindow.registerOnClickListener(callBackFunction);
 
@@ -136,12 +195,9 @@ Displays as a notification in the notification center [Help Needed]
         }
       }
           
-### Close the overlay
 
-      SystemAlertWindow.closeSystemWindow();
-      
-### Isolate communication
-##### Use this snippet, if you want the callbacks on your main thread, instead of handling them in an isolate (like mentioned above)
+#### Isolate communication
+###### Use this snippet, if you want the callbacks on your main thread, instead of handling them in an isolate (like mentioned above)
 
 ###### Create an isolate_manager.dart
 ```
@@ -193,7 +249,7 @@ class IsolateManager{
     SystemAlertWindow.registerOnClickListener(callBackFunction);
 ```
 
-###### Now the callBackFunction should looks like 
+###### Now the callBackFunction should looks like
 ```
 bool callBackFunction(String tag) {
   print("Got tag " + tag);
@@ -202,3 +258,7 @@ bool callBackFunction(String tag) {
   return true;
 }
 ```
+
+
+      
+

@@ -5,4 +5,6 @@ class Constants {
   static const String CHANNEL = "in.jvapps.system_alert_window";
   static const String BACKGROUND_CHANNEL =
       "in.jvapps.system_alert_window/background";
+  static const String MESSAGE_CHANNEL =
+      "in.jvapps.system_alert_window/message";
 }
