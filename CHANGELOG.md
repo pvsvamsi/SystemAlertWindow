@@ -1,3 +1,8 @@
+## 1.3.0
+
+* Added support for Android 14
+* Uses new permission FOREGROUND_SERVICE_SPECIAL_USE
+
 ## 1.2.2
 
 * Updated Gradle, min SDK is now set as 21

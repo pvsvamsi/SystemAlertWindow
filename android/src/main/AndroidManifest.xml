@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application>
         <activity
@@ -20,9 +21,12 @@
             tools:ignore="UnusedAttribute" />
         <service
             android:name=".services.WindowServiceNew"
+            android:foregroundServiceType="specialUse"
             android:enabled="true"
             android:exported="false"
-            android:permission="android.permission.FOREGROUND_SERVICE"/>
+            android:permission="android.permission.FOREGROUND_SERVICE"><property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+            android:value="@string/foreground_service_special_use"/>
+        </service>
     </application>
 
 </manifest>
