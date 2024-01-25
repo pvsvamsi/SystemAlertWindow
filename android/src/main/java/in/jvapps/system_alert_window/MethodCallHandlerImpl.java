@@ -186,29 +186,6 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                         result.success(true);
                     }
                     break;
-                case "registerCallBackHandler":
-                    try {
-                        JSONArray callBackArguments = (JSONArray) call.arguments;
-                        if (callBackArguments != null) {
-                            long callbackHandle = Long.parseLong(String.valueOf(callBackArguments.get(0)));
-                            long onClickHandle = Long.parseLong(String.valueOf(callBackArguments.get(1)));
-                            SharedPreferences preferences = mContext.getSharedPreferences(Constants.SHARED_PREF_SYSTEM_ALERT_WINDOW, 0);
-                            preferences.edit().putLong(Constants.CALLBACK_HANDLE_KEY, callbackHandle)
-                                    .putLong(Constants.CODE_CALLBACK_HANDLE_KEY, onClickHandle).apply();
-                            result.success(true);
-                        } else {
-                            LogUtils.getInstance().e(TAG, "Unable to register on click handler. Arguments are null");
-                            result.success(false);
-                        }
-                    } catch (Exception ex) {
-                        LogUtils.getInstance().e(TAG, "Exception in registerOnClickHandler " + ex);
-                        result.success(false);
-                    }
-                    break;
-                case "removeCallBackHandler":
-                    BackgroundMethodCallHandlerImpl.getInstance().stopCallBackHandler();
-                    result.success(true);
-                    break;
                 default:
                     result.notImplemented();
             }
