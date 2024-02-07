@@ -17,6 +17,7 @@
             android:allowEmbedded="true"
             android:resizeableActivity="true"
             android:showOnLockScreen="true"
+            android:hardwareAccelerated="true"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="UnusedAttribute" />
         <service

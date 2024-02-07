@@ -45,15 +45,6 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('requestPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
-  /// Register your callbackFunction to receive click events
-  /// Your callback function should be declared as a global function (Outside the scope of the class)
-  /// Don't forget to add @pragma('vm:entry-point') above your global function
-  static Future<bool> registerOnClickListener(Function callBackFunction) async {
-    final callBackDispatcher = PluginUtilities.getCallbackHandle(callbackDispatcher);
-    final callBack = PluginUtilities.getCallbackHandle(callBackFunction);
-    await _channel.invokeMethod("registerCallBackHandler", <dynamic>[callBackDispatcher!.toRawHandle(), callBack!.toRawHandle()]);
-    return true;
-  }
 
   static Future<bool> removeOnClickListener() async {
     return await _channel.invokeMethod("removeCallBackHandler");
@@ -135,27 +126,6 @@ class SystemAlertWindow {
   }
 }
 
-/// Global function to handle the callbacks in background isolate
-@pragma('vm:entry-point')
-void callbackDispatcher() {
-  // 1. Initialize MethodChannel used to communicate with the platform portion of the plugin
-  const MethodChannel _backgroundChannel = const MethodChannel(Constants.BACKGROUND_CHANNEL, JSONMethodCodec());
-  // 2. Setup internal state needed for MethodChannels.
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // 3. Listen for background events from the platform portion of the plugin.
-  _backgroundChannel.setMethodCallHandler((MethodCall call) async {
-    final args = call.arguments;
-    // 3.1. Retrieve callback instance for handle.
-    final Function callback = PluginUtilities.getCallbackFromHandle(CallbackHandle.fromRawHandle(args[0]))!;
-    final type = args[1];
-    if (type == "onClick") {
-      final tag = args[2];
-      // 3.2. Invoke callback.
-      callback(tag);
-    }
-  });
-}
 
 extension HexColor on Color {
   String _generateAlpha({required int alpha, required bool withAlpha}) {

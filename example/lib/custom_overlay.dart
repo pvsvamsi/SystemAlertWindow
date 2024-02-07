@@ -64,7 +64,7 @@ class _CustomOverlayState extends State<CustomOverlay> {
                     );
                     mainAppPort?.send('Date: ${DateTime.now()}');
                     mainAppPort?.send('Close');
-                    SystemAlertWindow.closeSystemWindow();
+                    SystemAlertWindow.closeSystemWindow(prefMode: prefMode);
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 2.3,

@@ -235,9 +235,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         LogUtils.getInstance().i(TAG, "Closing the overlay window");
         try {
             if (windowManager != null) {
-                windowManager.removeView(flutterView);
-                windowManager = null;
-                flutterView.detachFromFlutterEngine();
+               if(flutterView!=null){
+                   windowManager.removeView(flutterView);
+                   windowManager = null;
+                   flutterView.detachFromFlutterEngine();
+               }
             }
         } catch (IllegalArgumentException e) {
             LogUtils.getInstance().e(TAG, "view not found");
