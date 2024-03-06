@@ -1,3 +1,7 @@
+## 2.0.0
+
+* Added support for Flutter UI within the overlay window
+
 ## 1.3.0
 
 * Added support for Android 14
