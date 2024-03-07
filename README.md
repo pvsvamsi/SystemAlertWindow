@@ -139,20 +139,18 @@ class IsolateManager{
     await SystemAlertWindow.checkPermissions;
     ReceivePort _port = ReceivePort();
     IsolateManager.registerPortWithName(_port.sendPort);
-    _port.listen((dynamic callBackData) {
-      String tag= callBackData[0];
+    _port.listen((message) {
+          log("message from OVERLAY: $message");
           print("Do what ever you want here. This is inside your application scope");
     });
 ```
 
-###### Now the callBackFunction should looks like
+###### Use this to send data to isolate mentioned above
 ```dart
-bool callBackFunction(String tag) {
-  //sends data from overlay to main app
+void callBackFunction(String tag) {
   print("Got tag " + tag);
   SendPort port = IsolateManager.lookupPortByName();
-  port.send([tag]);
-  return true;
+  port.send(tag);
 }
 ```
 
