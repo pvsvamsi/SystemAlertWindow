@@ -103,7 +103,7 @@ class SystemAlertWindow {
         .invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
-  /// Broadcast data to and from overlay app
+  /// Broadcast data to overlay app
   static Future sendMessageToOverlay(dynamic data) async {
     return await _overlayMessageChannel.send(data);
   }

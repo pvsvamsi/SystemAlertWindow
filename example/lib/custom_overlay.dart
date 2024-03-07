@@ -37,7 +37,7 @@ class _CustomOverlayState extends State<CustomOverlay> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            height: (MediaQuery.of(context).size.height) / 3.5,
+            height: 60,
             color: Colors.grey[100],
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
