@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:system_alert_window/utils/commons.dart';
 import 'package:system_alert_window/utils/constants.dart';
 
-enum SystemWindowGravity { TOP, BOTTOM, CENTER }
+enum SystemWindowGravity { TOP, BOTTOM, CENTER, LEADING, TRAILING }
 
 enum SystemWindowPrefMode { DEFAULT, OVERLAY, BUBBLE }
 
@@ -29,7 +26,6 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('getLogFile');
   }
 
-
   /// Method to enable the logs. By default, logs are disabled
   static Future<void> enableLogs(bool flag) async {
     await _channel.invokeMethod('enableLogs', [flag]);
@@ -44,7 +40,6 @@ class SystemAlertWindow {
   static Future<bool?> requestPermissions({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
     return await _channel.invokeMethod('requestPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
-
 
   static Future<bool> removeOnClickListener() async {
     return await _channel.invokeMethod("removeCallBackHandler");
@@ -125,7 +120,6 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('closeSystemWindow', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 }
-
 
 extension HexColor on Color {
   String _generateAlpha({required int alpha, required bool withAlpha}) {
