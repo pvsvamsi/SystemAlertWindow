@@ -9,6 +9,10 @@ class Commons {
         return "center";
       case SystemWindowGravity.BOTTOM:
         return "bottom";
+      case SystemWindowGravity.TRAILING:
+        return "trailing";
+      case SystemWindowGravity.LEADING:
+        return "leading";
       case SystemWindowGravity.TOP:
       default:
         return "top";

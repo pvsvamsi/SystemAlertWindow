@@ -29,6 +29,15 @@ class _CustomOverlayState extends State<CustomOverlay> {
     });
   }
 
+  void callBackFunction(String tag) {
+    print("Got tag " + tag);
+    mainAppPort ??= IsolateNameServer.lookupPortByName(
+      _mainAppPort,
+    );
+    mainAppPort?.send('Date: ${DateTime.now()}');
+    mainAppPort?.send(tag);
+  }
+
   Widget overlay() {
     return Container(
       height: MediaQuery.of(context).size.height,
@@ -37,7 +46,7 @@ class _CustomOverlayState extends State<CustomOverlay> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            height: (MediaQuery.of(context).size.height) / 3.5,
+            height: 60,
             color: Colors.grey[100],
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,11 +68,7 @@ class _CustomOverlayState extends State<CustomOverlay> {
                     overlayColor: MaterialStateProperty.all(Colors.transparent),
                   ),
                   onPressed: () {
-                    mainAppPort ??= IsolateNameServer.lookupPortByName(
-                      _mainAppPort,
-                    );
-                    mainAppPort?.send('Date: ${DateTime.now()}');
-                    mainAppPort?.send('Close');
+                    callBackFunction("Close");
                     SystemAlertWindow.closeSystemWindow(prefMode: prefMode);
                   },
                   child: Container(
@@ -94,11 +99,7 @@ class _CustomOverlayState extends State<CustomOverlay> {
               overlayColor: MaterialStateProperty.all(Colors.transparent),
             ),
             onPressed: () {
-              mainAppPort ??= IsolateNameServer.lookupPortByName(
-                _mainAppPort,
-              );
-              mainAppPort?.send('Date: ${DateTime.now()}');
-              mainAppPort?.send('Action');
+              callBackFunction("Action");
             },
             child: Container(
               padding: EdgeInsets.all(12),

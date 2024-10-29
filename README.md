@@ -87,10 +87,10 @@ await FlutterOverlayWindow.updateSystemWindow();
  // closes overlay if open
 await SystemAlertWindow.closeSystemWindow();
 
- // broadcast data to and from overlay app
+ // broadcast data to overlay app from main app
 await SystemAlertWindow.sendMessageToOverlay("Hello from the other side");
 
- //streams message shared between overlay and main app
+ //streams message from main app to overlay.
 SystemAlertWindow.overlayListener.listen((event) {
 log("Current Event: $event");
 });
@@ -100,17 +100,14 @@ log("Current Event: $event");
 
 ```
 
-### Close the overlay
-      SystemAlertWindow.closeSystemWindow();
-
 
 
 
 #### Isolate communication
-###### Use this snippet, if you want the callbacks on your main thread, instead of handling them in an isolate (like mentioned above)
+###### Use this snippet, if you want the callbacks on your main thread
 
 ###### Create an isolate_manager.dart
-```
+```dart
 import 'dart:isolate';
 
 import 'dart:ui';
@@ -138,34 +135,22 @@ class IsolateManager{
 ```
 
 ###### While initializing system alert window in your code
-```
+```dart
     await SystemAlertWindow.checkPermissions;
     ReceivePort _port = ReceivePort();
     IsolateManager.registerPortWithName(_port.sendPort);
-    _port.listen((dynamic callBackData) {
-      String tag= callBackData[0];
-      switch (tag) {
-        case "personal_btn":
-          print("Personal button click : Do what ever you want here. This is inside your application scope");
-          break;
-        case "simple_button":
-          print("Simple button click : Do what ever you want here. This is inside your application scope");
-          break;
-        case "focus_button":
-          print("Focus button click : Do what ever you want here. This is inside your application scope");
-          break;
-      }
+    _port.listen((message) {
+          log("message from OVERLAY: $message");
+          print("Do what ever you want here. This is inside your application scope");
     });
-    SystemAlertWindow.registerOnClickListener(callBackFunction);
 ```
 
-###### Now the callBackFunction should looks like
-```
-bool callBackFunction(String tag) {
+###### Use this to send data to isolate mentioned above
+```dart
+void callBackFunction(String tag) {
   print("Got tag " + tag);
   SendPort port = IsolateManager.lookupPortByName();
-  port.send([tag]);
-  return true;
+  port.send(tag);
 }
 ```
 
