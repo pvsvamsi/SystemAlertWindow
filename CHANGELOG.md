@@ -1,3 +1,7 @@
+## 2.0.1
+
+* Added support for leading, trailing in SystemWindowGravity
+
 ## 2.0.0
 
 * Added support for Flutter UI within the overlay window
