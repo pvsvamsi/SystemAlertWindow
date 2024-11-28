@@ -41,10 +41,6 @@ class SystemAlertWindow {
     return await _channel.invokeMethod('requestPermissions', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
-  static Future<bool> removeOnClickListener() async {
-    return await _channel.invokeMethod("removeCallBackHandler");
-  }
-
   /// Show System Window
   ///
   /// `gravity` Position of the window and default is [SystemWindowGravity.CENTER]
@@ -54,6 +50,7 @@ class SystemAlertWindow {
   /// `notificationBody` Notification body, applicable in case of bubble
   /// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
   /// `isDisableClicks` Disables the clicks across the system window. Default is false. This is not applicable for bubbles.
+  /// `isFlagFocusable` Makes the overlay window focusable. Default is false.
   static Future<bool?> showSystemWindow(
       {SystemWindowGravity gravity = SystemWindowGravity.CENTER,
       int? width,
@@ -61,12 +58,14 @@ class SystemAlertWindow {
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT,
-      bool isDisableClicks = false}) async {
+      bool isDisableClicks = false,
+      bool isFlagFocusable = false}) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT,
-      'isDisableClicks': isDisableClicks
+      'isDisableClicks': isDisableClicks,
+      'isFlagFocusable': isFlagFocusable
     };
     return await _channel.invokeMethod('showSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
@@ -80,6 +79,7 @@ class SystemAlertWindow {
   /// `notificationBody` Notification body, applicable in case of bubble
   /// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
   /// `isDisableClicks` Disables the clicks across the system window. Default is false. This is not applicable for bubbles.
+  /// `isFlagFocusable`Makes the overlay window focusable. Default is false.
   static Future<bool?> updateSystemWindow(
       {SystemWindowGravity gravity = SystemWindowGravity.CENTER,
       int? width,
@@ -87,12 +87,14 @@ class SystemAlertWindow {
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT,
-      bool isDisableClicks = false}) async {
+      bool isDisableClicks = false,
+      bool isFlagFocusable = false}) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT,
-      'isDisableClicks': isDisableClicks
+      'isDisableClicks': isDisableClicks,
+      'isFlagFocusable': isFlagFocusable
     };
     return await _channel
         .invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);

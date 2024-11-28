@@ -17,6 +17,7 @@ public class Constants {
     public static final String KEY_FOOTER = "footer";
     public static final String KEY_IS_SHOW_FOOTER = "isShowFooter";
     public static final String KEY_IS_DISABLE_CLICKS = "isDisableClicks";
+    public static final String KEY_IS_FLAG_FOCUSABLE = "isFlagFocusable";
     public static final String KEY_GRAVITY = "gravity";
     public static final String KEY_WIDTH = "width";
     public static final String KEY_HEIGHT = "height";

@@ -58,7 +58,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    SystemAlertWindow.removeOnClickListener();
     super.dispose();
   }
 
@@ -91,11 +90,11 @@ class _MyAppState extends State<MyApp> {
     if (!_isShowingWindow) {
       await SystemAlertWindow.sendMessageToOverlay('show system window');
       SystemAlertWindow.showSystemWindow(
-        height: 200,
-        width: MediaQuery.of(context).size.width.floor(),
-        gravity: SystemWindowGravity.CENTER,
-        prefMode: prefMode,
-      );
+          height: 200,
+          width: MediaQuery.of(context).size.width.floor(),
+          gravity: SystemWindowGravity.CENTER,
+          prefMode: prefMode,
+          isFlagFocusable: false);
       setState(() {
         _isShowingWindow = true;
       });
@@ -106,6 +105,7 @@ class _MyAppState extends State<MyApp> {
           width: MediaQuery.of(context).size.width.floor(),
           gravity: SystemWindowGravity.CENTER,
           prefMode: prefMode,
+          isFlagFocusable: true,
           isDisableClicks: true);
       setState(() {
         _isUpdatedWindow = true;
