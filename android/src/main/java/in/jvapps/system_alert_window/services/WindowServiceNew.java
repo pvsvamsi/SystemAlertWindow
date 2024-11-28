@@ -58,6 +58,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private int windowHeight;
 
     private boolean isDisableClicks = false;
+    private boolean isFlagFocusable = false;
 
     private FlutterView flutterView;
 
@@ -137,6 +138,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     private void setWindowLayoutFromMap(HashMap<String, Object> paramsMap) {
         isDisableClicks = Commons.getIsClicksDisabled(paramsMap);
+        isFlagFocusable = Commons.getIsFlagFocusable(paramsMap);
         LogUtils.getInstance().i(TAG, String.valueOf(isDisableClicks));
         windowGravity = (String) paramsMap.get(Constants.KEY_GRAVITY);
         windowWidth = NumberUtils.getInt(paramsMap.get(Constants.KEY_WIDTH));
@@ -152,18 +154,19 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             params.type = android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
             if (isDisableClicks) {
-                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
             } else {
-                params.flags =  WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                params.flags =  WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED ;
             }
         } else {
             params.type = android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
             if (isDisableClicks) {
-                params.flags =  WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                params.flags =  WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
             } else {
-                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
             }
         }
+        if(!isFlagFocusable)  params.flags|= android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isDisableClicks) {
             params.alpha = 0.8f;
         }
