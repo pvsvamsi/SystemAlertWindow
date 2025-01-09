@@ -1,3 +1,7 @@
+## 2.0.3
+
+* Fixed bubble's UI
+
 ## 2.0.2
 
 * Added support for leading, trailing in SystemWindowGravity
