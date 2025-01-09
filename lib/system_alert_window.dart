@@ -121,6 +121,10 @@ class SystemAlertWindow {
   static Future<bool?> closeSystemWindow({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
     return await _channel.invokeMethod('closeSystemWindow', [Commons.getSystemWindowPrefMode(prefMode)]);
   }
+
+  static Future<bool?> isBubbleMode({SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT}) async {
+    return await _channel.invokeMethod('isBubbleMode', [Commons.getSystemWindowPrefMode(prefMode)]);
+  }
 }
 
 extension HexColor on Color {
