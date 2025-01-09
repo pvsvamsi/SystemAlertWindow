@@ -107,14 +107,14 @@ public class NotificationHelper {
     private Notification.BubbleMetadata createBubbleMetadata(Icon icon, PendingIntent intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             return new Notification.BubbleMetadata.Builder(intent, icon)
-                    .setDesiredHeight(250)
+                    .setDesiredHeight(280)
                     .setAutoExpandBubble(true)
                     .setSuppressNotification(true)
                     .build();
         } else {
             //noinspection deprecation
             return new Notification.BubbleMetadata.Builder()
-                    .setDesiredHeight(250)
+                    .setDesiredHeight(280)
                     .setIcon(icon)
                     .setIntent(intent)
                     .setAutoExpandBubble(true)
@@ -135,7 +135,7 @@ public class NotificationHelper {
         @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext.get(), REQUEST_BUBBLE, bubbleIntent,
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? (PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE)
-                : PendingIntent.FLAG_UPDATE_CURRENT);
+                        : PendingIntent.FLAG_UPDATE_CURRENT);
         long now = currentTimeMillis() - 100;
         @SuppressLint("UnspecifiedImmutableFlag")
         Notification.Builder builder = new Notification.Builder(mContext.get(), CHANNEL_ID)
