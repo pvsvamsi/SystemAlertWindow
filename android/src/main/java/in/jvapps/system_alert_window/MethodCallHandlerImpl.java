@@ -186,6 +186,14 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                         result.success(true);
                     }
                     break;
+                case "isBubbleMode":
+                    arguments = (JSONArray) call.arguments;
+                    prefMode = (String) arguments.get(0);
+                    if (prefMode == null) {
+                        prefMode = "default";
+                    }
+                    result.success(isBubbleMode(prefMode));
+                    break;
                 default:
                     result.notImplemented();
             }

@@ -39,7 +39,6 @@ public class BubbleActivity extends AppCompatActivity {
     private  LinearLayout bubbleLayout;
     private HashMap<String, Object> paramsMap;
     private FlutterView flutterView;
-    private FlutterEngine flutterEngine;
 
     private Context mContext;
 
@@ -51,51 +50,54 @@ public class BubbleActivity extends AppCompatActivity {
         mContext = this;
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null) {
-            paramsMap = (HashMap<String, Object>) intent.getSerializableExtra(INTENT_EXTRA_PARAMS_MAP);
-            FlutterEngineGroup enn = new FlutterEngineGroup(mContext);
-            DartExecutor.DartEntrypoint dEntry = new DartExecutor.DartEntrypoint(
-                    FlutterInjector.instance().flutterLoader().findAppBundlePath(),
-                    "overlayMain");
-            flutterEngine = enn.createAndRunEngine(mContext, dEntry);
-            FlutterEngineCache.getInstance().put(Constants.FLUTTER_CACHE_ENGINE, flutterEngine);
             configureUI();
         }
     }
 
     protected void onResume() {
         super.onResume();
-        flutterEngine.getLifecycleChannel().appIsResumed();
+        FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+        assert engine != null;
+        engine.getLifecycleChannel().appIsResumed();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        flutterEngine.getLifecycleChannel().appIsInactive();
+        FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+        assert engine != null;
+        engine.getLifecycleChannel().appIsInactive();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        flutterEngine.getLifecycleChannel().appIsPaused();
+        FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+        assert engine != null;
+        engine.getLifecycleChannel().appIsPaused();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        flutterEngine.getLifecycleChannel().appIsDetached();
+        FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+        assert engine != null;
+        engine.getLifecycleChannel().appIsDetached();
     }
 
     void configureUI(){
         LinearLayout linearLayout = new LinearLayout(mContext);
         linearLayout.setOrientation(LinearLayout.VERTICAL); // Set the orientation if needed
-
-        flutterEngine.getLifecycleChannel().appIsResumed();
+        linearLayout.setBackgroundColor(Color.WHITE);
+        FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+        assert engine != null;
+        engine.getLifecycleChannel().appIsResumed();
         flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
         flutterView.attachToFlutterEngine(Objects.requireNonNull(FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE)));
         flutterView.setFitsSystemWindows(true);
         flutterView.setFocusable(true);
         flutterView.setFocusableInTouchMode(true);
-        flutterView.setBackgroundColor(Color.TRANSPARENT);
+        flutterView.setBackgroundColor(Color.WHITE);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         flutterView.setLayoutParams(params);
