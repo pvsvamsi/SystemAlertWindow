@@ -79,7 +79,6 @@ public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware, Ba
         messenger = new BasicMessageChannel<>(flutterPluginBinding.getBinaryMessenger(), Constants.MESSAGE_CHANNEL,
                 JSONMessageCodec.INSTANCE);
         messenger.setMessageHandler(this);
-        Commons.pluginMessenger = messenger;
     }
 
     @Override
