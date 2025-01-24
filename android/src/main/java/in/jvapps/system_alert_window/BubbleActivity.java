@@ -36,8 +36,6 @@ import static in.jvapps.system_alert_window.utils.Constants.INTENT_EXTRA_PARAMS_
 
 public class BubbleActivity extends AppCompatActivity {
 
-    private  LinearLayout bubbleLayout;
-    private HashMap<String, Object> paramsMap;
     private FlutterView flutterView;
 
     private Context mContext;

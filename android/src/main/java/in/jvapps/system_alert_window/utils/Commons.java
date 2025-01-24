@@ -34,8 +34,7 @@ public class Commons {
     public static List<Map<String, Object>> getMapListFromObject(@NonNull Map<String, Object> map, String key) {
         return (List<Map<String, Object>>) map.get(key);
     }
-    public static BasicMessageChannel<Object> messenger = null;
-
+    public static BasicMessageChannel<Object> pluginMessenger = null;
 
     public static boolean getIsClicksDisabled(@NonNull Map<String, Object> paramsMap) {
         Object isDisableClicksObj = paramsMap.get(KEY_IS_DISABLE_CLICKS);

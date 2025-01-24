@@ -64,8 +64,6 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     private float offsetY;
     private boolean moving;
-    private BasicMessageChannel<Object> overlayMessageChannel = new BasicMessageChannel(FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE).getDartExecutor(), Constants.MESSAGE_CHANNEL, JSONMessageCodec.INSTANCE);
-
     @SuppressLint("UnspecifiedImmutableFlag")
     @Override
     public void onCreate() {
@@ -189,7 +187,6 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         flutterView.setFocusable(true);
         flutterView.setFocusableInTouchMode(true);
         flutterView.setBackgroundColor(Color.TRANSPARENT);
-        overlayMessageChannel.setMessageHandler((message, reply) -> Commons.messenger.send(message));
         flutterView.setOnTouchListener(this);
         try {
             windowManager.addView(flutterView, params);
