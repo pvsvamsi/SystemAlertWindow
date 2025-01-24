@@ -100,11 +100,12 @@ class SystemAlertWindow {
         .invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
 
-  /// Broadcast data to overlay app
+  /// Broadcast data to system window
   static Future sendMessageToOverlay(dynamic data) async {
     return await _overlayMessageChannel.send(data);
   }
 
+  /// Read data in  system window
   static Stream<dynamic> get overlayListener {
     _overlayMessageChannel.setMessageHandler((message) async {
       _controller.add(message);

@@ -20,7 +20,7 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BasicMessageChannel;
 import io.flutter.plugin.common.JSONMessageCodec;
 
-public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware,BasicMessageChannel.MessageHandler {
+public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware, BasicMessageChannel.MessageHandler {
 
     private boolean isInitialized;
 
@@ -79,7 +79,6 @@ public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware,Bas
         messenger = new BasicMessageChannel<>(flutterPluginBinding.getBinaryMessenger(), Constants.MESSAGE_CHANNEL,
                 JSONMessageCodec.INSTANCE);
         messenger.setMessageHandler(this);
-        Commons.messenger = messenger;
     }
 
     @Override
@@ -97,12 +96,19 @@ public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware,Bas
         LogUtils.getInstance().d(TAG, "Initializing on attached to activity");
         if (methodCallHandler != null) {
             methodCallHandler.setActivity(activityPluginBinding.getActivity());
-            FlutterEngineGroup enn = new FlutterEngineGroup(context);
-            DartExecutor.DartEntrypoint dEntry = new DartExecutor.DartEntrypoint(
-                    FlutterInjector.instance().flutterLoader().findAppBundlePath(),
-                    "overlayMain");
-            FlutterEngine engine = enn.createAndRunEngine(context, dEntry);
-            FlutterEngineCache.getInstance().put(Constants.FLUTTER_CACHE_ENGINE, engine);
+                try {
+                    FlutterEngine existingEngine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+                    if(existingEngine==null){
+                    FlutterEngineGroup enn = new FlutterEngineGroup(context);
+                    DartExecutor.DartEntrypoint dEntry = new DartExecutor.DartEntrypoint(
+                            FlutterInjector.instance().flutterLoader().findAppBundlePath(),
+                            "overlayMain");
+                    FlutterEngine engine = enn.createAndRunEngine(context, dEntry);
+                    FlutterEngineCache.getInstance().put(Constants.FLUTTER_CACHE_ENGINE, engine);
+                    }
+                } catch (Exception e) {
+                    LogUtils.getInstance().e(TAG, "Error initializing FlutterEngine: " + e.getMessage());
+                }
 
         }
         this.pluginBinding = activityPluginBinding;
