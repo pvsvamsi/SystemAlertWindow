@@ -1,3 +1,7 @@
+## 2.0.4
+
+* Fixed service crash
+
 ## 2.0.3
 
 * Fixed bubble's UI
