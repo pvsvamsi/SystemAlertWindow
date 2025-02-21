@@ -95,97 +95,98 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                     }
                     break;
                 case "showSystemWindow":
-                    assert (call.arguments != null);
-                    arguments = (JSONArray) call.arguments;
-                    String title = (String) arguments.get(0);
-                    String body = (String) arguments.get(1);
-                    JSONObject paramObj = (JSONObject) arguments.get(2);
-                    @SuppressWarnings("unchecked")
-                    HashMap<String, Object> params = new Gson().fromJson(paramObj.toString(), HashMap.class);
-                    prefMode = (String) arguments.get(3);
-                    if (prefMode == null) {
-                        prefMode = "default";
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
-                        if (checkPermission(false)) {
-                            LogUtils.getInstance().d(TAG, "Going to show Bubble");
-                            showBubble(title, body, params);
-                        } else {
-                            Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
-                            result.success(false);
-                        }
-                    } else {
-                        if (checkPermission(true)) {
-                            LogUtils.getInstance().d(TAG, "Going to show System Alert Window");
-                            final Intent i = new Intent(mContext, WindowServiceNew.class);
-                            i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
-                            //WindowService.enqueueWork(mContext, i);
-                            mContext.startService(i);
-                        } else {
-                            Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
-                            result.success(false);
-                        }
-                    }
-                    result.success(true);
-                    break;
+    assert (call.arguments != null);
+    arguments = (JSONArray) call.arguments;
+    String title = (String) arguments.get(0);
+    String body = (String) arguments.get(1);
+    JSONObject paramObj = (JSONObject) arguments.get(2);
+    @SuppressWarnings("unchecked")
+    HashMap<String, Object> params = new Gson().fromJson(paramObj.toString(), HashMap.class);
+    prefMode = (String) arguments.get(3);
+    if (prefMode == null) {
+        prefMode = "default";
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
+        if (checkPermission(false)) {
+            LogUtils.getInstance().d(TAG, "Going to show Bubble");
+            showBubble(title, body, params);
+            result.success(true);
+        } else {
+            Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
+            result.success(false);
+        }
+    } else {
+        if (checkPermission(true)) {
+            LogUtils.getInstance().d(TAG, "Going to show System Alert Window");
+            final Intent i = new Intent(mContext, WindowServiceNew.class);
+            i.putExtra(INTENT_EXTRA_PARAMS_MAP, params);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
+            mContext.startService(i);
+            result.success(true);
+        } else {
+            Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
+            result.success(false);
+        }
+    }
+    break;
                 case "updateSystemWindow":
-                    assert (call.arguments != null);
-                    JSONArray updateArguments = (JSONArray) call.arguments;
-                    String updateTitle = (String) updateArguments.get(0);
-                    String updateBody = (String) updateArguments.get(1);
-                    @SuppressWarnings("unchecked")
-                    HashMap<String, Object> updateParams = new Gson().fromJson(updateArguments.get(2).toString(), HashMap.class);
-                    prefMode = (String) updateArguments.get(3);
-                    if (prefMode == null) {
-                        prefMode = "default";
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
-                        if (checkPermission(false)) {
-                            LogUtils.getInstance().d(TAG, "Going to update Bubble");
-                            NotificationHelper.getInstance(mContext).dismissNotification();
-                            showBubble(updateTitle, updateBody, updateParams);
-                        } else {
-                            Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
-                            result.success(false);
-                        }
-                    } else {
-                        if (checkPermission(true)) {
-                            LogUtils.getInstance().d(TAG, "Going to update System Alert Window");
-                            final Intent i = new Intent(mContext, WindowServiceNew.class);
-                            i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
-                            //WindowService.enqueueWork(mContext, i);
-                            mContext.startService(i);
-                        } else {
-                            Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
-                            result.success(false);
-                        }
-                    }
-                    result.success(true);
-                    break;
+    assert (call.arguments != null);
+    JSONArray updateArguments = (JSONArray) call.arguments;
+    String updateTitle = (String) updateArguments.get(0);
+    String updateBody = (String) updateArguments.get(1);
+    @SuppressWarnings("unchecked")
+    HashMap<String, Object> updateParams = new Gson().fromJson(updateArguments.get(2).toString(), HashMap.class);
+    prefMode = (String) updateArguments.get(3);
+    if (prefMode == null) {
+        prefMode = "default";
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
+        if (checkPermission(false)) {
+            LogUtils.getInstance().d(TAG, "Going to update Bubble");
+            NotificationHelper.getInstance(mContext).dismissNotification();
+            showBubble(updateTitle, updateBody, updateParams);
+            result.success(true);
+        } else {
+            Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
+            result.success(false);
+        }
+    } else {
+        if (checkPermission(true)) {
+            LogUtils.getInstance().d(TAG, "Going to update System Alert Window");
+            final Intent i = new Intent(mContext, WindowServiceNew.class);
+            i.putExtra(INTENT_EXTRA_PARAMS_MAP, updateParams);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
+            mContext.startService(i);
+            result.success(true);
+        } else {
+            Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
+            result.success(false);
+        }
+    }
+    break;
                 case "closeSystemWindow":
-                    arguments = (JSONArray) call.arguments;
-                    prefMode = (String) arguments.get(0);
-                    if (prefMode == null) {
-                        prefMode = "default";
-                    }
-                    if (checkPermission(!isBubbleMode(prefMode))) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
-                            NotificationHelper.getInstance(mContext).dismissNotification();
-                        } else {
-                            final Intent i = new Intent(mContext, WindowServiceNew.class);
-                            i.putExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, true);
-                            //WindowService.dequeueWork(mContext, i);
-                            mContext.startService(i);
-                        }
-                        result.success(true);
-                    }
-                    break;
+    arguments = (JSONArray) call.arguments;
+    prefMode = (String) arguments.get(0);
+    if (prefMode == null) {
+        prefMode = "default";
+    }
+    if (checkPermission(!isBubbleMode(prefMode))) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
+            NotificationHelper.getInstance(mContext).dismissNotification();
+        } else {
+            final Intent i = new Intent(mContext, WindowServiceNew.class);
+            i.putExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, true);
+            mContext.startService(i);
+        }
+        result.success(true);
+    } else {
+        result.success(false);
+    }
+    break;
                 case "isBubbleMode":
                     arguments = (JSONArray) call.arguments;
                     prefMode = (String) arguments.get(0);
