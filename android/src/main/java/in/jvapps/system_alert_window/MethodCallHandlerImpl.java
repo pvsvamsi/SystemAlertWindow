@@ -110,6 +110,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                         if (checkPermission(false)) {
                             LogUtils.getInstance().d(TAG, "Going to show Bubble");
                             showBubble(title, body, params);
+                            result.success(true);
                         } else {
                             Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
                             result.success(false);
@@ -122,14 +123,13 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
-                            //WindowService.enqueueWork(mContext, i);
                             mContext.startService(i);
+                            result.success(true)
                         } else {
                             Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
                             result.success(false);
                         }
                     }
-                    result.success(true);
                     break;
                 case "updateSystemWindow":
                     assert (call.arguments != null);
@@ -147,6 +147,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                             LogUtils.getInstance().d(TAG, "Going to update Bubble");
                             NotificationHelper.getInstance(mContext).dismissNotification();
                             showBubble(updateTitle, updateBody, updateParams);
+                            result.success(true)
                         } else {
                             Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
                             result.success(false);
@@ -159,14 +160,13 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
-                            //WindowService.enqueueWork(mContext, i);
                             mContext.startService(i);
+                            result.success(true)
                         } else {
                             Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
                             result.success(false);
                         }
                     }
-                    result.success(true);
                     break;
                 case "closeSystemWindow":
                     arguments = (JSONArray) call.arguments;
@@ -184,6 +184,8 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                             mContext.startService(i);
                         }
                         result.success(true);
+                    } else {
+                        result.success(false);
                     }
                     break;
                 case "isBubbleMode":
