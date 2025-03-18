@@ -147,7 +147,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                             LogUtils.getInstance().d(TAG, "Going to update Bubble");
                             NotificationHelper.getInstance(mContext).dismissNotification();
                             showBubble(updateTitle, updateBody, updateParams);
-                            result.success(true)
+                            result.success(true);
                         } else {
                             Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
                             result.success(false);
