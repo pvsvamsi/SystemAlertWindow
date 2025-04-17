@@ -8,7 +8,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
@@ -124,7 +123,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                             i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, false);
                             mContext.startService(i);
-                            result.success(true)
+                            result.success(true);
                         } else {
                             Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
                             result.success(false);
@@ -147,7 +146,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                             LogUtils.getInstance().d(TAG, "Going to update Bubble");
                             NotificationHelper.getInstance(mContext).dismissNotification();
                             showBubble(updateTitle, updateBody, updateParams);
-                            result.success(true)
+                            result.success(true);
                         } else {
                             Toast.makeText(mContext, "Please enable bubbles", Toast.LENGTH_LONG).show();
                             result.success(false);
@@ -161,7 +160,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                             i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
                             mContext.startService(i);
-                            result.success(true)
+                            result.success(true);
                         } else {
                             Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
                             result.success(false);

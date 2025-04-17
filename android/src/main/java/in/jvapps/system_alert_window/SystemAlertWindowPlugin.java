@@ -4,8 +4,6 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import in.jvapps.system_alert_window.utils.Commons;
 import in.jvapps.system_alert_window.utils.Constants;
 import in.jvapps.system_alert_window.utils.ContextHolder;
 import in.jvapps.system_alert_window.utils.LogUtils;
@@ -96,19 +94,19 @@ public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware, Ba
         LogUtils.getInstance().d(TAG, "Initializing on attached to activity");
         if (methodCallHandler != null) {
             methodCallHandler.setActivity(activityPluginBinding.getActivity());
-                try {
-                    FlutterEngine existingEngine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
-                    if(existingEngine==null){
+            try {
+                FlutterEngine existingEngine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+                if(existingEngine==null){
                     FlutterEngineGroup enn = new FlutterEngineGroup(context);
                     DartExecutor.DartEntrypoint dEntry = new DartExecutor.DartEntrypoint(
                             FlutterInjector.instance().flutterLoader().findAppBundlePath(),
                             "overlayMain");
                     FlutterEngine engine = enn.createAndRunEngine(context, dEntry);
                     FlutterEngineCache.getInstance().put(Constants.FLUTTER_CACHE_ENGINE, engine);
-                    }
-                } catch (Exception e) {
-                    LogUtils.getInstance().e(TAG, "Error initializing FlutterEngine: " + e.getMessage());
                 }
+            } catch (Exception e) {
+                LogUtils.getInstance().e(TAG, "Error initializing FlutterEngine: " + e.getMessage());
+            }
 
         }
         this.pluginBinding = activityPluginBinding;
