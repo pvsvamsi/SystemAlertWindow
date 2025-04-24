@@ -1,3 +1,7 @@
+## 2.0.5
+
+* Fixed flutter engine crash
+
 ## 2.0.4
 
 * Fixed service crash
