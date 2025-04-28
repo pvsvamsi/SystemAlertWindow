@@ -40,8 +40,6 @@ android {
 
 dependencies {
     //implementation files('localLib/flutter.jar')
-//    implementation 'androidx.appcompat:appcompat:1.7.0'
-//    implementation 'androidx.appcompat:appcompat-resources:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.code.gson:gson:2.11.0'
 }
