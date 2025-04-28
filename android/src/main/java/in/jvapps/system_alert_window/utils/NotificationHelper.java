@@ -164,7 +164,6 @@ public class NotificationHelper {
         notificationManager.cancel(BUBBLE_NOTIFICATION_ID);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean areBubblesAllowed() {
         if (isMinAndroidR()) {
             NotificationChannel notificationChannel = notificationManager.getNotificationChannel(CHANNEL_ID, BUBBLE_SHORTCUT_ID);

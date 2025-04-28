@@ -18,13 +18,10 @@ import io.flutter.embedding.android.FlutterTextureView;
 
 public class BubbleActivity extends AppCompatActivity {
 
-    private FlutterView flutterView;
-
     private Context mContext;
 
     private final String TAG = "SAW:Plugin";
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,9 +37,12 @@ public class BubbleActivity extends AppCompatActivity {
         super.onResume();
         try {
             FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+            if (engine == null) {
+                throw new IllegalStateException("FlutterEngine not available");
+            }
             engine.getLifecycleChannel().appIsResumed();
         } catch (Exception ex) {
-            LogUtils.getInstance().e(TAG,"onResume " +  ex.toString());
+            LogUtils.getInstance().e(TAG,"onResume " +  ex.getMessage());
         }
     }
 
@@ -51,10 +51,13 @@ public class BubbleActivity extends AppCompatActivity {
         super.onPause();
         try{
             FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+            if (engine == null) {
+                throw new IllegalStateException("FlutterEngine not available");
+            }
             engine.getLifecycleChannel().appIsInactive();
         }
         catch (Exception ex){
-            LogUtils.getInstance().e(TAG, "onPause " + ex.toString());
+            LogUtils.getInstance().e(TAG, "onPause " + ex.getMessage());
         }
     }
 
@@ -63,10 +66,13 @@ public class BubbleActivity extends AppCompatActivity {
         super.onStop();
         try{
             FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+            if (engine == null) {
+                throw new IllegalStateException("FlutterEngine not available");
+            }
             engine.getLifecycleChannel().appIsPaused();
         }
         catch (Exception ex){
-            LogUtils.getInstance().e(TAG, "onStop " + ex.toString());
+            LogUtils.getInstance().e(TAG, "onStop " + ex.getMessage());
         }
     }
 
@@ -75,10 +81,13 @@ public class BubbleActivity extends AppCompatActivity {
         super.onDestroy();
         try{
             FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+            if (engine == null) {
+                throw new IllegalStateException("FlutterEngine not available");
+            }
             engine.getLifecycleChannel().appIsDetached();
         }
         catch (Exception ex){
-            LogUtils.getInstance().e(TAG,  "onDestroy " + ex.toString());
+            LogUtils.getInstance().e(TAG,  "onDestroy " + ex.getMessage());
         }
     }
 
@@ -88,8 +97,11 @@ public class BubbleActivity extends AppCompatActivity {
             linearLayout.setOrientation(LinearLayout.VERTICAL); // Set the orientation if needed
             linearLayout.setBackgroundColor(Color.WHITE);
             FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+            if (engine == null) {
+                throw new IllegalStateException("FlutterEngine not available");
+            }
             engine.getLifecycleChannel().appIsResumed();
-            flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
+            FlutterView flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
             flutterView.attachToFlutterEngine(Objects.requireNonNull(FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE)));
             flutterView.setFitsSystemWindows(true);
             flutterView.setFocusable(true);
@@ -102,7 +114,7 @@ public class BubbleActivity extends AppCompatActivity {
             setContentView(linearLayout);
         }
         catch (Exception ex){
-            LogUtils.getInstance().e(TAG, "configureUi " + ex.toString());
+            LogUtils.getInstance().e(TAG, "configureUi " + ex.getMessage());
         }
     }
 }

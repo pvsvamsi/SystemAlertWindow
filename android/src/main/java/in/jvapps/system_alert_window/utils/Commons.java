@@ -1,39 +1,21 @@
 package in.jvapps.system_alert_window.utils;
 
 import static android.content.Context.ACTIVITY_SERVICE;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_BACKGROUND_COLOR;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_IS_DISABLE_CLICKS;
 import static in.jvapps.system_alert_window.utils.Constants.KEY_IS_FLAG_FOCUSABLE;
-
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.widget.LinearLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.util.List;
 import java.util.Map;
-
-import io.flutter.plugin.common.BasicMessageChannel;
 
 public class Commons {
 
     @SuppressWarnings("unchecked")
-    public static Map<String, Object> getMapFromObject(@NonNull Map<String, Object> map, String key) {
-        return (Map<String, Object>) map.get(key);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static List<Map<String, Object>> getMapListFromObject(@NonNull Map<String, Object> map, String key) {
-        return (List<Map<String, Object>>) map.get(key);
-    }
 
     public static boolean getIsClicksDisabled(@NonNull Map<String, Object> paramsMap) {
         Object isDisableClicksObj = paramsMap.get(KEY_IS_DISABLE_CLICKS);

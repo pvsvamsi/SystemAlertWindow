@@ -18,7 +18,7 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BasicMessageChannel;
 import io.flutter.plugin.common.JSONMessageCodec;
 
-public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware, BasicMessageChannel.MessageHandler {
+public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware, BasicMessageChannel.MessageHandler<Object> {
 
     private boolean isInitialized;
 
@@ -27,7 +27,6 @@ public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware, Ba
     MethodCallHandlerImpl methodCallHandler;
     private final String TAG = "SAW:Plugin";
     private Context context;
-    private BasicMessageChannel<Object> messenger;
 
 
     public SystemAlertWindowPlugin() {
@@ -74,7 +73,7 @@ public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware, Ba
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         this.context = flutterPluginBinding.getApplicationContext();
         initialize(flutterPluginBinding);
-        messenger = new BasicMessageChannel<>(flutterPluginBinding.getBinaryMessenger(), Constants.MESSAGE_CHANNEL,
+        BasicMessageChannel<Object> messenger = new BasicMessageChannel<>(flutterPluginBinding.getBinaryMessenger(), Constants.MESSAGE_CHANNEL,
                 JSONMessageCodec.INSTANCE);
         messenger.setMessageHandler(this);
     }
@@ -133,11 +132,21 @@ public class SystemAlertWindowPlugin implements FlutterPlugin, ActivityAware, Ba
     }
 
     @Override
-    public void onMessage(@Nullable Object message, @NonNull BasicMessageChannel.Reply reply) {
-        BasicMessageChannel overlayMessageChannel = new BasicMessageChannel(
-                FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE)
-                        .getDartExecutor(),
-                Constants.MESSAGE_CHANNEL, JSONMessageCodec.INSTANCE);
-        overlayMessageChannel.send(message, reply);
+    public void onMessage(@Nullable Object message, @NonNull BasicMessageChannel.Reply<Object> reply) {
+        try {
+            FlutterEngine engine = FlutterEngineCache.getInstance().get(Constants.FLUTTER_CACHE_ENGINE);
+            if (engine == null) {
+                throw new IllegalStateException("FlutterEngine not available");
+            }
+
+            new BasicMessageChannel<>(
+                    engine.getDartExecutor(),
+                    Constants.MESSAGE_CHANNEL,
+                    JSONMessageCodec.INSTANCE
+            ).send(message, reply);
+
+        } catch (Exception ex) {
+            LogUtils.getInstance().e(TAG, "onMessage error: " + ex.getMessage());
+        }
     }
 }
