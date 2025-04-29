@@ -59,6 +59,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     private float offsetY;
     private boolean moving;
+
     @SuppressLint("UnspecifiedImmutableFlag")
     @Override
     public void onCreate() {
@@ -149,17 +150,17 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             if (isDisableClicks) {
                 params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
             } else {
-                params.flags =  WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED ;
+                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
             }
         } else {
             params.type = android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
             if (isDisableClicks) {
-                params.flags =  WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
             } else {
-                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
             }
         }
-        if(!isFlagFocusable)  params.flags|= android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        if (!isFlagFocusable) params.flags |= android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isDisableClicks) {
             params.alpha = 0.8f;
         }
@@ -169,7 +170,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     @SuppressLint("ClickableViewAccessibility")
     private void createWindow(HashMap<String, Object> paramsMap) {
-        try{
+        try {
             closeWindow(false);
             setWindowManager();
             setWindowLayoutFromMap(paramsMap);
@@ -192,8 +193,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
                 LogUtils.getInstance().e(TAG, ex.toString());
                 retryCreateWindow(paramsMap);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             LogUtils.getInstance().e(TAG, "createWindow " + ex.getMessage());
         }
     }
@@ -220,7 +220,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             flutterView.setOnTouchListener(this);
             windowManager.addView(flutterView, params);
         } catch (Exception ex) {
-            LogUtils.getInstance().e(TAG, "retryCreateWindow "  + ex.getMessage());
+            LogUtils.getInstance().e(TAG, "retryCreateWindow " + ex.getMessage());
         }
     }
 
@@ -239,7 +239,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         LogUtils.getInstance().i(TAG, "Closing the overlay window");
         try {
             if (windowManager != null) {
-                if(flutterView!=null){
+                if (flutterView != null) {
                     windowManager.removeView(flutterView);
                     windowManager = null;
                     flutterView.detachFromFlutterEngine();
@@ -285,17 +285,17 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     @Override
     public void onDestroy() {
-       try{
-           closeWindow(false);
-           LogUtils.getInstance().d(TAG, "Destroying the overlay window service");
-           NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-           assert notificationManager != null;
-           notificationManager.cancel(NOTIFICATION_ID);
-           LogUtils.getInstance().i(TAG, "Successfully destroyed overlay window service");
-       } catch (java.lang.Exception e) {
-           LogUtils.getInstance().i(TAG, "on Destroy " + e.getMessage());
-           throw new RuntimeException(e);
-       }
+        try {
+            closeWindow(false);
+            LogUtils.getInstance().d(TAG, "Destroying the overlay window service");
+            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            assert notificationManager != null;
+            notificationManager.cancel(NOTIFICATION_ID);
+            LogUtils.getInstance().i(TAG, "Successfully destroyed overlay window service");
+        } catch (java.lang.Exception e) {
+            LogUtils.getInstance().i(TAG, "on Destroy " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     @Nullable
