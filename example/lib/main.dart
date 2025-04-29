@@ -126,8 +126,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title:
-              const Text('System Alert Window Example App \n with flutterview'),
+          title: const Text('System Alert Window Example App \n with flutterview'),
         ),
         body: Center(
           child: Column(
@@ -150,8 +149,7 @@ class _MyAppState extends State<MyApp> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: MaterialButton(
-                  onPressed: () => SystemAlertWindow.sendMessageToOverlay(
-                      "message from main"),
+                  onPressed: () => SystemAlertWindow.sendMessageToOverlay("message from main"),
                   textColor: Colors.white,
                   child: Text("send message to overlay"),
                   color: Colors.deepOrange,

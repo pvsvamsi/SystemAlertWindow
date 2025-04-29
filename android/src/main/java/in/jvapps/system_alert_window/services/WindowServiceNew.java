@@ -243,6 +243,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
                     windowManager.removeView(flutterView);
                     windowManager = null;
                     flutterView.detachFromFlutterEngine();
+                    LogUtils.getInstance().i(TAG, "Successfully closed overlay window");
                 }
             }
         } catch (IllegalArgumentException e) {
@@ -284,11 +285,17 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     @Override
     public void onDestroy() {
-        closeWindow(false);
-        LogUtils.getInstance().d(TAG, "Destroying the overlay window service");
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        assert notificationManager != null;
-        notificationManager.cancel(NOTIFICATION_ID);
+       try{
+           closeWindow(false);
+           LogUtils.getInstance().d(TAG, "Destroying the overlay window service");
+           NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+           assert notificationManager != null;
+           notificationManager.cancel(NOTIFICATION_ID);
+           LogUtils.getInstance().i(TAG, "Successfully destroyed overlay window service");
+       } catch (java.lang.Exception e) {
+           LogUtils.getInstance().i(TAG, "on Destroy " + e.getMessage());
+           throw new RuntimeException(e);
+       }
     }
 
     @Nullable

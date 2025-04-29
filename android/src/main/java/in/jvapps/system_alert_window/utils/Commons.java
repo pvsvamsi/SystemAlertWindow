@@ -15,8 +15,6 @@ import java.util.Map;
 
 public class Commons {
 
-    @SuppressWarnings("unchecked")
-
     public static boolean getIsClicksDisabled(@NonNull Map<String, Object> paramsMap) {
         Object isDisableClicksObj = paramsMap.get(KEY_IS_DISABLE_CLICKS);
         if(isDisableClicksObj != null){
