@@ -126,7 +126,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('System Alert Window Example App \n with flutterview'),
+          title:
+              const Text('System Alert Window Example App \n with flutterview'),
         ),
         body: Center(
           child: Column(
@@ -149,7 +150,8 @@ class _MyAppState extends State<MyApp> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: MaterialButton(
-                  onPressed: () => SystemAlertWindow.sendMessageToOverlay("message from main"),
+                  onPressed: () => SystemAlertWindow.sendMessageToOverlay(
+                      "message from main"),
                   textColor: Colors.white,
                   child: Text("send message to overlay"),
                   color: Colors.deepOrange,
@@ -160,7 +162,9 @@ class _MyAppState extends State<MyApp> {
                   onPressed: () async {
                     String? logFilePath = await SystemAlertWindow.getLogFile;
                     if (logFilePath != null && logFilePath.isNotEmpty) {
-                      Share.shareFiles([logFilePath]);
+                      final files = <XFile>[];
+                      files.add(XFile(logFilePath, name: "Log File from SAW"));
+                      await Share.shareXFiles(files);
                     } else {
                       print("Path is empty");
                     }

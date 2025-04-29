@@ -94,7 +94,7 @@ public class LogUtils {
                             return;
                         }
                     } catch (IOException e) {
-                        Log.e(TAG, e.getMessage());
+                        Log.e(TAG, Objects.requireNonNull(e.getMessage()));
                         e.printStackTrace();
                     }
                 }
@@ -108,7 +108,7 @@ public class LogUtils {
                     buf.newLine();
                     buf.close();
                 } catch (IOException e) {
-                    Log.e(TAG, e.getMessage());
+                    Log.e(TAG, Objects.requireNonNull(e.getMessage()));
                     e.printStackTrace();
                 }
             }
