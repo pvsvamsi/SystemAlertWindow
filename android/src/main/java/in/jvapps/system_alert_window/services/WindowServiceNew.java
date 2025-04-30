@@ -130,7 +130,6 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     }
 
     private void setWindowLayoutFromMap(HashMap<String, Object> paramsMap) {
-        System.out.println(paramsMap);
         paramFlags |= Commons.getLayoutParamFlags(paramsMap);
         windowGravity = (String) paramsMap.get(Constants.KEY_GRAVITY);
         windowWidth = NumberUtils.getInt(paramsMap.get(Constants.KEY_WIDTH));
@@ -149,8 +148,6 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             params.alpha = 0.8f;
         }
         params.gravity = Commons.getGravity(windowGravity, Gravity.TOP);
-        System.out.println(params);
-        System.out.println("params");
         return params;
     }
 
@@ -224,13 +221,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private void closeWindow(boolean isStopService) {
         LogUtils.getInstance().i(TAG, "Closing the overlay window");
         try {
-            if (windowManager != null) {
-                if (flutterView != null) {
+            if (windowManager != null && flutterView != null) {
                     windowManager.removeView(flutterView);
                     windowManager = null;
                     flutterView.detachFromFlutterEngine();
                     LogUtils.getInstance().i(TAG, "Successfully closed overlay window");
-                }
             }
         } catch (IllegalArgumentException e) {
             LogUtils.getInstance().e(TAG, "view not found");

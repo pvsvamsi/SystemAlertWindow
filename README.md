@@ -70,7 +70,7 @@ void overlayMain() {
 /// `notificationTitle` Notification title, applicable in case of bubble
 /// `notificationBody` Notification body, applicable in case of bubble
 /// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
-/// `layoutParamFlags` List of List of WindowManager.LayoutParams. This is not applicable for bubbles
+/// `layoutParamFlags` List of List of WindowManager.LayoutParams. This is not applicable for bubbles.
 await SystemAlertWindow.showSystemWindow();
 
 /// update the overlay flag while the overlay in action
