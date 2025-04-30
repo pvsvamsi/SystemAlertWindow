@@ -94,19 +94,20 @@ class _MyAppState extends State<MyApp> {
           width: MediaQuery.of(context).size.width.floor(),
           gravity: SystemWindowGravity.CENTER,
           prefMode: prefMode,
-          isFlagFocusable: false);
+          layoutParamFlags: [SystemWindowFlags.FLAG_NOT_FOCUSABLE]);
       setState(() {
         _isShowingWindow = true;
       });
     } else if (!_isUpdatedWindow) {
       await SystemAlertWindow.sendMessageToOverlay('update system window');
       SystemAlertWindow.updateSystemWindow(
-          height: 200,
-          width: MediaQuery.of(context).size.width.floor(),
-          gravity: SystemWindowGravity.CENTER,
-          prefMode: prefMode,
-          isFlagFocusable: true,
-          isDisableClicks: true);
+        height: 200,
+        width: MediaQuery.of(context).size.width.floor(),
+        gravity: SystemWindowGravity.CENTER,
+        prefMode: prefMode,
+        layoutParamFlags: [SystemWindowFlags.FLAG_NOT_FOCUSABLE, SystemWindowFlags.FLAG_NOT_TOUCHABLE],
+        // isDisableClicks: true
+      );
       setState(() {
         _isUpdatedWindow = true;
         SystemAlertWindow.sendMessageToOverlay(_isUpdatedWindow);

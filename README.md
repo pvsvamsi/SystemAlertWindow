@@ -70,7 +70,7 @@ void overlayMain() {
 /// `notificationTitle` Notification title, applicable in case of bubble
 /// `notificationBody` Notification body, applicable in case of bubble
 /// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
-/// `isDisableClicks` Disables the clicks across the system window. Default is false. This is not applicable for bubbles.
+/// `layoutParamFlags` List of List of WindowManager.LayoutParams. This is not applicable for bubbles
 await SystemAlertWindow.showSystemWindow();
 
 /// update the overlay flag while the overlay in action
@@ -81,7 +81,7 @@ await SystemAlertWindow.showSystemWindow();
 /// `notificationTitle` Notification title, applicable in case of bubble
 /// `notificationBody` Notification body, applicable in case of bubble
 /// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
-/// `isDisableClicks` Disables the clicks across the system window. Default is false. This is not applicable for bubbles.
+/// `layoutParamFlags` List of List of WindowManager.LayoutParams. This is not applicable for bubbles.
 await FlutterOverlayWindow.updateSystemWindow();
 
  // closes overlay if open

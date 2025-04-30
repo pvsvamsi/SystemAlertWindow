@@ -32,4 +32,19 @@ class Commons {
         return "default";
     }
   }
+
+  static String flagToJson(SystemWindowFlags flag) {
+    switch (flag) {
+      case SystemWindowFlags.FLAG_NOT_FOCUSABLE:
+        return "FLAG_NOT_FOCUSABLE";
+      case SystemWindowFlags.FLAG_NOT_TOUCH_MODAL:
+        return "FLAG_NOT_TOUCH_MODAL";
+      case SystemWindowFlags.FLAG_NOT_TOUCHABLE:
+        return "FLAG_NOT_TOUCHABLE";
+    }
+  }
+
+  static List<String> flagsToJson(List<SystemWindowFlags> flags) {
+    return flags.map((flag) => flagToJson(flag)).toList();
+  }
 }

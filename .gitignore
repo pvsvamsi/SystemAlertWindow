@@ -76,3 +76,6 @@ pubscpec.lock
 pubspec.lock
 example/.flutter-plugins-dependencies
 android/localLib/flutter.jar
+
+example/android/app/.gradle/
+example/android/app/local.properties

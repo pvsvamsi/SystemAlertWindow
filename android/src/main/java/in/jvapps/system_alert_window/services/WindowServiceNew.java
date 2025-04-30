@@ -52,11 +52,10 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private int windowWidth;
     private int windowHeight;
 
-    private boolean isDisableClicks = false;
-    private boolean isFlagFocusable = false;
 
     private FlutterView flutterView;
-
+    private int paramFlags =  Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED : WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+    private final int paramType = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
     private float offsetY;
     private boolean moving;
 
@@ -131,9 +130,8 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     }
 
     private void setWindowLayoutFromMap(HashMap<String, Object> paramsMap) {
-        isDisableClicks = Commons.getIsClicksDisabled(paramsMap);
-        isFlagFocusable = Commons.getIsFlagFocusable(paramsMap);
-        LogUtils.getInstance().i(TAG, String.valueOf(isDisableClicks));
+        System.out.println(paramsMap);
+        paramFlags |= Commons.getLayoutParamFlags(paramsMap);
         windowGravity = (String) paramsMap.get(Constants.KEY_GRAVITY);
         windowWidth = NumberUtils.getInt(paramsMap.get(Constants.KEY_WIDTH));
         windowHeight = NumberUtils.getInt(paramsMap.get(Constants.KEY_HEIGHT));
@@ -142,29 +140,17 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private WindowManager.LayoutParams getLayoutParams() {
         final WindowManager.LayoutParams params;
         params = new WindowManager.LayoutParams();
-        params.width = (windowWidth == 0) ? android.view.WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(this, windowWidth);
-        params.height = (windowHeight == 0) ? android.view.WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(this, windowHeight);
+        params.width = (windowWidth == 0) ? WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(this, windowWidth);
+        params.height = (windowHeight == 0) ? WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(this, windowHeight);
         params.format = PixelFormat.TRANSLUCENT;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            params.type = android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-            if (isDisableClicks) {
-                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
-            } else {
-                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
-            }
-        } else {
-            params.type = android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-            if (isDisableClicks) {
-                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-            } else {
-                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
-            }
-        }
-        if (!isFlagFocusable) params.flags |= android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isDisableClicks) {
+        params.type = paramType;
+        params.flags |= paramFlags;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && Commons.isClickDisabled) {
             params.alpha = 0.8f;
         }
         params.gravity = Commons.getGravity(windowGravity, Gravity.TOP);
+        System.out.println(params);
+        System.out.println("params");
         return params;
     }
 
@@ -228,8 +214,8 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         setWindowLayoutFromMap(paramsMap);
         WindowManager.LayoutParams newParams = getLayoutParams();
         WindowManager.LayoutParams previousParams = (WindowManager.LayoutParams) flutterView.getLayoutParams();
-        previousParams.width = (windowWidth == 0) ? android.view.WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(this, windowWidth);
-        previousParams.height = (windowHeight == 0) ? android.view.WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(this, windowHeight);
+        previousParams.width = (windowWidth == 0) ? WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(this, windowWidth);
+        previousParams.height = (windowHeight == 0) ? WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(this, windowHeight);
         previousParams.flags = newParams.flags;
         previousParams.alpha = newParams.alpha;
         windowManager.updateViewLayout(flutterView, previousParams);
