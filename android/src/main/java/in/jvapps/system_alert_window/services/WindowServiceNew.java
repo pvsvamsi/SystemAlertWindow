@@ -52,13 +52,13 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private int windowWidth;
     private int windowHeight;
 
-    private boolean isDisableClicks = false;
-    private boolean isFlagFocusable = false;
 
     private FlutterView flutterView;
-
+    private int paramFlags =  Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED : WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+    private final int paramType = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
     private float offsetY;
     private boolean moving;
+
     @SuppressLint("UnspecifiedImmutableFlag")
     @Override
     public void onCreate() {
@@ -130,9 +130,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     }
 
     private void setWindowLayoutFromMap(HashMap<String, Object> paramsMap) {
-        isDisableClicks = Commons.getIsClicksDisabled(paramsMap);
-        isFlagFocusable = Commons.getIsFlagFocusable(paramsMap);
-        LogUtils.getInstance().i(TAG, String.valueOf(isDisableClicks));
+        paramFlags |= Commons.getLayoutParamFlags(paramsMap);
         windowGravity = (String) paramsMap.get(Constants.KEY_GRAVITY);
         windowWidth = NumberUtils.getInt(paramsMap.get(Constants.KEY_WIDTH));
         windowHeight = NumberUtils.getInt(paramsMap.get(Constants.KEY_HEIGHT));
@@ -141,26 +139,12 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private WindowManager.LayoutParams getLayoutParams() {
         final WindowManager.LayoutParams params;
         params = new WindowManager.LayoutParams();
-        params.width = (windowWidth == 0) ? android.view.WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(this, windowWidth);
-        params.height = (windowHeight == 0) ? android.view.WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(this, windowHeight);
+        params.width = (windowWidth == 0) ? WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(this, windowWidth);
+        params.height = (windowHeight == 0) ? WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(this, windowHeight);
         params.format = PixelFormat.TRANSLUCENT;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            params.type = android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-            if (isDisableClicks) {
-                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
-            } else {
-                params.flags =  WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED ;
-            }
-        } else {
-            params.type = android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-            if (isDisableClicks) {
-                params.flags =  WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-            } else {
-                params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-            }
-        }
-        if(!isFlagFocusable)  params.flags|= android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isDisableClicks) {
+        params.type = paramType;
+        params.flags |= paramFlags;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && Commons.isClickDisabled) {
             params.alpha = 0.8f;
         }
         params.gravity = Commons.getGravity(windowGravity, Gravity.TOP);
@@ -169,7 +153,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     @SuppressLint("ClickableViewAccessibility")
     private void createWindow(HashMap<String, Object> paramsMap) {
-        try{
+        try {
             closeWindow(false);
             setWindowManager();
             setWindowLayoutFromMap(paramsMap);
@@ -192,8 +176,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
                 LogUtils.getInstance().e(TAG, ex.toString());
                 retryCreateWindow(paramsMap);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             LogUtils.getInstance().e(TAG, "createWindow " + ex.getMessage());
         }
     }
@@ -220,7 +203,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             flutterView.setOnTouchListener(this);
             windowManager.addView(flutterView, params);
         } catch (Exception ex) {
-            LogUtils.getInstance().e(TAG, "retryCreateWindow "  + ex.getMessage());
+            LogUtils.getInstance().e(TAG, "retryCreateWindow " + ex.getMessage());
         }
     }
 
@@ -228,8 +211,8 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         setWindowLayoutFromMap(paramsMap);
         WindowManager.LayoutParams newParams = getLayoutParams();
         WindowManager.LayoutParams previousParams = (WindowManager.LayoutParams) flutterView.getLayoutParams();
-        previousParams.width = (windowWidth == 0) ? android.view.WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(this, windowWidth);
-        previousParams.height = (windowHeight == 0) ? android.view.WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(this, windowHeight);
+        previousParams.width = (windowWidth == 0) ? WindowManager.LayoutParams.MATCH_PARENT : Commons.getPixelsFromDp(this, windowWidth);
+        previousParams.height = (windowHeight == 0) ? WindowManager.LayoutParams.WRAP_CONTENT : Commons.getPixelsFromDp(this, windowHeight);
         previousParams.flags = newParams.flags;
         previousParams.alpha = newParams.alpha;
         windowManager.updateViewLayout(flutterView, previousParams);
@@ -238,12 +221,11 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     private void closeWindow(boolean isStopService) {
         LogUtils.getInstance().i(TAG, "Closing the overlay window");
         try {
-            if (windowManager != null) {
-                if(flutterView!=null){
+            if (windowManager != null && flutterView != null) {
                     windowManager.removeView(flutterView);
                     windowManager = null;
                     flutterView.detachFromFlutterEngine();
-                }
+                    LogUtils.getInstance().i(TAG, "Successfully closed overlay window");
             }
         } catch (IllegalArgumentException e) {
             LogUtils.getInstance().e(TAG, "view not found");
@@ -284,11 +266,17 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     @Override
     public void onDestroy() {
-        closeWindow(false);
-        LogUtils.getInstance().d(TAG, "Destroying the overlay window service");
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        assert notificationManager != null;
-        notificationManager.cancel(NOTIFICATION_ID);
+        try {
+            closeWindow(false);
+            LogUtils.getInstance().d(TAG, "Destroying the overlay window service");
+            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            assert notificationManager != null;
+            notificationManager.cancel(NOTIFICATION_ID);
+            LogUtils.getInstance().i(TAG, "Successfully destroyed overlay window service");
+        } catch (java.lang.Exception e) {
+            LogUtils.getInstance().i(TAG, "on Destroy " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     @Nullable

@@ -7,6 +7,8 @@ enum SystemWindowGravity { TOP, BOTTOM, CENTER, LEADING, TRAILING }
 
 enum SystemWindowPrefMode { DEFAULT, OVERLAY, BUBBLE }
 
+enum SystemWindowFlags { FLAG_NOT_FOCUSABLE, FLAG_NOT_TOUCH_MODAL, FLAG_NOT_TOUCHABLE }
+
 class SystemAlertWindow {
   ///Channel name to handle the communication between flutter and platform specific code
   static const MethodChannel _channel = const MethodChannel(Constants.CHANNEL, JSONMethodCodec());
@@ -49,8 +51,7 @@ class SystemAlertWindow {
   /// `notificationTitle` Notification title, applicable in case of bubble
   /// `notificationBody` Notification body, applicable in case of bubble
   /// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
-  /// `isDisableClicks` Disables the clicks across the system window. Default is false. This is not applicable for bubbles.
-  /// `isFlagFocusable` Makes the overlay window focusable. Default is false.
+  /// `layoutParamFlags` List of WindowManager.LayoutParams
   static Future<bool?> showSystemWindow(
       {SystemWindowGravity gravity = SystemWindowGravity.CENTER,
       int? width,
@@ -58,14 +59,12 @@ class SystemAlertWindow {
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT,
-      bool isDisableClicks = false,
-      bool isFlagFocusable = false}) async {
+      List<SystemWindowFlags>? layoutParamFlags}) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT,
-      'isDisableClicks': isDisableClicks,
-      'isFlagFocusable': isFlagFocusable
+      'layoutParamFlags': Commons.flagsToJson(layoutParamFlags ?? [])
     };
     return await _channel.invokeMethod('showSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);
   }
@@ -78,8 +77,7 @@ class SystemAlertWindow {
   /// `notificationTitle` Notification title, applicable in case of bubble
   /// `notificationBody` Notification body, applicable in case of bubble
   /// `prefMode` Preference for the system window. Default is [SystemWindowPrefMode.DEFAULT]
-  /// `isDisableClicks` Disables the clicks across the system window. Default is false. This is not applicable for bubbles.
-  /// `isFlagFocusable`Makes the overlay window focusable. Default is false.
+  /// `layoutParamFlags` List of List of WindowManager.LayoutParams
   static Future<bool?> updateSystemWindow(
       {SystemWindowGravity gravity = SystemWindowGravity.CENTER,
       int? width,
@@ -87,14 +85,12 @@ class SystemAlertWindow {
       String notificationTitle = "Title",
       String notificationBody = "Body",
       SystemWindowPrefMode prefMode = SystemWindowPrefMode.DEFAULT,
-      bool isDisableClicks = false,
-      bool isFlagFocusable = false}) async {
+      List<SystemWindowFlags>? layoutParamFlags}) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'gravity': Commons.getWindowGravity(gravity),
       'width': width ?? Constants.MATCH_PARENT,
       'height': height ?? Constants.WRAP_CONTENT,
-      'isDisableClicks': isDisableClicks,
-      'isFlagFocusable': isFlagFocusable
+      'layoutParamFlags': Commons.flagsToJson(layoutParamFlags ?? [])
     };
     return await _channel
         .invokeMethod('updateSystemWindow', [notificationTitle, notificationBody, params, Commons.getSystemWindowPrefMode(prefMode)]);

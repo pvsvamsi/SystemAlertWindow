@@ -65,7 +65,7 @@ class _CustomOverlayState extends State<CustomOverlay> {
                 ),
                 TextButton(
                   style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(Colors.transparent),
+                    overlayColor: WidgetStatePropertyAll(Colors.transparent),
                   ),
                   onPressed: () {
                     callBackFunction("Close");
@@ -96,7 +96,7 @@ class _CustomOverlayState extends State<CustomOverlay> {
           ),
           TextButton(
             style: ButtonStyle(
-              overlayColor: MaterialStateProperty.all(Colors.transparent),
+              overlayColor: WidgetStatePropertyAll(Colors.transparent),
             ),
             onPressed: () {
               callBackFunction("Action");

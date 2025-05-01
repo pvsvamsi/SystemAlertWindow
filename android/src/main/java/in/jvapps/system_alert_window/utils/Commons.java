@@ -1,37 +1,41 @@
 package in.jvapps.system_alert_window.utils;
 
 import static android.content.Context.ACTIVITY_SERVICE;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_IS_DISABLE_CLICKS;
-import static in.jvapps.system_alert_window.utils.Constants.KEY_IS_FLAG_FOCUSABLE;
+import static in.jvapps.system_alert_window.utils.Constants.KEY_LAYOUT_PARAMS_FLAG;
+
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.TypedValue;
 import android.view.Gravity;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.util.List;
 import java.util.Map;
 
 public class Commons {
 
-    @SuppressWarnings("unchecked")
+    public static boolean isClickDisabled = false;
 
-    public static boolean getIsClicksDisabled(@NonNull Map<String, Object> paramsMap) {
-        Object isDisableClicksObj = paramsMap.get(KEY_IS_DISABLE_CLICKS);
-        if(isDisableClicksObj != null){
-            return (Boolean) isDisableClicksObj;
+    public static int getLayoutParamFlags(@NonNull Map<String, Object> paramsMap) {
+        Object flagsObj = paramsMap.get(KEY_LAYOUT_PARAMS_FLAG);
+        if (flagsObj == null) return 0;
+        List<?> flagsList = (List<?>) flagsObj;
+        int flags = 0;
+        if (flagsList.contains("FLAG_NOT_FOCUSABLE"))
+            flags |= android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        if (flagsList.contains("FLAG_NOT_TOUCHABLE")) {
+            flags |= android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            isClickDisabled = true;
+        } else {
+            isClickDisabled = false;
         }
-        return false;
-    }
-
-
-    public static boolean getIsFlagFocusable(@NonNull Map<String, Object> paramsMap) {
-        Object isFlagFocusable = paramsMap.get(KEY_IS_FLAG_FOCUSABLE);
-        if(isFlagFocusable != null){
-            return (Boolean) isFlagFocusable;
-        }
-        return false;
+        if (flagsList.contains("FLAG_NOT_TOUCH_MODAL"))
+            flags |= android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        return flags;
     }
 
 

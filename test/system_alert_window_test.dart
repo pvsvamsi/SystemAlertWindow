@@ -5,14 +5,22 @@ import 'package:system_alert_window/system_alert_window.dart';
 void main() {
   const MethodChannel channel = MethodChannel('system_alert_window');
 
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   setUp(() {
-    channel.setMockMethodCallHandler((MethodCall methodCall) async {
-      return '42';
-    });
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      channel,
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'getPlatformVersion') {
+          return '42';
+        }
+        return null;
+      },
+    );
   });
 
   tearDown(() {
-    channel.setMockMethodCallHandler(null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
   });
 
   test('getPlatformVersion', () async {

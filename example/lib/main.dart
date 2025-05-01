@@ -94,19 +94,20 @@ class _MyAppState extends State<MyApp> {
           width: MediaQuery.of(context).size.width.floor(),
           gravity: SystemWindowGravity.CENTER,
           prefMode: prefMode,
-          isFlagFocusable: false);
+          layoutParamFlags: [SystemWindowFlags.FLAG_NOT_FOCUSABLE]);
       setState(() {
         _isShowingWindow = true;
       });
     } else if (!_isUpdatedWindow) {
       await SystemAlertWindow.sendMessageToOverlay('update system window');
       SystemAlertWindow.updateSystemWindow(
-          height: 200,
-          width: MediaQuery.of(context).size.width.floor(),
-          gravity: SystemWindowGravity.CENTER,
-          prefMode: prefMode,
-          isFlagFocusable: true,
-          isDisableClicks: true);
+        height: 200,
+        width: MediaQuery.of(context).size.width.floor(),
+        gravity: SystemWindowGravity.CENTER,
+        prefMode: prefMode,
+        layoutParamFlags: [SystemWindowFlags.FLAG_NOT_FOCUSABLE, SystemWindowFlags.FLAG_NOT_TOUCHABLE],
+        // isDisableClicks: true
+      );
       setState(() {
         _isUpdatedWindow = true;
         SystemAlertWindow.sendMessageToOverlay(_isUpdatedWindow);
@@ -126,8 +127,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title:
-              const Text('System Alert Window Example App \n with flutterview'),
+          title: const Text('System Alert Window Example App \n with flutterview'),
         ),
         body: Center(
           child: Column(
@@ -150,8 +150,7 @@ class _MyAppState extends State<MyApp> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: MaterialButton(
-                  onPressed: () => SystemAlertWindow.sendMessageToOverlay(
-                      "message from main"),
+                  onPressed: () => SystemAlertWindow.sendMessageToOverlay("message from main"),
                   textColor: Colors.white,
                   child: Text("send message to overlay"),
                   color: Colors.deepOrange,
