@@ -1,3 +1,7 @@
+## 2.0.7
+
+* Fixed a bug in windows layout params
+
 ## 2.0.6
 
 * Fixed display on other apps permission crash
