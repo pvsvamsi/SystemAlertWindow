@@ -55,6 +55,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     private FlutterView flutterView;
     private int paramFlags =  Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED : WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+    private int paramsFromDart;
     private final int paramType = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
     private float offsetY;
     private boolean moving;
@@ -130,7 +131,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     }
 
     private void setWindowLayoutFromMap(HashMap<String, Object> paramsMap) {
-        paramFlags |= Commons.getLayoutParamFlags(paramsMap);
+        paramsFromDart = Commons.getLayoutParamFlags(paramsMap);
         windowGravity = (String) paramsMap.get(Constants.KEY_GRAVITY);
         windowWidth = NumberUtils.getInt(paramsMap.get(Constants.KEY_WIDTH));
         windowHeight = NumberUtils.getInt(paramsMap.get(Constants.KEY_HEIGHT));
@@ -144,6 +145,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
         params.format = PixelFormat.TRANSLUCENT;
         params.type = paramType;
         params.flags |= paramFlags;
+        params.flags |= paramsFromDart;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && Commons.isClickDisabled) {
             params.alpha = 0.8f;
         }
