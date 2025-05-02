@@ -1,3 +1,7 @@
+## 2.0.6
+
+* Fixed display on other apps permission crash
+
 ## 2.0.5
 
 * Fixed flutter engine crash
