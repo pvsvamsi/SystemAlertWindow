@@ -1,7 +1,3 @@
-## 2.0.11+runo.1
-
-* Close and update no longer call `startForegroundService()` on a stopped `WindowServiceNew`. This fixes `ForegroundServiceDidNotStartInTimeException` when the app is in the background on Android 15+.
-
 ## 2.0.11
 
 * Fixed unit test — corrected channel name and codec to match the plugin's `JSONMethodCodec` registration.
