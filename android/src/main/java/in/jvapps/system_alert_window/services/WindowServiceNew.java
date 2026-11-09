@@ -45,6 +45,12 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
     public static final String INTENT_EXTRA_IS_UPDATE_WINDOW = "IsUpdateWindow";
     public static final String INTENT_EXTRA_IS_CLOSE_WINDOW = "IsCloseWindow";
 
+    // True from the moment a show/update start is requested until onDestroy. Lets close/update
+    // avoid startForegroundService() on a stopped service: from the background (e.g. dialer in
+    // front on Android 15+) startForeground() is denied, and stopping a service started that
+    // way before it reaches the foreground crashes the app.
+    public static boolean isRunning = false;
+
 
     private WindowManager windowManager;
 
@@ -83,6 +89,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
             } else {
                 startForeground(NOTIFICATION_ID, notification);
             }
+            isRunning = true;
         } catch (Exception e) {
             // Android 12+ throws ForegroundServiceStartNotAllowedException when the app is in
             // the background and not exempt from background-start restrictions.
@@ -275,6 +282,7 @@ public class WindowServiceNew extends Service implements View.OnTouchListener {
 
     @Override
     public void onDestroy() {
+        isRunning = false;
         try {
             closeWindow(false);
             LogUtils.getInstance().d(TAG, "Destroying the overlay window service");

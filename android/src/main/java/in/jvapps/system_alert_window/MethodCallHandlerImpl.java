@@ -127,6 +127,8 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                             } else {
                                 mContext.startService(i);
                             }
+                            // Set before onCreate runs so a close sent right after show isn't skipped.
+                            WindowServiceNew.isRunning = true;
                             result.success(true);
                         } else {
                             Toast.makeText(mContext, "Please give draw over other apps permission", Toast.LENGTH_LONG).show();
@@ -163,10 +165,13 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             i.putExtra(INTENT_EXTRA_IS_UPDATE_WINDOW, true);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                mContext.startForegroundService(i);
-                            } else {
+                            // A running service is already foreground, so a plain start is allowed and
+                            // doesn't arm a startForeground() deadline.
+                            if (WindowServiceNew.isRunning || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                                 mContext.startService(i);
+                            } else {
+                                mContext.startForegroundService(i);
+                                WindowServiceNew.isRunning = true;
                             }
                             result.success(true);
                         } else {
@@ -184,14 +189,12 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler, P
                     if (checkPermission(!isBubbleMode(prefMode))) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isBubbleMode(prefMode)) {
                             NotificationHelper.getInstance(mContext).dismissNotification();
-                        } else {
+                        } else if (WindowServiceNew.isRunning) {
+                            // Nothing to close when the service is stopped. Starting it just to stop it
+                            // crashes when startForeground() is denied in the background.
                             final Intent i = new Intent(mContext, WindowServiceNew.class);
                             i.putExtra(INTENT_EXTRA_IS_CLOSE_WINDOW, true);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                mContext.startForegroundService(i);
-                            } else {
-                                mContext.startService(i);
-                            }
+                            mContext.startService(i);
                         }
                         result.success(true);
                     } else {
